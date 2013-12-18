@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# postinst-tonino
+#
+# postinst for installing Tonino
+#
+# Author: Paul Holleis and Marko Luther
+
+set -e
+
+set_mime()
+{
+   xdg-mime install /usr/share/tonino/tonino-toni.xml
+   xdg-icon-resource install --context mimetypes --size 16 /usr/share/tonino/icons/tonino_doc16.png application-x-tonino-toni
+   xdg-icon-resource install --context mimetypes --size 32 /usr/share/tonino/icons/tonino_doc32.png application-x-tonino-toni
+   xdg-icon-resource install --context mimetypes --size 64 /usr/share/tonino/icons/tonino_doc64.png application-x-tonino-toni
+   xdg-icon-resource install --context mimetypes --size 128 /usr/share/tonino/icons/tonino_doc128.png application-x-tonino-toni
+   xdg-icon-resource install --context mimetypes --size 256 /usr/share/tonino/icons/tonino_doc256.png application-x-tonino-toni
+   return 0
+}
+
+case "$1" in
+   configure)
+   if dpkg-query -W xdg-utils;
+       then set_mime;
+   fi
+   ;;
+
+   *)
+
+   ;;
+esac
+
+exit 0

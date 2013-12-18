@@ -1,0 +1,104 @@
+#
+# setup-packages-windows.txt
+#
+# Copyright (c) 2013, Paul Holleis, Marko Luther
+# All rights reserved.
+# 
+# 
+# LICENSE
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Current Versions:
+
+o Qt 4.8.5
+o Python 2.7.5 (py2exe does not yet supports Python 3.3)
+o pyserial 2.6 (trunk 1.8.2013)
+o PyQt 4.10.3
+o numpy 1.7.1
+o scipy 0.12.0
+o matplotlib 1.3.1
+o pyparsing 2.0.1
+o dateutil 1.5
+o pytz 2013d
+o six 1.4.1
+o py2exe 0.6.9
+o NSIS 2.46
+
+
+Upgrade History:
+
+- 2013-10-18:
+  matplotlib 1.3.0 => 1.3.1
+- 2013-09-09:
+  Initial Setup
+
+
+Installation Instructions:
+
+1) Install Qt
+
+download and install qt-win-opensource-4.8.5-vs2008.exe from http://qt-project.org/downloads
+
+2) Install Python 2.7.x 32bit
+
+download and install python-3.3.2.msi from http://www.python.org/
+
+
+3) Install pyserial 
+
+download latest source from http://pypi.python.org/pypi/pyserial
+
+# tar xzf pyserial-2.6.tar.gz
+# cd pyserial-2.6
+# c:/Python33/python setup.py build
+# c:/Python33/python setup.py install
+
+
+4) Install PyQt4 binary installer
+
+download and install PyQt4-4.10.3-gpl-Py2.7-Qt4.8.5-x32.exe from http://www.riverbankcomputing.com/software/pyqt/download5
+
+
+5) Install numpy
+
+download and install numpy-1.7.1-win32-superpack-python2.7.exe from http://sourceforge.net/projects/numpy/files/NumPy/1.7.1/
+
+
+6) Install scipy
+
+download and install scipy-0.12.0-win32-superpack-python2.7.exe from http://sourceforge.net/projects/scipy/files/scipy/0.12.0/
+
+
+7) Install matplotlib
+
+download and install matplotlib-1.3.0.win32-py2.7.exe from http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.3.0/
+
+
+8) Install matplotlib utility libs
+
+download and install from http://www.lfd.uci.edu/~gohlke/pythonlibs/
+ - pyparsing-2.0.1.win32-py2.7.exe
+ - python-dateutil-1.5.win32-py2.7.exe
+ - pytz-2013d.win32-py2.7.exe
+ - six-1.4.1.win32-py2.7.exe
+
+9) Install py2exe
+
+download and install py2exe-0.6.9.win32-py2.7.exe from http://sourceforge.net/projects/py2exe/files/py2exe/0.6.9/
+
+10) Install NSIS
+
+download and install nsis-2.46-setup.exe from http://nsis.sourceforge.net/Download
+
