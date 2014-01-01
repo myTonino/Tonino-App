@@ -55,7 +55,7 @@ class SerialPort(object):
         self.bytesize = serial.EIGHTBITS
         self.parity= serial.PARITY_NONE
         self.stopbits = serial.STOPBITS_ONE
-        self.timeout = 1.5
+        self.timeout = 1.7
         self.SP = serial.Serial(rtscts=0, dsrdtr=0)
         self.SP = serial.Serial()
         self.cmdSeparatorChar = ":"
@@ -115,7 +115,7 @@ class SerialPort(object):
             if self.SP.isOpen():
                 self.SP.flushInput()
                 self.SP.flushOutput()
-                self.SP.write(str2cmd(command + "\n"))
+                self.SP.write(str2cmd("\n" + command + "\n"))
                 self.SP.flush()
                 time.sleep(0.5)
                 response = cmd2str(self.SP.readline())
@@ -124,6 +124,8 @@ class SerialPort(object):
                     parts = response.split(command + self.cmdSeparatorChar)
                     if parts and len(parts) == 2:
                         res = parts[1].strip()
+                    elif parts and len(parts) == 1:
+                        res = ""
             if retry and res == None:
                 return self.sendCommand(port,command,False)
             else:
@@ -138,7 +140,7 @@ class SerialPort(object):
     def getSerialPorts(self):
         if platform.system() == 'Windows':
             # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned
-            return list(p[0] for p in serial.tools.list_ports.grep("VID_0403&PID_6001"))
+            return list(p[0] for p in serial.tools.list_ports.grep("VID_0403\+PID_6001"))
         else:
             ports = serial.tools.list_ports.comports()
             # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned

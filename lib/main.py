@@ -304,11 +304,14 @@ class Tonino(QApplication):
             # send "TONINO" to the given serial port and returns the successful parsed version as int list
             # [major,minor,build]
             if onStartup:
-                time.sleep(0.5) # if device is already connected it should be already starting up
+                time.sleep(.1) # if device is already connected it should be already starting up
             else:
-                time.sleep(1) # wait a moment until the Arduino allows to open the port and finished its serial device init
+                time.sleep(.8) # wait a moment until the Arduino allows to open the port and finished its serial device init
             self.ser.openPort(port) # on Mac OS X this will trigger an Arduino reset
-            time.sleep(2) # wait a second until the Arduino Nano did a reset
+            if onStartup:
+                time.sleep(2.5)  # wait a second until the Arduino Nano did a reset
+            else:
+                time.sleep(2)  # wait a second until the Arduino Nano did a reset
             self.ser.sendCommand(port,"",False) # first send a dummy empty cmd to get serial started
             response = self.ser.sendCommand(port,"TONINO")
             if response:
