@@ -99,7 +99,7 @@
        <item>
         <widget class="QLabel" name="copyrightLabel">
          <property name="text">
-          <string>Copyright © 2013 Marko Luther, Paul Holleis</string>
+          <string>Copyright © 2014 Marko Luther, Paul Holleis</string>
          </property>
         </widget>
        </item>

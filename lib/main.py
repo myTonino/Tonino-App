@@ -3,7 +3,7 @@
 #
 # main.py
 #
-# Copyright (c) 2013, Paul Holleis, Marko Luther
+# Copyright (c) 2014, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -86,15 +86,17 @@ class Tonino(QApplication):
         self.included_firmware_version = None # a list of three int indicating major, minor and build versions of the included firmware
         
         # calib constants
-        self.std_calib_low_w = 4500. # brown disk white reading
+        self.std_calib_low_r = 2350. # brown disk red reading
         self.std_calib_low_b = 1550. # brown disk blue reading
-        self.std_calib_high_w = 14200. # red disk white reading
-        self.std_calib_high_b = 3200. # red disk blue reading
+        self.std_calib_high_r = 11300. # red disk red reading
+        self.std_calib_high_b = 3250. # red disk blue reading
+        self.std_calib_target_low = 1.5
+        self.std_calib_target_high = 3.7
         # the tolerance distance of the calib measurements to the expected values above that still allow the recognition
-        self.calib_white_range_low = 1500
-        self.calib_white_range_high = 6000
-        self.calib_blue_range_low = 700
-        self.calib_blue_range_high = 1700
+        self.calib_red_range_low = 1000
+        self.calib_red_range_high = 4000
+        self.calib_blue_range_low = 600
+        self.calib_blue_range_high = 1300
         
         # variables
         self.workingDirectory = None
@@ -109,37 +111,37 @@ class Tonino(QApplication):
         self.scales = lib.scales.Scales(self)
         self.ser = lib.serialport.SerialPort() # the serial connection object
         # calibration raw readings
-        self.calib_low_w = None
+        self.calib_low_r = None
         self.calib_low_b = None
-        self.calib_high_w = None
+        self.calib_high_r = None
         self.calib_high_b = None
         self.retrieveIncludedFirmware()
       
     def clearCalibReadings(self):
-        self.calib_low_w = None
+        self.calib_low_r = None
         self.calib_low_b = None
-        self.calib_high_w = None
+        self.calib_high_r = None
         self.calib_high_b = None
         
-    # detects if the given white and blue readings are in the range of either the low or the high calibration disk
+    # detects if the given red and blue readings are in the range of either the low or the high calibration disk
     # and sets the corresponding variables accordingly
-    def setCalibReadings(self,w,b):
-        if abs(w - self.std_calib_low_w) < self.calib_white_range_low and abs(b - self.std_calib_low_b) < self.calib_blue_range_low:
+    def setCalibReadings(self,r,b):
+        if abs(r - self.std_calib_low_r) < self.calib_red_range_low and abs(b - self.std_calib_low_b) < self.calib_blue_range_low:
             # calib_low disk recognized
-            self.calib_low_w = w
+            self.calib_low_r = r
             self.calib_low_b = b
-        elif abs(w - self.std_calib_high_w) < self.calib_white_range_high and abs(b - self.std_calib_high_b) < self.calib_blue_range_high:
+        elif abs(r - self.std_calib_high_r) < self.calib_red_range_high and abs(b - self.std_calib_high_b) < self.calib_blue_range_high:
             # calib_high disk recognized
-            self.calib_high_w = w
+            self.calib_high_r = r
             self.calib_high_b = b
             
     def getCalibLow(self):
-        if self.calib_low_w and self.calib_low_b:
-            return (self.calib_low_w,self.calib_low_b)
+        if self.calib_low_r and self.calib_low_b:
+            return (self.calib_low_r,self.calib_low_b)
             
     def getCalibHigh(self):
-        if self.calib_high_w and self.calib_high_b:
-            return (self.calib_high_w,self.calib_high_b)
+        if self.calib_high_r and self.calib_high_b:
+            return (self.calib_high_r,self.calib_high_b)
             
     def updateCalib(self):
         if self.toninoPort:
@@ -147,11 +149,11 @@ class Tonino(QApplication):
             calib_high = self.getCalibHigh()            
             if calib_low and calib_high:
                 # both calibs have been set, generate and upload the new calibration data to the connected Tonino
-                target_low_wb = self.std_calib_low_w / self.std_calib_low_b
-                target_high_wb = self.std_calib_high_w / self.std_calib_high_b
-                calib_low_wb = calib_low[0]/calib_low[1]
-                calib_high_wb = calib_high[0]/calib_high[1]
-                c = poly.polyfit([calib_low_wb,calib_high_wb],[target_low_wb,target_high_wb],1)
+                target_low_rb = self.std_calib_target_low
+                target_high_rb = self.std_calib_target_high
+                calib_low_rb = calib_low[0]/calib_low[1]
+                calib_high_rb = calib_high[0]/calib_high[1]
+                c = poly.polyfit([calib_low_rb,calib_high_rb],[target_low_rb,target_high_rb],1)
                 # transfer result to connected Tonino
                 self.setCal(self.toninoPort,[c[1],c[0]])
                 self.aw.showMessage(_translate("Message","Calibration updated",None))
@@ -524,9 +526,9 @@ class CalibDialog(ToninoDialog):
         if raw_readings2 == None:
             raw_readings2 = raw_readings1
         if raw_readings1 and raw_readings2 and len(raw_readings1)>3 and len(raw_readings2)>3:
-            w = (raw_readings1[0] + raw_readings2[0]) / 2.
+            r = (raw_readings1[1] + raw_readings2[1]) / 2.
             b = (raw_readings1[3] + raw_readings2[3]) / 2.
-            self.app.setCalibReadings(w,b)
+            self.app.setCalibReadings(r,b)
             calib_low = self.app.getCalibLow()
             calib_high = self.app.getCalibHigh()
             # if low reading is set enable the clib_low

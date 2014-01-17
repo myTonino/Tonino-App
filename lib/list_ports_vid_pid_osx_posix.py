@@ -3,7 +3,7 @@
 #
 # list_ports_vid_pid_osx_posix.py
 #
-# Copyright (c) 2013, Paul Holleis, Marko Luther
+# Copyright (c) 2014, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 

@@ -3,7 +3,7 @@
 #
 # scales.py
 #
-# Copyright (c) 2013, Paul Holleis, Marko Luther
+# Copyright (c) 2014, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -36,7 +36,8 @@ class Scales(QAbstractTableModel):
     def __init__(self, app=None, parent=None, *args):
         QAbstractTableModel.__init__(self,parent,*args)
         self.app = app
-        self.defaultCoefficients = [.0, .0, 91.24835742, -254.9145861] # x3, x2, x, c [.0,61.2871476175276,-13.98750781107,40.6631022529885]
+        self.defaultCoefficients = [.0, .0, 102.2727273, -128.4090909] # x3, x2, x, c 
+        # old w/b: [.0, .0, 91.24835742, -254.9145861]
         self.deviceCoefficients = None
         # coefficients are recomputed on loading/setting from coordinates if possible (eg. coordinates are given)
         self.coefficients = None

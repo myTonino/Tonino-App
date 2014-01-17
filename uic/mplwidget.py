@@ -3,7 +3,7 @@
 #
 # mplwidget.py
 #
-# Copyright (c) 2013, Paul Holleis, Marko Luther
+# Copyright (c) 2014, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -34,8 +34,8 @@ class MplCanvas(FigureCanvas):
     def __init__(self,app):
         self.app = app
         
-        self.x_min = 3.0 # minimum raw Tonino value to be drawn
-        self.x_max = 5.0 # maximum raw Tonino value to be drawn
+        self.x_min = 1.704 # minimum raw Tonino value to be drawn
+        self.x_max = 2.95 # maximum raw Tonino value to be drawn
         self.x_step = 0.01
 
         self.xvalues = np.arange(self.x_min, self.x_max, self.x_step)

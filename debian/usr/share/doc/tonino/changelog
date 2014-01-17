@@ -1,6 +1,12 @@
-tonino (1.0.1-1) precise; urgency=low
+tonino (1.0.2-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.1:
+   - improved calibration
+ --  <dev@my-tonino.com>  Fr, 17 Jan 2014 19:32:14 +0200
+ 
+tonino (1.0.1-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.0:
    - improved serial communication stability
    - Windows device discovery regex
  --  <dev@my-tonino.com>  Wed, 1 Jan 2014 19:32:14 +0200

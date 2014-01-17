@@ -3,7 +3,7 @@
 #
 # list_ports_osx.py
 #
-# Copyright (c) 2013, Paul Holleis, Marko Luther
+# Copyright (c) 2014, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 

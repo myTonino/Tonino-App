@@ -97,6 +97,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.2 (17.1.2014)
+ - Improved calibration
+
 v1.0.1 (1.1.2014)
  - Fixes serial communication
  - Fixes device discovery on Windows
