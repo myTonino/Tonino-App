@@ -23,6 +23,22 @@
 
 QT=/usr/local/Trolltech/Qt-4.8.5/
 
+# ui
+find ui -iname "*.ui" | while read f
+do
+    fullfilename=$(basename $f)
+    fn=${fullfilename%.*}
+    pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui 
+done
+
+# qrc
+find qrc -iname "*.qrc" | while read f
+do
+    fullfilename=$(basename $f)
+    fn=${fullfilename%.*}
+    pyrcc4 -o uic/${fn}_rc.py qrc/${fn}.qrc 
+done
+
 # translations
 pylupdate4 conf/tonino.pro
 lrelease -verbose conf/tonino.pro
