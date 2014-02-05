@@ -19,6 +19,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.3 Update of calibration values and ranges
 - v1.0.2 Improved calibration
 - v1.0.1 Fixes device connect on Windows
 - v1.0.0 Buggy initial release

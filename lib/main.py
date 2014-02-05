@@ -86,17 +86,17 @@ class Tonino(QApplication):
         self.included_firmware_version = None # a list of three int indicating major, minor and build versions of the included firmware
         
         # calib constants
-        self.std_calib_low_r = 2350. # brown disk red reading
-        self.std_calib_low_b = 1550. # brown disk blue reading
+        self.std_calib_low_r = 2320. # brown disk red reading
+        self.std_calib_low_b = 1470. # brown disk blue reading
         self.std_calib_high_r = 11300. # red disk red reading
-        self.std_calib_high_b = 3250. # red disk blue reading
+        self.std_calib_high_b = 3050. # red disk blue reading
         self.std_calib_target_low = 1.5
         self.std_calib_target_high = 3.7
         # the tolerance distance of the calib measurements to the expected values above that still allow the recognition
-        self.calib_red_range_low = 1000
-        self.calib_red_range_high = 4000
-        self.calib_blue_range_low = 600
-        self.calib_blue_range_high = 1300
+        self.calib_red_range_low = 1200
+        self.calib_red_range_high = 4200
+        self.calib_blue_range_low = 750
+        self.calib_blue_range_high = 1450
         
         # variables
         self.workingDirectory = None
