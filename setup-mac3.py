@@ -180,7 +180,7 @@ for root, dirs, files in os.walk('.'):
                     print('Deleting', os.path.join(r,fl))
                     os.remove(os.path.join(r,fl))                
 
-dist_name = r"Tonino-" + VERSION + r".dmg"
+dist_name = r"tonino-mac-" + VERSION + r".dmg"
 os.chdir('..')
 os.system(r"rm " + dist_name)
 os.system(r'hdiutil create ' + dist_name + r' -volname "Tonino" -fs HFS+ -srcfolder "dist"')
