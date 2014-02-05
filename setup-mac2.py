@@ -52,7 +52,7 @@ APP = ['tonino.py']
 qd_include = QDir(os.path.dirname(os.path.realpath(__file__)) + "/includes/")
 firmware_files = qd_include.entryInfoList(["tonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
 if len(firmware_files) > 0:
-    firmware_name = firmware_files[0].fileName()
+    firmware_name = str(firmware_files[0].fileName())
 else:
     print("firmware *.hex missing!")
     quit()
