@@ -11,8 +11,8 @@ The project home of this app is on GitHub were all source and binary files are a
 
 FEATURES
 
-o runs on Mac OS X 10.6/10.7/10.8 on Intel, Windows, and Linux
-(on OS X 10.8 Mountain Lion you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app)
+o runs on Mac OS X >10.6 on Intel, Windows, and Linux
+(on OS X >10.7 Mountain Lion you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app)
 o allows to connect to a Tonino device and trigger the measurements
 o designer for custom scales
 o save/load of custom scales
@@ -96,6 +96,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 
 VERSION HISTORY
+
+v1.0.3 (2.2.2014)
+ - Update of calibration values and ranges
 
 v1.0.2 (17.1.2014)
  - Improved calibration
