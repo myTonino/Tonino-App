@@ -852,20 +852,20 @@ class ApplicationWindow(QMainWindow):
     def defaults(self):
         self.app.reset2Defaults(self.app.toninoPort)
         self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
-        self.showMessage(_translate("Message","Tonino reset to defaults",None),msecs=3000)
+        self.showMessage(_translate("Message","Tonino reset to defaults",None))
     
     def uploadScale(self):
         scale = self.app.scales.getCoefficients()        
         scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
         self.app.setScale(self.app.toninoPort,scale)
         self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
-        self.showMessage(_translate("Message","Scale uploaded",None),msecs=3000)
+        self.showMessage(_translate("Message","Scale uploaded",None))
         
     def addCoordinate(self,retry=True):
         raw_x = self.app.getRawCalibratedReading(self.app.toninoPort)
         if raw_x:
             if np.isnan(raw_x[0]) or raw_x[0] == float('inf'):
-                self.showMessage(_translate("Message","Coordinate out of range",None),msecs=3000)
+                self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
             else:
                 self.app.scales.addCoordinate(raw_x[0],None)
                 QTimer.singleShot(0, self.ui.tableView.scrollToBottom)
@@ -873,7 +873,7 @@ class ApplicationWindow(QMainWindow):
             if retry:
                 self.addCoordinate(retry=False)
             else:
-                self.showMessage(_translate("Message","Coordinate out of range",None),msecs=3000)
+                self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
 
     def deleteCoordinates(self):
         self.app.scales.deleteCoordinates([s.row() for s in self.ui.tableView.selectionModel().selectedRows()])
