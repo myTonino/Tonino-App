@@ -442,12 +442,13 @@ class Tonino(QApplication):
         self.currentFileDirty = False
         self.currentFile = None
         self.aw.updateWindowTitle()
-        self.aw.ui.actionSave.setEnabled(False)
         if len(self.scales.getCoordinates()) > 0:
-            # if there is content, but unmodified we still allow SaveAs
+            # if there is content, but unmodified we still allow Save and SaveAs
             self.aw.ui.actionSave_As.setEnabled(True)
+            self.aw.ui.actionSave.setEnabled(True)
         else:
             self.aw.ui.actionSave_As.setEnabled(False)
+            self.aw.ui.actionSave.setEnabled(False)
 
 
 ###########################################################################################################################################
