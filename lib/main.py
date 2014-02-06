@@ -474,9 +474,12 @@ class PreferencesDialog(ToninoDialog):
         self.displayBrightness = None
         self.lastBrightness = None # remember the last setting to avoid resending the same setting
         if self.app.toninoPort:
-            v = self.app.getDisplayBrightness(self.app.toninoPort)
-            self.displayBrightness = self.lastBrightness = v[0]
-            self.ui.displaySlider.setValue(self.displayBrightness)
+            try:
+                v = self.app.getDisplayBrightness(self.app.toninoPort)
+                self.displayBrightness = self.lastBrightness = v[0]
+                self.ui.displaySlider.setValue(self.displayBrightness)
+            except:
+                pass
         else:
             self.ui.groupBoxToninoDisplay.setEnabled(False)
         self.ui.buttonBox.accepted.connect(self.accept)
@@ -519,27 +522,30 @@ class CalibDialog(ToninoDialog):
         
  
     def scan(self):
-        raw_readings1 = self.app.getRawReadings(self.app.toninoPort)
-        time.sleep(1)
-        raw_readings2 = self.app.getRawReadings(self.app.toninoPort)
-        if raw_readings1 == None:
-            raw_readings1 = raw_readings2
-        if raw_readings2 == None:
-            raw_readings2 = raw_readings1
-        if raw_readings1 and raw_readings2 and len(raw_readings1)>3 and len(raw_readings2)>3:
-            r = (raw_readings1[1] + raw_readings2[1]) / 2.
-            b = (raw_readings1[3] + raw_readings2[3]) / 2.
-            self.app.setCalibReadings(r,b)
-            calib_low = self.app.getCalibLow()
-            calib_high = self.app.getCalibHigh()
-            # if low reading is set enable the clib_low
-            if calib_low:
-                self.ui.calibLowLabel.setEnabled(True)
-            if calib_high:
-                self.ui.calibHighLabel.setEnabled(True)
-            # if both, low and high readings are set, enable the OK button  
-            if calib_low and calib_high:
-                self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        try:
+            raw_readings1 = self.app.getRawReadings(self.app.toninoPort)
+            time.sleep(1)
+            raw_readings2 = self.app.getRawReadings(self.app.toninoPort)
+            if raw_readings1 == None:
+                raw_readings1 = raw_readings2
+            if raw_readings2 == None:
+                raw_readings2 = raw_readings1
+            if raw_readings1 and raw_readings2 and len(raw_readings1)>3 and len(raw_readings2)>3:
+                r = (raw_readings1[1] + raw_readings2[1]) / 2.
+                b = (raw_readings1[3] + raw_readings2[3]) / 2.
+                self.app.setCalibReadings(r,b)
+                calib_low = self.app.getCalibLow()
+                calib_high = self.app.getCalibHigh()
+                # if low reading is set enable the clib_low
+                if calib_low:
+                    self.ui.calibLowLabel.setEnabled(True)
+                if calib_high:
+                    self.ui.calibHighLabel.setEnabled(True)
+                # if both, low and high readings are set, enable the OK button  
+                if calib_low and calib_high:
+                    self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        except:
+            pass
         
     def accept(self):
         self.app.updateCalib()
@@ -862,18 +868,21 @@ class ApplicationWindow(QMainWindow):
         self.showMessage(_translate("Message","Scale uploaded",None))
         
     def addCoordinate(self,retry=True):
-        raw_x = self.app.getRawCalibratedReading(self.app.toninoPort)
-        if raw_x:
-            if np.isnan(raw_x[0]) or raw_x[0] == float('inf'):
-                self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
+        try:
+            raw_x = self.app.getRawCalibratedReading(self.app.toninoPort)
+            if raw_x:
+                if np.isnan(raw_x[0]) or raw_x[0] == float('inf'):
+                    self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
+                else:
+                    self.app.scales.addCoordinate(raw_x[0],None)
+                    QTimer.singleShot(0, self.ui.tableView.scrollToBottom)
             else:
-                self.app.scales.addCoordinate(raw_x[0],None)
-                QTimer.singleShot(0, self.ui.tableView.scrollToBottom)
-        else:
-            if retry:
-                self.addCoordinate(retry=False)
-            else:
-                self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
+                if retry:
+                    self.addCoordinate(retry=False)
+                else:
+                    self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
+        except:
+            pass
 
     def deleteCoordinates(self):
         self.app.scales.deleteCoordinates([s.row() for s in self.ui.tableView.selectionModel().selectedRows()])
@@ -1014,7 +1023,10 @@ class ApplicationWindow(QMainWindow):
         self.app.toninoFirmwareVersion = version
         self.setEnabledUI(True)
         self.showMessage(_translate("Message","Connected to Tonino",None) + " " + self.version2str(version))
-        self.app.scales.setDeviceCoefficients(self.app.getScale(port))
+        try:
+            self.app.scales.setDeviceCoefficients(self.app.getScale(port))
+        except:
+            self.showMessage(_translate("Message","Scale could not be retrieved",None) + " " + self.version2str(version))
         self.deviceCheckInterval = self.slowCheck
         self.checkFirmwareVersion()
 
