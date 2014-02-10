@@ -16,6 +16,13 @@ Tonino Resources
 - [Tonino firmware](https://github.com/myTonino/Tonino-Firmware)
 - [Tonino serial protocol](https://github.com/myTonino/Tonino-Firmware/blob/master/Tonino-Serial.md)
 - [Tonino hardware](https://github.com/myTonino/Tonino-Hardware)
+- Tonino example scales:
+	- [AgtrCom.toni](scales/AgtrCom.toni?raw=true)
+	- [AgtrGou.toni](scales/AgtrGou.toni?raw=true)
+	- [ColTrak.toni](scales/ColTrak.toni?raw=true)
+	- [NeoColTes.toni](scales/NeoColTes.toni?raw=true)
+	- [ProbCol.toni](scales/ProbCol.toni?raw=true)
+	- [Tonino.toni](scales/Tonino.toni?raw=true) (Tonino default scale)
 
 Version History
 ---------------
