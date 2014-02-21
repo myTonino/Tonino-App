@@ -142,6 +142,8 @@ setup(
             
 os.system(r'cp doc/README.txt dist')
 os.system(r'cp doc/LICENSE.txt dist')
+os.system(r'mkdir dist/scales')
+os.system(r'cp scales/*.toni dist/scales')
 os.chdir('./dist')
 
 print('*** Removing Qt debug libs ***')

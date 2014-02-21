@@ -829,9 +829,10 @@ class ApplicationWindow(QMainWindow):
             self.loadFile(action.data())
     
     def saveFile(self):
-        if self.app.currentFile:
-            self.app.saveScale(self.app.currentFile)
-            self.updateWindowTitle()
+        currentFile = self.app.currentFile
+        if currentFile:
+            self.app.saveScale(currentFile)
+            self.setCurrentFile(currentFile)
         else:
             self.saveAsFile()
         

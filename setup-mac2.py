@@ -127,6 +127,8 @@ setup(
             
 os.system(r'cp doc/README.txt dist')
 os.system(r'cp doc/LICENSE.txt dist')
+os.system(r'mkdir dist/scales')
+os.system(r'cp scales/*.toni dist/scales')
 os.chdir('./dist')
 
 # delete unused Qt.framework files (py2app exclude does not seem to work)
