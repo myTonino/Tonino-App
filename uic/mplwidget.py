@@ -139,7 +139,7 @@ class MplCanvas(FigureCanvas):
            
         RR = self.app.scales.getRR() 
         if RR:
-            self.ax.set_title("RR = %.3f"%RR, fontsize=self.RRfontSize, color=self.toninoBlue)
+            self.ax.set_title("d = %d   RR = %.3f"%(self.app.scales.polyfit_degree,RR), fontsize=self.RRfontSize, color=self.toninoBlue)
         else:
             self.ax.set_title("")
         self.redraw()

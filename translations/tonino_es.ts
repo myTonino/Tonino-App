@@ -129,11 +129,6 @@
         <translation>eliminar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="211"/>
-        <source>1</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../uic/MainWindowUI.py" line="212"/>
         <source>3 </source>
         <translation></translation>
@@ -287,6 +282,11 @@
         <location filename="../uic/MainWindowUI.py" line="208"/>
         <source>Sort</source>
         <translation>Ordenar</translation>
+    </message>
+    <message>
+        <location filename="../uic/MainWindowUI.py" line="211"/>
+        <source>0</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

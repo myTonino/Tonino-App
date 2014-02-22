@@ -43,7 +43,7 @@ class Scales(QAbstractTableModel):
         self.coefficients = None
         self.RR = None
         self.coordinates = []
-        self.polyfit_degree = 2
+        self.polyfit_degree = 0
         # initialize random number generator
         random.seed()
         
@@ -174,7 +174,7 @@ class Scales(QAbstractTableModel):
         self.computePolyfit()
             
     def computePolyfit(self):
-        if len(self.coordinates) > self.polyfit_degree:
+        if self.polyfit_degree and len(self.coordinates) > self.polyfit_degree:
             xv = np.array([e[0] for e in self.coordinates])
             yv = np.array([e[1] for e in self.coordinates])
             c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True)

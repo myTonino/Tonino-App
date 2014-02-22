@@ -131,7 +131,7 @@
     <message>
         <location filename="../uic/MainWindowUI.py" line="211"/>
         <source>1</source>
-        <translation>1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
         <location filename="../uic/MainWindowUI.py" line="212"/>
@@ -287,6 +287,11 @@
         <location filename="../uic/MainWindowUI.py" line="208"/>
         <source>Sort</source>
         <translation>Sorteer</translation>
+    </message>
+    <message>
+        <location filename="../uic/MainWindowUI.py" line="211"/>
+        <source>0</source>
+        <translation type="unfinished">0</translation>
     </message>
 </context>
 <context>
