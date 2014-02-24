@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from PyQt4.QtCore import (SIGNAL,QAbstractTableModel,Qt,QSize,QRegExp)
+from PyQt4.QtCore import (SIGNAL,QAbstractTableModel,Qt,QSize,QRegExp,QTimer)
 from PyQt4.QtGui import (QBrush,QColor,QStyledItemDelegate,QLineEdit,QRegExpValidator,QItemSelection,QItemSelectionModel)
 
 import numpy as np
@@ -117,10 +117,10 @@ class Scales(QAbstractTableModel):
         scale["degree"] = self.polyfit_degree
         return scale
         
-    def sortCoordinates(self):
+    def sortCoordinates(self,col=0,order=0):
         selectedCoordinates = self.getSelectedCoordinates()
         self.beginResetModel()
-        s = sorted(self.coordinates, key=lambda c: c[0])
+        s = sorted(self.coordinates, key=lambda c: c[col],  reverse=order)
         self.coordinates = s
         self.endResetModel()
         self.redoSelection(selectedCoordinates)
@@ -143,6 +143,8 @@ class Scales(QAbstractTableModel):
         self.app.contentModified()
         self.computePolyfit()
         
+    def autoScroll(self):
+        QTimer.singleShot(0, self.app.aw.ui.tableView.scrollToBottom)
         
     def addCoordinates(self,coordinates):
         selectedCoordinates = self.getSelectedCoordinates()
@@ -156,15 +158,16 @@ class Scales(QAbstractTableModel):
         self.redoSelection(selectedCoordinates)
         self.app.contentModified()
         self.computePolyfit()
-    
+        self.autoScroll()
+
     def addCoordinate(self,x,y,name=""):
         if y == None:
             # y from I_SCAN, we compute the T value
             y2 = int(round(self.computeT(x)))
-            new_coordinate = [x,y2,name or "",random.random()]
+            new_coordinate = [x,y2,name or str(len(self.coordinates)+1),random.random()]
         else:
             y2 = int(round(y))
-            new_coordinate = [x,y2,name or str(y2),random.random()]
+            new_coordinate = [x,y2,name or str(len(self.coordinates)+1),random.random()]
         self.beginResetModel()
         self.coordinates.append(new_coordinate)
         self.coordinates = self.coordinates
@@ -172,6 +175,7 @@ class Scales(QAbstractTableModel):
         self.redoSelection([new_coordinate])
         self.app.contentModified()
         self.computePolyfit()
+        self.autoScroll()
             
     def computePolyfit(self):
         if self.polyfit_degree and len(self.coordinates) > self.polyfit_degree:
@@ -328,6 +332,15 @@ class Scales(QAbstractTableModel):
         
     def flags(self, index):
         return Qt.ItemIsEnabled | Qt.ItemIsEditable | Qt.ItemIsSelectable
+        
+        
+    def sort(self, col, order):
+        self.sortCoordinates(col+1,order)
+#        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+#        self.arraydata = sorted(self.arraydata, key=operator.itemgetter(Ncol))        
+#        if order == Qt.DescendingOrder:
+#            self.arraydata.reverse()
+#        self.emit(SIGNAL("layoutChanged()"))
 
        
 

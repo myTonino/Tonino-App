@@ -276,7 +276,6 @@ class Tonino(QApplication):
             self.ser.sendReset(self.toninoPort)
  
     def uploadFirmware(self):
-        # disconnect established serial connection
         resourcePath = resources.getResourcePath()
         resourceBinaryPath = resources.getResourceBinaryPath()
         avrdude = resourceBinaryPath + self.avrdude
