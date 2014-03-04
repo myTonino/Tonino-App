@@ -38,11 +38,13 @@ o phyobjc 2.5.1
 o distribute 0.6.49 (v0.7.3 breaks the matplotlib build)
 o altgraph (trunk 1.8.2013)
 o modulgraph (trunk 1.8.2013)
-o py2app >0.7.3 (trunk 1.8.2013, v0.7.3 does not copy the permissions for resources)
+o py2app 0.8
 
 
 Upgrade History:
 
+- 2014-02-24
+ . py2app 0.7.3 => 0.8
 - 2013-11-12:
  . scipy 0.13.1
  . numpy 1.8.0

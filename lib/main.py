@@ -65,6 +65,13 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QApplication.translate(context, text, disambig)
 
+if sys.version < '3':
+    def u(x): # convert to unicode string
+        return unicode(x)
+else:
+    def u(x): # convert to unicode string
+        return str(x)
+        
 
 ###########################################################################################################################################
 #
@@ -281,7 +288,7 @@ class Tonino(QApplication):
         avrdude = resourceBinaryPath + self.avrdude
         avrdudeconf = resourceBinaryPath + self.avrdude_conf
         toninoSketch = resourcePath + self.included_firmware_name
-        args = ["-C",avrdudeconf,"-q","-q","-patmega328p","-carduino","-P",self.toninoPort,"-b57600","-D","-Uflash:w:" + str(toninoSketch) + ":i"]
+        args = ["-C",avrdudeconf,"-q","-q","-patmega328p","-carduino","-P",self.toninoPort,"-b57600","-D","-Uflash:w:" + u(toninoSketch) + ":i"]
         process = QProcess(self)
         process.finished.connect(self.uploadFirmwareDone)
         process.start(avrdude,args)
