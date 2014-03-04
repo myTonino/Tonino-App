@@ -376,6 +376,14 @@ class Tonino(QApplication):
             res = self.response2values(response,float,5)
         return res
         
+    # cmd: D_SCAN
+    def getBlackReadings(self,port):
+        res = None
+        response = self.ser.sendCommand(port,"D_SCAN")
+        if response:
+            res = self.response2values(response,float,4)
+        return res
+        
     # cmd: RESETDEF
     def reset2Defaults(self,port):
         if port:
@@ -525,20 +533,21 @@ class CalibDialog(ToninoDialog):
         self.ui.pushButtonScan.clicked.connect(self.scan)
         # clear previous calibrations
         self.app.clearCalibReadings()
-        
- 
+
     def scan(self):
         try:
             raw_readings1 = self.app.getRawReadings(self.app.toninoPort)
-            time.sleep(1)
+            time.sleep(.75)
+            dark_readings = self.app.getBlackReadings(self.app.toninoPort)
+            time.sleep(.75)
             raw_readings2 = self.app.getRawReadings(self.app.toninoPort)
             if raw_readings1 == None:
                 raw_readings1 = raw_readings2
             if raw_readings2 == None:
                 raw_readings2 = raw_readings1
             if raw_readings1 and raw_readings2 and len(raw_readings1)>3 and len(raw_readings2)>3:
-                r = (raw_readings1[1] + raw_readings2[1]) / 2.
-                b = (raw_readings1[3] + raw_readings2[3]) / 2.
+                r = (raw_readings1[1] + raw_readings2[1]) / 2. - dark_readings[1]
+                b = (raw_readings1[3] + raw_readings2[3]) / 2. - dark_readings[3]
                 self.app.setCalibReadings(r,b)
                 calib_low = self.app.getCalibLow()
                 calib_high = self.app.getCalibHigh()
