@@ -1,3 +1,11 @@
+tonino (1.0.4-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.3:
+   - adds sorting
+   - updated calibration process
+   - update firmware version
+ --  <dev@my-tonino.com>  Wed, 5 Feb 2014 19:32:14 +0200
+ 
 tonino (1.0.3-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.2:
