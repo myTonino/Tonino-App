@@ -32,7 +32,8 @@ import time
 import numpy as np
 from functools import reduce as freduce
 import numpy.polynomial.polynomial as poly
-
+import scipy as sp
+import scipy.stats
 import sip
 try:
     sip.setapi('QString', 2)
@@ -46,7 +47,7 @@ except:
 #    from PyQt5.QtCore import (QCoreApplication,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent)
 
 # PyQt4:
-from PyQt4.QtGui import (QApplication,QMainWindow,QDialog,QMessageBox,QAction,QFileDialog,QIcon,QItemSelection,QItemSelectionModel,QProgressDialog,QDialogButtonBox)
+from PyQt4.QtGui import (QColor,QApplication,QMainWindow,QDialog,QMessageBox,QAction,QFileDialog,QIcon,QItemSelection,QItemSelectionModel,QProgressDialog,QDialogButtonBox)
 from PyQt4.QtCore import (QProcess,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent,Qt,pyqtSignal)
 
 
@@ -688,6 +689,8 @@ class ApplicationWindow(QMainWindow):
         _dialog_cancel = _translate("QDialogButtonBox", "Cancel", None)
         _dialog_close = _translate("QDialogButtonBox", "Close", None)
         _dialog_abort = _translate("QDialogButtonBox", "Abort", None)
+        
+        self.updateLCDS()
 
         
     def actionCut(self):
@@ -905,6 +908,7 @@ class ApplicationWindow(QMainWindow):
         
     def clearCoordinates(self):
         self.app.scales.clearCoordinates()
+        self.updateLCDS()
         
     def sortCoordinates(self):
         self.app.scales.sortCoordinates()
@@ -920,8 +924,47 @@ class ApplicationWindow(QMainWindow):
 #
 # Measurements Table
 #        
+
+
+    def mean_confidence_interval(self,data, confidence=0.95):
+        a = 1.0*np.array(data)
+        n = len(a)
+        m, se = np.mean(a), scipy.stats.sem(a)
+        h = se * sp.stats.t._ppf((1+confidence)/2., n-1)
+#        print(h,m,m-h,m+h)        
+        return h
+    
+    def updateLCDS(self):
+        if self.ui.tableView.selectionModel().selectedRows():
+            coordinates = self.app.scales.getSelectedCoordinates()
+        else:
+            coordinates = []
+        rawValues = [x[0] for x in coordinates]
+        self.updateAVG(rawValues)
+        self.updateSTDEV(rawValues)
+        self.updateCONF(rawValues)
+
+    def updateAVG(self, rawValues):
+        if rawValues and len(rawValues) > 1:
+            self.ui.LCDavg.display("%.1f" % self.app.scales.computeT(sum(rawValues) / float(len(rawValues))))
+        else:
+            self.ui.LCDavg.display("")
+            
+    def updateSTDEV(self, rawValues):
+        if rawValues and len(rawValues) > 1:
+            stdev = np.std(np.array(rawValues),dtype=np.float64)
+            self.ui.LCDstdev.display("%.1f" % stdev)
+        else:
+            self.ui.LCDstdev.display("")
+            
+    def updateCONF(self, rawValues):
+        if rawValues and len(rawValues) > 1:
+            self.ui.LCDconf.display("%.2f" % self.mean_confidence_interval(rawValues))
+        else:
+            self.ui.LCDconf.display("")
         
     def selectionChanged(self, newSelection, oldSelection):
+        self.updateLCDS()
         if self.ui.tableView.selectionModel().selectedRows():
             self.ui.pushButtonDelete.setEnabled(True)
         else:
@@ -954,7 +997,7 @@ class ApplicationWindow(QMainWindow):
         ui.setupUi(Dialog)
         version = _translate("Dialog", "Version", None) + " " + __version__
         if self.app.included_firmware_version:        
-            version += " (" + self.version2str(self.app.included_firmware_version,prefix="") + ")"
+            version += " (firmware " + self.version2str(self.app.included_firmware_version,prefix="") + ")"
         ui.versionLabel.setText(version)
         ui.pushButton.clicked.connect(Dialog.accept)
         Dialog.show()

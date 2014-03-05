@@ -150,9 +150,10 @@ class Scales(QAbstractTableModel):
         selectedCoordinates = self.getSelectedCoordinates()
         self.beginResetModel()
         for new_coordinate in coordinates:
-            if len(new_coordinate) == 3 and \
+            if len(new_coordinate) == 4 and \
              isinstance(new_coordinate[0], float) and \
-             isinstance(new_coordinate[1], int):
+             isinstance(new_coordinate[1], int) and \
+             isinstance(new_coordinate[3], float) :
                 self.coordinates.append(new_coordinate)
         self.endResetModel()
         self.redoSelection(selectedCoordinates)
@@ -161,6 +162,7 @@ class Scales(QAbstractTableModel):
         self.autoScroll()
 
     def addCoordinate(self,x,y,name=""):
+        selectedCoordinates = self.getSelectedCoordinates()
         if y == None:
             # y from I_SCAN, we compute the T value
             y2 = int(round(self.computeT(x)))
@@ -172,7 +174,8 @@ class Scales(QAbstractTableModel):
         self.coordinates.append(new_coordinate)
         self.coordinates = self.coordinates
         self.endResetModel()
-        self.redoSelection([new_coordinate])
+        selectedCoordinates.append(new_coordinate)
+        self.redoSelection(selectedCoordinates)
         self.app.contentModified()
         self.computePolyfit()
         self.autoScroll()
@@ -336,11 +339,6 @@ class Scales(QAbstractTableModel):
         
     def sort(self, col, order):
         self.sortCoordinates(col+1,order)
-#        self.emit(SIGNAL("layoutAboutToBeChanged()"))
-#        self.arraydata = sorted(self.arraydata, key=operator.itemgetter(Ncol))        
-#        if order == Qt.DescendingOrder:
-#            self.arraydata.reverse()
-#        self.emit(SIGNAL("layoutChanged()"))
 
        
 
