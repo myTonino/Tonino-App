@@ -113,12 +113,17 @@ class SerialPort(object):
             self.openPort(port)
         try:
             if self.SP.isOpen():
-                self.SP.flushInput()
-                self.SP.flushOutput()
+#                self.SP.flushInput()
+#                self.SP.flushOutput()
                 self.SP.write(str2cmd("\n" + command + "\n"))
-                self.SP.flush()
-                time.sleep(0.5)
-                response = cmd2str(self.SP.readline())
+#                self.SP.flush()
+                time.sleep(0.1)
+                r = self.SP.readline()
+                response = cmd2str(r)
+                if not (response and len(response) > 0):
+                    # we got an empty line, maybe the next line contains the response
+                    r = self.SP.readline()
+                    response = cmd2str(r)
                 if response and len(response) > 0:
                     # each <command> is answered by the Tonino by returning "<command>:<result>\n"
                     parts = response.split(command + self.cmdSeparatorChar)

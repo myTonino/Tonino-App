@@ -545,7 +545,7 @@ class CalibDialog(ToninoDialog):
                 raw_readings1 = raw_readings2
             if raw_readings2 == None:
                 raw_readings2 = raw_readings1
-            if raw_readings1 and raw_readings2 and len(raw_readings1)>3 and len(raw_readings2)>3:
+            if raw_readings1 and raw_readings2 and dark_readings and len(raw_readings1)>3 and len(raw_readings2)>3 and len(dark_readings)>3:
                 r = (raw_readings1[1] + raw_readings2[1]) / 2. - dark_readings[1]
                 b = (raw_readings1[3] + raw_readings2[3]) / 2. - dark_readings[3]
                 self.app.setCalibReadings(r,b)
