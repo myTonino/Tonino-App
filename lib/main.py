@@ -440,6 +440,7 @@ class Tonino(QApplication):
             obj = json.load(infile)
             infile.close()
             self.scales.applyScale(obj)
+            self.aw.updateLCDS()
             return True
         except:
             if self.aw:
@@ -457,6 +458,7 @@ class Tonino(QApplication):
         self.currentFileDirty = False
         self.currentFile = None
         self.aw.updateWindowTitle()
+        self.aw.updateLCDS()
         if len(self.scales.getCoordinates()) > 0:
             # if there is content, but unmodified we still allow Save and SaveAs
             self.aw.ui.actionSave_As.setEnabled(True)
@@ -935,7 +937,7 @@ class ApplicationWindow(QMainWindow):
         return h
     
     def updateLCDS(self):
-        if self.ui.tableView.selectionModel().selectedRows():
+        if self.ui and self.ui.tableView and self.ui.tableView.selectionModel() and self.ui.tableView.selectionModel().selectedRows():
             coordinates = self.app.scales.getSelectedCoordinates()
         else:
             coordinates = []
