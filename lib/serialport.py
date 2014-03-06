@@ -113,11 +113,11 @@ class SerialPort(object):
             self.openPort(port)
         try:
             if self.SP.isOpen():
-#                self.SP.flushInput()
-#                self.SP.flushOutput()
+                self.SP.flushInput()
+                self.SP.flushOutput()
                 self.SP.write(str2cmd("\n" + command + "\n"))
-#                self.SP.flush()
-                time.sleep(0.1)
+                self.SP.flush()
+                time.sleep(0.3)
                 r = self.SP.readline()
                 response = cmd2str(r)
                 if not (response and len(response) > 0):

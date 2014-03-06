@@ -447,7 +447,6 @@ class Tonino(QApplication):
                 QMessageBox.critical(self.aw,_translate("Message", "Error",None),_translate("Message", "Scale could not be applied",None))
             return False
     
-            
     def contentModified(self):
         self.currentFileDirty = True
         self.aw.updateWindowTitle()
@@ -548,6 +547,8 @@ class CalibDialog(ToninoDialog):
                 raw_readings1 = raw_readings2
             if raw_readings2 == None:
                 raw_readings2 = raw_readings1
+            if dark_readings == None:
+                dark_readings = [0., 0., 0., 0.]
             if raw_readings1 and raw_readings2 and dark_readings and len(raw_readings1)>3 and len(raw_readings2)>3 and len(dark_readings)>3:
                 r = (raw_readings1[1] + raw_readings2[1]) / 2. - dark_readings[1]
                 b = (raw_readings1[3] + raw_readings2[3]) / 2. - dark_readings[3]
@@ -937,31 +938,37 @@ class ApplicationWindow(QMainWindow):
         return h
     
     def updateLCDS(self):
-        if self.ui and self.ui.tableView and self.ui.tableView.selectionModel() and self.ui.tableView.selectionModel().selectedRows():
-            coordinates = self.app.scales.getSelectedCoordinates()
-        else:
-            coordinates = []
-        rawValues = [x[0] for x in coordinates]
-        self.updateAVG(rawValues)
-        self.updateSTDEV(rawValues)
-        self.updateCONF(rawValues)
+        try:
+            if self.ui and self.ui.tableView and self.ui.tableView.selectionModel() and self.ui.tableView.selectionModel().selectedRows():
+                coordinates = self.app.scales.getSelectedCoordinates()
+            else:
+                coordinates = []
+            values = [self.app.scales.computeT(x[0]) for x in coordinates]
+            self.updateAVG(values)
+            self.updateSTDEV(values)
+            self.updateCONF(values)
+        except:
+            pass
+#            import traceback
+#            traceback.print_exc(file=sys.stdout)
 
-    def updateAVG(self, rawValues):
-        if rawValues and len(rawValues) > 1:
-            self.ui.LCDavg.display("%.1f" % self.app.scales.computeT(sum(rawValues) / float(len(rawValues))))
+    def updateAVG(self, values):
+        if values and len(values) > 1:
+            avg = sum(values) / float(len(values))
+            self.ui.LCDavg.display("%.1f" % avg)
         else:
             self.ui.LCDavg.display("")
             
-    def updateSTDEV(self, rawValues):
-        if rawValues and len(rawValues) > 1:
-            stdev = np.std(np.array(rawValues),dtype=np.float64)
+    def updateSTDEV(self, values):
+        if values and len(values) > 1:
+            stdev = np.std(np.array(values),dtype=np.float64)
             self.ui.LCDstdev.display("%.1f" % stdev)
         else:
             self.ui.LCDstdev.display("")
             
-    def updateCONF(self, rawValues):
-        if rawValues and len(rawValues) > 1:
-            self.ui.LCDconf.display("%.2f" % self.mean_confidence_interval(rawValues))
+    def updateCONF(self, values):
+        if values and len(values) > 1:
+            self.ui.LCDconf.display("%.2f" % self.mean_confidence_interval(values))
         else:
             self.ui.LCDconf.display("")
         
