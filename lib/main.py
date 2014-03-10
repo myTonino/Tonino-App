@@ -953,7 +953,7 @@ class ApplicationWindow(QMainWindow):
 #            traceback.print_exc(file=sys.stdout)
 
     def updateAVG(self, values):
-        if values and len(values) > 1:
+        if values and len(values) > 0:
             avg = sum(values) / float(len(values))
             self.ui.LCDavg.display("%.1f" % avg)
         else:
