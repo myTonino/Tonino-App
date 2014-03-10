@@ -20,6 +20,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.5 Adds statistics LCDs
 - v1.0.4 Adds sorting, improved calibration and minor fixes
 - v1.0.3 Update of calibration values and ranges
 - v1.0.2 Improved calibration

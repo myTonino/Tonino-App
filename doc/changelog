@@ -1,3 +1,11 @@
+tonino (1.0.5-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.4:
+   - adds statistics LCDs
+   - improved serial communication
+   - update firmware version to 1.0.7
+ --  <dev@my-tonino.com>  Mo, 10 Mar 2014 19:32:14 +0200
+ 
 tonino (1.0.4-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.3:

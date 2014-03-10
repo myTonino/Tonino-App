@@ -97,6 +97,13 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.5 (10.3.2014)
+ - Adds statistics LCDs+   
+ - Improved serial communication
+
+v1.0.4 (4.3.2014)
+ - Adds sorting, improved calibration and minor fixes
+
 v1.0.3 (2.2.2014)
  - Update of calibration values and ranges
 
