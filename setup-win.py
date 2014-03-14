@@ -30,7 +30,9 @@ import os
 
 INCLUDES = [
             "sip",
-            "serial"
+            "serial",
+            "scipy.special._ufuncs_cxx",
+            "scipy.sparse.csgraph._validation"
             ]
 
 EXCLUDES = ['_tkagg',
