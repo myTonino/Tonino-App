@@ -47,7 +47,7 @@ except:
 #    from PyQt5.QtCore import (QCoreApplication,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent)
 
 # PyQt4:
-from PyQt4.QtGui import (QColor,QApplication,QMainWindow,QDialog,QMessageBox,QAction,QFileDialog,QIcon,QItemSelection,QItemSelectionModel,QProgressDialog,QDialogButtonBox)
+from PyQt4.QtGui import (QFont, QColor,QApplication,QMainWindow,QDialog,QMessageBox,QAction,QFileDialog,QIcon,QItemSelection,QItemSelectionModel,QProgressDialog,QDialogButtonBox)
 from PyQt4.QtCore import (QProcess,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent,Qt,pyqtSignal)
 
 
@@ -1171,6 +1171,14 @@ class ApplicationWindow(QMainWindow):
 ###########################################################################################################################################
 
 def main():
+    # font fix for OS X 10.9
+    v, _, _ = platform.mac_ver()
+    v = float('.'.join(v.split('.')[:2]))
+    if v >= 10.9:
+        # fix Mac OS X 10.9 (mavericks) font issue
+        # https://bugreports.qt-project.org/browse/QTBUG-32789
+        QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
+    
     # define app
     app = Tonino(sys.argv)
     app.setApplicationName("Tonino")                  #needed by QSettings() to store windows geometry in operating system
