@@ -48,13 +48,13 @@ except:
 
 # PyQt4:
 from PyQt4.QtGui import (QFont, QColor,QApplication,QMainWindow,QDialog,QMessageBox,QAction,QFileDialog,QIcon,QItemSelection,QItemSelectionModel,QProgressDialog,QDialogButtonBox)
-from PyQt4.QtCore import (QProcess,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent,Qt,pyqtSignal)
+from PyQt4.QtCore import (Qt,QProcess,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent,Qt,pyqtSignal)
 
 
 from lib import __version__
 import lib.serialport
 import lib.scales
-from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI
+from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, DebugDialogUI
 import uic.resources as resources
 
 
@@ -576,6 +576,51 @@ class CalibDialog(ToninoDialog):
     def close(self):
         self.reject()
 
+class DebugDialog(ToninoDialog):
+    def __init__(self, parent = None, app=None):
+        super(DebugDialog,self).__init__(parent)
+        self.setModal(True)
+        self.app = app
+        self.ui = DebugDialogUI.Ui_Dialog()
+        self.ui.setupUi(self)
+        # connect actions
+        self.ui.pushButtonScan.clicked.connect(self.scan)
+        # prepare log
+        self.ui.logOutput.setReadOnly(True)
+        self.ui.logOutput.insertPlainText("<Settings>\n")        
+        self.insertRequestResponse("TONINO")
+        self.insertRequestResponse("GETCAL")
+        self.insertRequestResponse("GETSCALING")
+        self.insertRequestResponse("GETSAMPLING")
+        self.insertRequestResponse("GETCMODE")
+        self.insertRequestResponse("GETLTDELAY")
+        self.insertRequestResponse("GETCALINIT")
+        self.insertRequestResponse("GETBRIGHTNESS")
+
+    def insertRequestResponse(self,cmd):
+        try:
+            res = self.app.ser.sendCommand(self.app.toninoPort,cmd)
+            self.ui.logOutput.insertPlainText(cmd + ":" + res + "\n")
+        except Exception as e:
+            self.ui.logOutput.insertPlainText(cmd + ": failed\n")
+            self.ui.logOutput.insertPlainText("  " + str(e) + "\n")      
+
+    def scan(self):
+        try:
+            self.ui.logOutput.insertPlainText("<Scan>\n")
+            self.insertRequestResponse("II_SCAN")
+            self.insertRequestResponse("D_SCAN")
+        except Exception as e:
+            self.ui.logOutput.insertPlainText("  " + str(e) + "\n")    
+        
+    def accept(self):
+        self.done(0)
+        
+    def reject(self):
+        self.done(0)
+    
+    def close(self):
+        self.reject()
 
 ###########################################################################################################################################
 #
@@ -606,6 +651,7 @@ class ApplicationWindow(QMainWindow):
         self.popupdelete = _translate("MainWindow","delete",None)
 
         # variables
+        self.debug = False
         self.progress = None # holds the QProgressDialog indicating the firmware update progress
         self.deviceCheckCounter = 0
         self.resetsettings = 0 # if set, settings are not loaded on app start
@@ -649,7 +695,7 @@ class ApplicationWindow(QMainWindow):
         self.ui.pushButtonDelete.clicked.connect(self.deleteCoordinates)
         self.ui.pushButtonClear.clicked.connect(self.clearCoordinates)
         self.ui.pushButtonSort.clicked.connect(self.sortCoordinates)
-        self.ui.pushButtonCalib.clicked.connect(self.showCalib)
+        self.ui.pushButtonCalib.clicked.connect(self.showDebugOrCalib)
         self.ui.degreeSlider.setTracking(False) # no valueChanged signals while moving
         self.ui.degreeSlider.valueChanged.connect(self.sliderChanged)
         self.ui.actionCut.triggered.connect(self.actionCut)
@@ -1008,16 +1054,37 @@ class ApplicationWindow(QMainWindow):
         if self.app.included_firmware_version:        
             version += " (firmware " + self.version2str(self.app.included_firmware_version,prefix="") + ")"
         ui.versionLabel.setText(version)
-        ui.pushButton.clicked.connect(Dialog.accept)
+        ui.pushButton.clicked.connect(Dialog.accept)        
+        Dialog. setContextMenuPolicy(Qt.CustomContextMenu)
+        Dialog.customContextMenuRequested.connect(lambda _: self.toggleDebug(ui))
+        if self.debug:
+            ui.nameLabel.setText(_translate("Dialog", "Tonino*", None))
         Dialog.show()
+        
+    def toggleDebug(self,ui):
+        self.debug = not self.debug
+        if self.debug:
+            ui.nameLabel.setText(_translate("Dialog", "Tonino*", None))
+        else:
+            ui.nameLabel.setText(_translate("Dialog", "Tonino", None))
         
     def showPreferences(self):
         prefs = PreferencesDialog(self,self.app)
         prefs.show()
         
+    def showDebugOrCalib(self):
+        if self.debug:
+            self.showDebug()
+        else:
+            self.showCalib()
+        
     def showCalib(self):
         self.calibs = CalibDialog(self,self.app)
         self.calibs.show()
+        
+    def showDebug(self):
+        self.debugDialog = DebugDialog(self,self.app)
+        self.debugDialog.show()
         
         
 #
