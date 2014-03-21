@@ -586,32 +586,49 @@ class DebugDialog(ToninoDialog):
         # connect actions
         self.ui.pushButtonScan.clicked.connect(self.scan)
         # prepare log
-        self.ui.logOutput.setReadOnly(True)
-        self.ui.logOutput.insertPlainText("<Settings>\n")        
+        #self.ui.logOutput.setReadOnly(True)
+        # disable elements
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.ui.pushButtonScan.setEnabled(False)
+        QTimer.singleShot(0, self.insertSettings)
+        
+    def insertSettings(self):
+        self.ui.logOutput.appendPlainText("<Settings>")
+        self.app.processEvents()      
         self.insertRequestResponse("TONINO")
+        self.app.processEvents()      
         self.insertRequestResponse("GETCAL")
+        self.app.processEvents()
         self.insertRequestResponse("GETSCALING")
+        self.app.processEvents()
         self.insertRequestResponse("GETSAMPLING")
+        self.app.processEvents()
         self.insertRequestResponse("GETCMODE")
+        self.app.processEvents()
         self.insertRequestResponse("GETLTDELAY")
+        self.app.processEvents()
         self.insertRequestResponse("GETCALINIT")
+        self.app.processEvents()
         self.insertRequestResponse("GETBRIGHTNESS")
+        self.app.processEvents()
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        self.ui.pushButtonScan.setEnabled(True)
 
     def insertRequestResponse(self,cmd):
         try:
             res = self.app.ser.sendCommand(self.app.toninoPort,cmd)
-            self.ui.logOutput.insertPlainText(cmd + ":" + res + "\n")
+            self.ui.logOutput.appendPlainText(cmd + ":" + res)
         except Exception as e:
-            self.ui.logOutput.insertPlainText(cmd + ": failed\n")
-            self.ui.logOutput.insertPlainText("  " + str(e) + "\n")      
+            self.ui.logOutput.appendPlainText(cmd + ": failed")
+            self.ui.logOutput.appendPlainText("  " + str(e))      
 
     def scan(self):
         try:
-            self.ui.logOutput.insertPlainText("<Scan>\n")
+            self.ui.logOutput.appendPlainText("<Scan>")
             self.insertRequestResponse("II_SCAN")
             self.insertRequestResponse("D_SCAN")
         except Exception as e:
-            self.ui.logOutput.insertPlainText("  " + str(e) + "\n")    
+            self.ui.logOutput.appendPlainText("  " + str(e))    
         
     def accept(self):
         self.done(0)
@@ -1239,12 +1256,15 @@ class ApplicationWindow(QMainWindow):
 
 def main():
     # font fix for OS X 10.9
-    v, _, _ = platform.mac_ver()
-    v = float('.'.join(v.split('.')[:2]))
-    if v >= 10.9:
-        # fix Mac OS X 10.9 (mavericks) font issue
-        # https://bugreports.qt-project.org/browse/QTBUG-32789
-        QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
+    try:
+        v, _, _ = platform.mac_ver()
+        v = float('.'.join(v.split('.')[:2]))
+        if v >= 10.9:
+            # fix Mac OS X 10.9 (mavericks) font issue
+            # https://bugreports.qt-project.org/browse/QTBUG-32789
+            QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
+    except:
+        pass
     
     # define app
     app = Tonino(sys.argv)
