@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import warnings
 import sys
 import os
 import platform
@@ -76,7 +76,7 @@ else:
 def dependencies_for_freezing():
     from scipy.special import _ufuncs_cxx
     from scipy.sparse.csgraph import _validation
-        
+
 
 ###########################################################################################################################################
 #
@@ -1259,6 +1259,8 @@ class ApplicationWindow(QMainWindow):
 ###########################################################################################################################################
 
 def main():
+    # suppress all warnings
+    warnings.filterwarnings('ignore')
     # font fix for OS X 10.9
     try:
         v, _, _ = platform.mac_ver()
