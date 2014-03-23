@@ -97,6 +97,10 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.6 (23.3.2014)
+ - Adds debug mode 
+ - Font fix for OS X 10.9
+
 v1.0.5 (10.3.2014)
  - Adds statistics LCDs+   
  - Improved serial communication
