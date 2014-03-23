@@ -45,6 +45,11 @@ def inBundle():
     except:
         pass
     return ib
+    
+# for bbfreeze
+def isFrozen():
+    return sys.executable.endswith("tonino")
+    
             
 # returns the path to the platform independent resources
 def getResourcePath():
@@ -52,6 +57,11 @@ def getResourcePath():
     if platform.system() == 'Darwin':
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/"
+        else:
+            res = os.path.dirname(os.path.realpath(__file__)) + "/../includes/"
+    elif platform.system() == "Linux":
+        if isFrozen():
+            res = QApplication.applicationDirPath() + "/includes/"
         else:
             res = os.path.dirname(os.path.realpath(__file__)) + "/../includes/"
     else:
@@ -69,6 +79,11 @@ def getResourceBinaryPath():
             res = QApplication.applicationDirPath() + "/../Resources/"
         else:
             res = os.path.dirname(os.path.realpath(__file__)) + "/../includes/mac/"
+    elif platform.system() == "Linux":
+        if isFrozen():
+            res = QApplication.applicationDirPath() + "/includes/linux/"
+        else:
+            res = os.path.dirname(os.path.realpath(__file__)) + "/../includes/linux/"
     else:
         if main_is_frozen():
             res = os.path.dirname(sys.executable) + "\\"
@@ -82,6 +97,11 @@ def getTranslationsPath():
     if platform.system() == 'Darwin':
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/translations/"
+        else:
+            res = os.path.dirname(os.path.realpath(__file__)) + "/../translations/"
+    elif platform.system() == "Linux":
+        if isFrozen():
+            res = QApplication.applicationDirPath() + "/translations/"
         else:
             res = os.path.dirname(os.path.realpath(__file__)) + "/../translations/"
     else:
@@ -98,6 +118,11 @@ def getSystemTranslationsPath():
     if platform.system() == 'Darwin':
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/translations/"
+        else:
+            res = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+    elif platform.system() == "Linux":
+        if isFrozen():
+            res = QApplication.applicationDirPath() + "/translations/"
         else:
             res = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
     else:
