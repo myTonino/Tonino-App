@@ -72,6 +72,10 @@ if sys.version < '3':
 else:
     def u(x): # convert to unicode string
         return str(x)
+
+def dependencies_for_freezing():
+    from scipy.special import _ufuncs_cxx
+    from scipy.sparse.csgraph import _validation
         
 
 ###########################################################################################################################################
