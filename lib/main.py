@@ -105,10 +105,10 @@ class Tonino(QApplication):
         self.std_calib_target_low = 1.5
         self.std_calib_target_high = 3.7
         # the tolerance distance of the calib measurements to the expected values above that still allow the recognition
-        self.calib_red_range_low = 1200
-        self.calib_red_range_high = 4200
-        self.calib_blue_range_low = 750
-        self.calib_blue_range_high = 1450
+        self.calib_red_range_low = 1300
+        self.calib_red_range_high = 4300
+        self.calib_blue_range_low = 800
+        self.calib_blue_range_high = 1550
         
         # variables
         self.workingDirectory = None
