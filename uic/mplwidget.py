@@ -34,7 +34,7 @@ class MplCanvas(FigureCanvas):
     def __init__(self,app):
         self.app = app
         
-        self.x_min = 1.704 # minimum raw Tonino value to be drawn
+        self.x_min = 1.4 # minimum raw Tonino value to be drawn
         self.x_max = 2.95 # maximum raw Tonino value to be drawn
         self.x_step = 0.01
 
