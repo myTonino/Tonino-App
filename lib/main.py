@@ -907,6 +907,9 @@ class ApplicationWindow(QMainWindow):
             file_suffix = qfile.suffix()
             if file_suffix == self.toninoFileExtension:
                 self.app.applyScale(filename)
+                self.app.recentFiles.insert(0, filename)
+                del self.app.recentFiles[self.app.maxRecentFiles:]
+                self.updateRecentFileActions()
            
     def openFile(self):
         self.loadFile(self.fileDialog(_translate("Dialog","Open Scale",None),ffilter=self.toninoFileFilter))
