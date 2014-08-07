@@ -30,19 +30,22 @@ o SIP 4.15.3
 o PyQt 4.10.3 (matplotlib does not yet support PyQt5)
 o numpy 1.8.0
 o scipy 0.13.3
-o distribute 0.6.45
 o matplotlib 1.3.1
 o Arduino 1.4.5
-o phyobjc 2.5.1
-
-o distribute 0.6.49 (v0.7.3 breaks the matplotlib build)
-o altgraph (trunk 1.8.2013)
-o modulgraph (trunk 1.8.2013)
-o py2app 0.8
+o pyobjc 2.5.1
+o py2app 0.9
 
 
 Upgrade History:
 
+- 2014-08-06
+ . Python 3.3.3 => 3.4.1
+ . QT 4.8.5 => 4.8.6
+ . SIP 4.15.3 => 4.16.2
+ . PyQt 4.10.3 => 4.11.1
+ . numpy 1.8.0 => 1.8.1
+ . scipy 0.13.3 => 0.14.0
+ . py2app 0.8 => 0.9
 - 2013-03-17
  . scipy 0.13.1 => 0.13.3
 - 2014-02-24
@@ -118,6 +121,8 @@ download and install (v4.x.y, OS X 10.6+, Cocoa, 64bit only)
 # make
 # sudo make install
 
+NOTE: there shouldn't be any space in the install directory path, otherwise configure will fail
+
 
 7) Install Numpy
 
@@ -135,6 +140,12 @@ to reduce the size of the final app package remove unused components
 # sudo rm -rf /Library/Frameworks/Python.framework/Versions/3.3/lib/python3.3/site-packages/numpy/doc
 
 
+Install from a wheel package (here v1.8.1 for Python3.4:
+
+# pip3.4 install ./numpy-1.8.1-cp34-cp34m-macosx_10_6_intel.whl
+
+
+
 8) scipy from git source
 
 # cd scipy
@@ -144,7 +155,7 @@ to reduce the size of the final app package remove unused components
 NOTE: always remove the build directory completely before recompiling
 
 
-9) distribute
+9) distribute (automatically installed with matplotlib)
 
 # python3 setup.py build
 # sudo python3 setup.py install
@@ -188,11 +199,11 @@ download matplotlib-1.3.x.tar.gz
 
 NOTE: to clean build dir use "python3 setup.py clean --all"
 
-11) altgraph
+11) altgraph (automatically installed with py2app below)
 
 # hg clone https://bitbucket.org/ronaldoussoren/altgraph
 
-12) modulegraph
+12) modulegraph (automatically installed with py2app below)
 
 # hg clone https://bitbucket.org/ronaldoussoren/modulegraph
 
@@ -244,3 +255,10 @@ c) install pyobjc-framework-Quartz
 
 # python setup.py build
 # sudo python setup.py install
+
+ALTERNATIVE PIP INSTALL
+
+# env CC=clang pip3.4 install -U pyobjc-core==2.5.1
+# env CC=clang pip3.4 install -U pyobjc-framework-Cocoa==2.5.1
+# env CC=clang pip3.4 install -U pyobjc-framework-Quartz==2.5.1
+

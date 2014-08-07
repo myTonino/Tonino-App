@@ -73,17 +73,17 @@
 	</array>
 	<key>PyRuntimeLocations</key>
 	<array>
-		<string>@executable_path/../Frameworks/Python.framework/Versions/3.3/Python</string>
+		<string>@executable_path/../Frameworks/Python.framework/Versions/3.4/Python</string>
 	</array>
 	<key>PythonInfoDict</key>
 	<dict>
 		<key>PythonExecutable</key>
-		<string>/Library/Frameworks/Python.framework/Versions/3.3/Resources/Python.app/Contents/MacOS/Python</string>
+		<string>/Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4</string>
 		<key>PythonLongVersion</key>
-		<string>Python 3.3.2 (v3.3.2:d047928ae3f6, May 13 2013, 13:52:24) 
+		<string>3.4.1 (v3.4.1:c0e311e010fc, May 18 2014, 00:54:21) 
 [GCC 4.2.1 (Apple Inc. build 5666) (dot 3)]</string>
 		<key>PythonShortVersion</key>
-		<string>3.3</string>
+		<string>3.4</string>
 		<key>py2app</key>
 		<dict>
 			<key>alias</key>
@@ -91,8 +91,9 @@
 			<key>template</key>
 			<string>app</string>
 			<key>version</key>
-			<string>0.8</string>
+			<string>0.9</string>
 		</dict>
 	</dict>
+
 </dict>
 </plist>

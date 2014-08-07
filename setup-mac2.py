@@ -93,7 +93,7 @@ plist.update({ 'CFBundleDisplayName': 'Tonino',
   
 OPTIONS = {
     'strip':True,
-    'argv_emulation': True,
+    'argv_emulation': False,
     'semi_standalone': False,
     'site_packages': True,
 #    'packages': ['matplotlib'], # adds full package to Resources/lib/python3.3/matplotlib

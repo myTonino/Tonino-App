@@ -98,6 +98,8 @@ class Tonino(QApplication):
         self.included_firmware_version = None # a list of three int indicating major, minor and build versions of the included firmware
         
         # calib constants
+        self.calib_dark_scan = False
+        self.clib_double_scan = False
         self.std_calib_low_r = 2320. # brown disk red reading
         self.std_calib_low_b = 1470. # brown disk blue reading
         self.std_calib_high_r = 11300. # red disk red reading
@@ -120,7 +122,7 @@ class Tonino(QApplication):
         self.toninoPort = None # port of the connected Tonino
         self.toninoFirmwareVersion = None # a list of three int indicating major, minor and build versions of the connected device
         self.toninoControllerType = None # the type of the Tonino micro controller (Arduino Nano, Micro,..)
-        self.scales = lib.scales.Scales(self)
+        self.scales = lib.scales.Scales(self,self)
         self.ser = lib.serialport.SerialPort() # the serial connection object
         # calibration raw readings
         self.calib_low_r = None
@@ -542,11 +544,17 @@ class CalibDialog(ToninoDialog):
 
     def scan(self):
         try:
-            raw_readings1 = self.app.getRawReadings(self.app.toninoPort)
-            time.sleep(.75)
-            dark_readings = self.app.getBlackReadings(self.app.toninoPort)
-            time.sleep(.75)
-            raw_readings2 = self.app.getRawReadings(self.app.toninoPort)
+            raw_readings1 = self.app.getRawReadings(self.app.toninoPort)            
+            if self.app.calib_dark_scan:
+                time.sleep(.75)
+                dark_readings = self.app.getBlackReadings(self.app.toninoPort)
+            else:
+                dark_readings = None            
+            if self.app.clib_double_scan:        
+                time.sleep(.75)
+                raw_readings2 = self.app.getRawReadings(self.app.toninoPort)
+            else:
+                raw_readings2 = None
             if raw_readings1 == None:
                 raw_readings1 = raw_readings2
             if raw_readings2 == None:
@@ -735,7 +743,7 @@ class ApplicationWindow(QMainWindow):
         # connect coordinates table view to model
         self.ui.tableView.setModel(self.app.scales)
         self.ui.tableView.setColumnWidth(0,50)
-        self.ui.tableView.setItemDelegate(lib.scales.ValidatedItemDelegate())
+        self.ui.tableView.setItemDelegate(lib.scales.ValidatedItemDelegate(self.ui.tableView))
         
         # connect the table selection
         self.ui.tableView.selectionModel().selectionChanged.connect(self.selectionChanged)
@@ -1155,7 +1163,7 @@ class ApplicationWindow(QMainWindow):
         return self.app.toninoPort
 
     def checkFirmwareVersion(self):
-        if self.app.versionGT(self.app.included_firmware_version,self.app.toninoFirmwareVersion):
+        if self.debug or self.app.versionGT(self.app.included_firmware_version,self.app.toninoFirmwareVersion):
             msgBox = QMessageBox(self)
             msgBox.setText(_translate("Dialog","The Tonino firmware is outdated!",None))
             msgBox.setInformativeText(_translate("Dialog","Do you want to update to %s?",None)%self.version2str(self.app.included_firmware_version))
