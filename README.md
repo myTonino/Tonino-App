@@ -20,6 +20,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.7 Simplified calibration and bugfixes
 - v1.0.6 Adds debug mode and provides font fix for OS X 10.9
 - v1.0.5 Adds statistics LCDs
 - v1.0.4 Adds sorting, improved calibration and minor fixes

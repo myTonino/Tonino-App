@@ -1,10 +1,37 @@
+tonino (1.0.7-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.6:
+   - updated build environment
+   - updated calib ranges
+   - simplified calibration
+   - forced firmware updates in debug mode
+   - minor bug fixes
+   - update firmware version to 1.0.9
+ --  <dev@my-tonino.com>  Thu, 14 Aug 2014 19:32:14 +0200
+
+tonino (1.0.6-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.5:
+   - adds debug mode
+   - font fix for OS X 10.9
+   - update firmware version to 1.0.8
+ --  <dev@my-tonino.com>  Sun, 23 Mar 2014 19:32:14 +0200
+ 
+tonino (1.0.5-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.4:
+   - adds statistics LCDs
+   - improved serial communication
+   - update firmware version to 1.0.7
+ --  <dev@my-tonino.com>  Mo, 10 Mar 2014 19:32:14 +0200
+ 
 tonino (1.0.4-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.3:
    - adds sorting
    - updated calibration process
    - update firmware version
- --  <dev@my-tonino.com>  Wed, 5 Feb 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Tue, 4 Mar 2014 19:32:14 +0200
  
 tonino (1.0.3-1) precise; urgency=low
   * new upstream release
