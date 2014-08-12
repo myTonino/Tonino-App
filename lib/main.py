@@ -666,6 +666,9 @@ class ApplicationWindow(QMainWindow):
         self.ui = MainWindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
         self.app.aw = self
+        
+        # reinitialize QAbstractTable model to ensure the tables parent is initialized to the main window
+        self.app.scales = lib.scales.Scales(self.app,self)
 
         # constants
         self.toninoFileExtension = "toni"

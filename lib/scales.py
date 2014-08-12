@@ -127,7 +127,7 @@ class Scales(QAbstractTableModel):
         self.app.contentModified()
         
     def redoSelection(self,selectedCoordinates):
-        selection = QItemSelection(self)
+        selection = QItemSelection()
         for i,c in enumerate(self.coordinates):
             if c in selectedCoordinates:
                 selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.Select)
@@ -274,7 +274,7 @@ class Scales(QAbstractTableModel):
             self.coordinates[row][1] = int(c1)
             self.endResetModel()
             self.computePolyfit()
-            selection = QItemSelection(self)
+            selection = QItemSelection()
             for i,c in enumerate(self.coordinates):
                 if c in selectedCoordinates:
                     selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.Select)
