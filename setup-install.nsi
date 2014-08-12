@@ -229,7 +229,6 @@ Section Uninstall
   Delete "$INSTDIR\tonino_doc.ico"
   Delete "$INSTDIR\qt.conf"
   Delete "$INSTDIR\vcredist_x86.exe"
-  Delete "$INSTDIR\CDM20830_Setup.exe"
   Delete "$INSTDIR\avrdude.conf"
   Delete "$INSTDIR\avrdude.exe"
   Delete "$INSTDIR\*.hex"
