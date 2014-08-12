@@ -1,3 +1,14 @@
+tonino (1.0.7-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.6:
+   - updated build environment
+   - updated calib ranges
+   - simplified calibration
+   - forced firmware updates in debug mode
+   - minor bug fixes
+   - update firmware version to 1.0.9
+ --  <dev@my-tonino.com>  Thu, 14 Aug 2014 19:32:14 +0200
+
 tonino (1.0.6-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.5:

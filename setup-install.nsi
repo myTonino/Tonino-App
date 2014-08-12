@@ -95,7 +95,7 @@ RequestExecutionLevel admin
 !define py2exeOutputDir 'dist'
 !define PRODUCT_NAME "Tonino"
 !define PRODUCT_EXE "tonino.exe"
-!define PRODUCT_VERSION "1.0.6.0"
+!define PRODUCT_VERSION "1.0.7.0"
 !define PRODUCT_PUBLISHER "Marko Luther, Paul Holleis"
 !define PRODUCT_WEB_SITE "http://my-tonino.com"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_EXE}"
@@ -178,9 +178,9 @@ Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC02
 ExecWait '$INSTDIR\vcredist_x86.exe /q:a /c:"VCREDI~3.EXE /q:a /c:""msiexec /i vcredist.msi /qn"" "'
 SectionEnd
 
-Section "FTDI Drivers" SEC03
-ExecWait '$INSTDIR\CDM20830_Setup.exe /q:a /c:"CDM208~3.EXE /q:a /c:""msiexec /i ftdiinstall.msi /qn"" "'
-SectionEnd
+; Section "FTDI Drivers" SEC03
+; ExecWait '$INSTDIR\CDM20830_Setup.exe /q:a /c:"CDM208~3.EXE /q:a /c:""msiexec /i ftdiinstall.msi /qn"" "'
+; SectionEnd
 
 Section -AdditionalIcons
   SetShellVarContext all

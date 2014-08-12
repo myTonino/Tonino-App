@@ -734,7 +734,7 @@ class ApplicationWindow(QMainWindow):
         # enable buttons
         self.ui.pushButtonDelete.setEnabled(False)
         
-        # initalize dirty state        
+        # initalize dirty state
         self.app.contentCleared()
         
         # move slider
