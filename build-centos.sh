@@ -21,7 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-QT=/usr/local/Trolltech/Qt-4.8.5/
+QT=/usr/local/Trolltech/Qt-4.8.6/
 
 # ui
 find ui -iname "*.ui" | while read f
