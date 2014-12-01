@@ -748,6 +748,8 @@ class ApplicationWindow(QMainWindow):
         self.ui.tableView.setColumnWidth(0,50)
         self.ui.tableView.setItemDelegate(lib.scales.ValidatedItemDelegate(self.ui.tableView))
         
+#        self.ui.tableView.setSizePolicy(QSizePolicy.MinimumExpanding,QSizePolicy.MinimumExpanding)
+        
         # connect the table selection
         self.ui.tableView.selectionModel().selectionChanged.connect(self.selectionChanged)
                 

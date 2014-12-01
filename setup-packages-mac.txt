@@ -23,21 +23,27 @@
 Current Versions:
 
 o XCode 4.6.3 + command line tools
-o Python 3.4.1
+o Python 2.7.8 / 3.4.1
 o pyserial 2.7
 o QT 4.8.6 (v5.1.1 has mouse drag issues on OS X and translations fail)
-o SIP 4.16.2
-o PyQt 4.11.1 (matplotlib does not yet support PyQt5)
-o numpy 1.8.2
+o SIP 4.16.4
+o PyQt 4.11.3 (matplotlib does not yet support PyQt5)
+o numpy 1.9.1
 o scipy 0.14.0
-o matplotlib 1.3.1
+o matplotlib 1.4.2
 o Arduino 1.4.5
 o pyobjc 2.5.1
 o py2app 0.9
 
 
 Upgrade History:
-
+- 2014-10-30
+ . Python 2.7.6 => 2.7.8
+ . Qt 4.8.5 => 4.8.6
+ . SIP 4.16.2 => 4.16.4
+ . PyQt 4.11.1 => 4.11.3
+ . numpy 1.8.2 => 1.9.1
+ . matplotlib 1.3.1 => 1.4.2
 - 2014-08-06
  . Python 3.3.3 => 3.4.1
  . QT 4.8.5 => 4.8.6

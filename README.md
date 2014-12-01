@@ -16,10 +16,11 @@ Tonino Resources
 - [Tonino firmware](https://github.com/myTonino/Tonino-Firmware)
 - [Tonino serial protocol](https://github.com/myTonino/Tonino-Firmware/blob/master/Tonino-Serial.md)
 - [Tonino hardware](https://github.com/myTonino/Tonino-Hardware)
-- Tonino example scales: [tonino-scales.zip](https://github.com/myTonino/Tonino-App/releases/download/v1.0.6/tonino-scales.zip)  (1.8Kb)
+- Tonino example scales: [tonino-scales.zip](https://github.com/myTonino/Tonino-App/releases/download/v1.0.8/tonino-scales.zip)  (1.8Kb)
 
 Version History
 ---------------
+- v1.0.8 Updated firmware to v1.1.1
 - v1.0.7 Simplified calibration and bugfixes
 - v1.0.6 Adds debug mode and provides font fix for OS X 10.9
 - v1.0.5 Adds statistics LCDs
