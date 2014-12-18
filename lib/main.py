@@ -296,6 +296,13 @@ class Tonino(QApplication):
         avrdudeconf = resourceBinaryPath + self.avrdude_conf
         toninoSketch = resourcePath + self.included_firmware_name
         args = ["-C",avrdudeconf,"-q","-q","-patmega328p","-carduino","-P",self.toninoPort,"-b57600","-D","-Uflash:w:" + u(toninoSketch) + ":i"]
+        # -s : Disable safemode prompting
+        # -V : Disable automatic verify check when uploading data
+        # -v : Enable verbose output. More -v options increase verbosity level.
+        # -q : Disable (or quell) output of the progress bar while reading or writing to the device. Specify it a second time for even quieter operation.
+        # -l : logfile
+        # -F : Ignore signature check
+                
         process = QProcess(self)
         process.finished.connect(self.uploadFirmwareDone)
         process.start(avrdude,args)
@@ -308,6 +315,7 @@ class Tonino(QApplication):
         else:
             self.aw.showMessage(_translate("Message","Firmware successfully updated",None),msecs=10000)
         self.aw.endprogress.emit()
+        time.sleep(2)
         
     # requests version string from connected Tonino
     # returns None if communication fails and the version object (a list of three integers: major, minor, build) otherwise
@@ -1132,7 +1140,7 @@ class ApplicationWindow(QMainWindow):
         if self.app.toninoPort:
             # disconnect established serial connection
             self.app.ser.closePort()
-        self.app.resetArduino()
+#        self.app.resetArduino() # not needed as done by the avrdude cmd
         self.app.uploadFirmware()
         self.disconnectTonino()
 
@@ -1281,7 +1289,11 @@ def main():
     try:
         v, _, _ = platform.mac_ver()
         v = float('.'.join(v.split('.')[:2]))
-        if v >= 10.9:
+        if v >= 10.10:
+            # fix Mac OS X 10.10 (Yosemite) font issue
+            # https://bugreports.qt-project.org/browse/QTBUG-40833
+            QFont.insertSubstitution(".Helvetica Neue DeskInterface", "Helvetica Neue")
+        elif v >= 10.9:
             # fix Mac OS X 10.9 (mavericks) font issue
             # https://bugreports.qt-project.org/browse/QTBUG-32789
             QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")

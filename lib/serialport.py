@@ -152,14 +152,14 @@ class SerialPort(object):
             # TODO: this might crash on Linux (test!)
             return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=1027,pid=24577))
         
-    def sendReset(self,port):
-        if not self.SP.isOpen():
-            self.openPort(port)
-        try:
-            if self.SP.isOpen():
-                self.SP.setDTR(0)
-                time.sleep(0.1)
-                self.SP.setDTR(1)
-                self.closePort()
-        except:
-            self.closePort()
+#    def sendReset(self,port):
+#        if not self.SP.isOpen():
+#            self.openPort(port)
+#        try:
+#            if self.SP.isOpen():
+#                self.SP.setDTR(0)
+#                time.sleep(0.1)
+#                self.SP.setDTR(1)
+#                self.closePort()
+#        except:
+#            self.closePort()
