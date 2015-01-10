@@ -23,7 +23,7 @@
 Current Versions:
 
 o XCode 4.6.3 + command line tools
-o Python 2.7.8 / 3.4.1
+o Python 2.7.9 / 3.4.1
 o pyserial 2.7
 o QT 4.8.6 (v5.1.1 has mouse drag issues on OS X and translations fail)
 o SIP 4.16.4
@@ -37,6 +37,9 @@ o py2app 0.9
 
 
 Upgrade History:
+
+- 2014-12-31
+ . Python 2.7.8 => 2.7.9
 - 2014-10-30
  . Python 2.7.6 => 2.7.8
  . Qt 4.8.5 => 4.8.6

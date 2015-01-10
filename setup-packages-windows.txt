@@ -23,7 +23,7 @@
 Current Versions:
 
 o Qt 4.8.6
-o Python 2.7.8 (py2exe does not yet supports Python 3.3)
+o Python 2.7.9
 o pyserial 2.7
 o PyQt 4.11.3
 o numpy 1.9.1
@@ -39,6 +39,8 @@ o NSIS 2.46
 
 Upgrade History:
 
+- 2014-12-31
+ . Python 2.7.8 => 2.7.9
 - 2014-10-30
  . Python 2.7.6 => 2.7.8
  . Qt 4.8.5 => 4.8.6
