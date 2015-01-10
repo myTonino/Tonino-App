@@ -100,6 +100,14 @@ The Tonino app uses the following libraries in unmodified forms:
 VERSION HISTORY
 
 
+v1.0.0 (10.1.2015)
+ - Font fix for OS X 10.10
+ - Bug fixes and minor improvements
+
+v1.0.8 (14.8.2014)
+ - Updated firmware to v1.1.1
+ - Bug fixes and minor improvements
+
 v1.0.7 (14.8.2014)
  - Simplified calibration
  - Bug fixes and minor improvements
