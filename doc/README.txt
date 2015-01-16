@@ -100,7 +100,7 @@ The Tonino app uses the following libraries in unmodified forms:
 VERSION HISTORY
 
 
-v1.0.0 (10.1.2015)
+v1.0.9 (10.1.2015)
  - Font fix for OS X 10.10
  - Bug fixes and minor improvements
 

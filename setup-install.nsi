@@ -247,6 +247,7 @@ Section Uninstall
   RMDir /r "$INSTDIR\lib"
   RMDir /r "$INSTDIR\mpl-data"
   RMDir /r "$INSTDIR\translations"
+  RMDir /r "$INSTDIR\scales"
   RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
   RMDir "$INSTDIR"
   
