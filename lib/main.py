@@ -1100,7 +1100,7 @@ class ApplicationWindow(QMainWindow):
             version += " (firmware " + self.version2str(self.app.included_firmware_version,prefix="") + ")"
         ui.versionLabel.setText(version)
         ui.pushButton.clicked.connect(Dialog.accept)        
-        Dialog. setContextMenuPolicy(Qt.CustomContextMenu)
+        Dialog.setContextMenuPolicy(Qt.CustomContextMenu)
         Dialog.customContextMenuRequested.connect(lambda _: self.toggleDebug(ui))
         if self.debug:
             ui.nameLabel.setText(_translate("Dialog", "Tonino*", None))
