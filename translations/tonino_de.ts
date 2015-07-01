@@ -13,22 +13,22 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="952"/>
+        <location filename="../lib/main.py" line="955"/>
         <source>Save As</source>
         <translation>Speichern unter</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1262"/>
+        <location filename="../lib/main.py" line="1265"/>
         <source>Do you want to save your changes?</source>
         <translation>Wollen Sie die Änderungen speichern?</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1261"/>
+        <location filename="../lib/main.py" line="1264"/>
         <source>The scale has been modified.</source>
         <translation>Die Skala wurde geändert.</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1182"/>
+        <location filename="../lib/main.py" line="1185"/>
         <source>Do you want to update to %s?</source>
         <translation>Wollen Sie auf Version %s aktualisieren?</translation>
     </message>
@@ -38,17 +38,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="936"/>
+        <location filename="../lib/main.py" line="939"/>
         <source>Open Scale</source>
         <translation>Skala öffnen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="960"/>
+        <location filename="../lib/main.py" line="963"/>
         <source>Apply Scale</source>
         <translation>Skala anwenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1181"/>
+        <location filename="../lib/main.py" line="1184"/>
         <source>The Tonino firmware is outdated!</source>
         <translation>Die Tonino Firmware ist veraltet!</translation>
     </message>
@@ -68,7 +68,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1112"/>
+        <location filename="../lib/main.py" line="1115"/>
         <source>Tonino*</source>
         <translation></translation>
     </message>
@@ -76,37 +76,37 @@
 <context>
     <name>MAC_APPLICATION_MENU</name>
     <message>
-        <location filename="../lib/main.py" line="768"/>
+        <location filename="../lib/main.py" line="771"/>
         <source>Services</source>
         <translation>Dienste</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="769"/>
+        <location filename="../lib/main.py" line="772"/>
         <source>Hide %1</source>
         <translation>%1 ausblenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="770"/>
+        <location filename="../lib/main.py" line="773"/>
         <source>Hide Others</source>
         <translation>Andere ausblenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="771"/>
+        <location filename="../lib/main.py" line="774"/>
         <source>Show All</source>
         <translation>Alle anzeigen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="772"/>
+        <location filename="../lib/main.py" line="775"/>
         <source>Preferences...</source>
         <translation>Einstellungen...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="773"/>
+        <location filename="../lib/main.py" line="776"/>
         <source>Quit %1</source>
         <translation>%1 beenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="774"/>
+        <location filename="../lib/main.py" line="777"/>
         <source>About %1</source>
         <translation>Über %1</translation>
     </message>
@@ -209,17 +209,17 @@
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="689"/>
+        <location filename="../lib/main.py" line="692"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="690"/>
+        <location filename="../lib/main.py" line="693"/>
         <source>add</source>
         <translation>hinzufügen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="691"/>
+        <location filename="../lib/main.py" line="694"/>
         <source>delete</source>
         <translation>löschen</translation>
     </message>
@@ -307,17 +307,17 @@
 <context>
     <name>Message</name>
     <message>
-        <location filename="../lib/main.py" line="461"/>
+        <location filename="../lib/main.py" line="464"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="428"/>
+        <location filename="../lib/main.py" line="431"/>
         <source>Scale could not be loaded</source>
         <translation>Skala konnte nicht geöffnet werden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="447"/>
+        <location filename="../lib/main.py" line="450"/>
         <source>Scale could not be saved</source>
         <translation>Skala konnte nicht gespeichert werden</translation>
     </message>
@@ -332,37 +332,37 @@
         <translation>Die Firmware wurde aktualisiert</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1163"/>
+        <location filename="../lib/main.py" line="1166"/>
         <source>Connecting...</source>
         <translation>Verbinden...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1205"/>
+        <location filename="../lib/main.py" line="1208"/>
         <source>Connected to Tonino</source>
         <translation>Verbunden mit Tonino</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="806"/>
+        <location filename="../lib/main.py" line="809"/>
         <source>Updating firmware...</source>
         <translation>Die Firmware wird aktualisiert...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="974"/>
+        <location filename="../lib/main.py" line="977"/>
         <source>Tonino reset to defaults</source>
         <translation>Werkseinstellung wiederhergestellt</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="996"/>
+        <location filename="../lib/main.py" line="999"/>
         <source>Coordinate out of range</source>
         <translation>Koordinate außerhalb des erlaubten Bereichs</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="981"/>
+        <location filename="../lib/main.py" line="984"/>
         <source>Scale uploaded</source>
         <translation>Skala übertragen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="461"/>
+        <location filename="../lib/main.py" line="464"/>
         <source>Scale could not be applied</source>
         <translation>Skala konnte nicht angewendet werden</translation>
     </message>
@@ -382,12 +382,12 @@
         <translation>Kalibrierung aktualisiert</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1195"/>
+        <location filename="../lib/main.py" line="1198"/>
         <source>Not connected</source>
         <translation>Nicht Verbunden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1209"/>
+        <location filename="../lib/main.py" line="1212"/>
         <source>Scale could not be retrieved</source>
         <translation>Skala konnte nicht empfangen werden</translation>
     </message>
@@ -418,37 +418,37 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../lib/main.py" line="776"/>
+        <location filename="../lib/main.py" line="779"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="777"/>
+        <location filename="../lib/main.py" line="780"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="779"/>
+        <location filename="../lib/main.py" line="782"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="780"/>
+        <location filename="../lib/main.py" line="783"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="781"/>
+        <location filename="../lib/main.py" line="784"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="782"/>
+        <location filename="../lib/main.py" line="785"/>
         <source>Abort</source>
         <translation>Abort</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="778"/>
+        <location filename="../lib/main.py" line="781"/>
         <source>Don&apos;t Save</source>
         <translation>Nicht speichern</translation>
     </message>

@@ -330,7 +330,10 @@ class Tonino(QApplication):
                 time.sleep(.1) # if device is already connected it should be already starting up
             else:
                 time.sleep(.8) # wait a moment until the Arduino allows to open the port and finished its serial device init
-            self.ser.openPort(port) # on Mac OS X this will trigger an Arduino reset
+            try:
+                self.ser.openPort(port) # on Mac OS X this will trigger an Arduino reset
+            except:
+                pass
             if onStartup:
                 time.sleep(2.5)  # wait a second until the Arduino Nano did a reset
             else:
@@ -1288,12 +1291,15 @@ def main():
     # font fix for OS X 10.9
     try:
         v, _, _ = platform.mac_ver()
-        v = float('.'.join(v.split('.')[:2]))
-        if v >= 10.10:
+        #v = float('.'.join(v.split('.')[:2]))
+        v = v.split('.')[:2]
+        major = int(v[0])
+        minor = int(v[1])
+        if major >= 10 and minor >= 10: #v >= 10.10:
             # fix Mac OS X 10.10 (Yosemite) font issue
             # https://bugreports.qt-project.org/browse/QTBUG-40833
             QFont.insertSubstitution(".Helvetica Neue DeskInterface", "Helvetica Neue")
-        elif v >= 10.9:
+        if major >= 10 and minor >= 9: #v >= 10.9:
             # fix Mac OS X 10.9 (mavericks) font issue
             # https://bugreports.qt-project.org/browse/QTBUG-32789
             QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
