@@ -23,11 +23,11 @@
 Current Versions:
 
 o XCode 4.6.3 + command line tools
-o Python 2.7.10 / 3.4.4
+o Python 2.7.10 / 3.4.
 o pyserial 2.7
-o QT 5.4.2
-o SIP 4.16.7
-o PyQt 4.11.4
+o QT 5.5.0
+o SIP 4.16.8
+o PyQt 4.11.4 / PyQt 5.5.0
 o numpy 1.9.2
 o scipy 0.15.1
 o matplotlib 1.4.3
@@ -38,7 +38,9 @@ o py2app 0.9
 
 Upgrade History:
 
-
+- 2015-08-09
+ . Qt 5.4.2 => 5.50
+ . PyQt 5.5.0
 - 2015-06-14
  . QT 5.4.2
  . PyQt 4.11.3 trunk 31.5.2015 => 4.11.4

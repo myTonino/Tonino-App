@@ -21,13 +21,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-QT=/usr/local/Trolltech/Qt-4.8.6/
+QT=/usr/local/Qt-5.4.2/
 
 # ui
 find ui -iname "*.ui" | while read f
 do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
+# PyQt5
+#    pyuic5 -o uic/${fn}.py --from-imports ui/${fn}.ui
+# PyQt4
     pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui 
 done
 
@@ -36,10 +39,16 @@ find qrc -iname "*.qrc" | while read f
 do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
+# PyQt5
+#    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
+# PyQt4
     pyrcc4 -o uic/${fn}_rc.py qrc/${fn}.qrc 
 done
 
 # translations
+# PyQt5
+#pylupdate5 conf/tonino.pro
+# PyQt4
 pylupdate4 conf/tonino.pro
 lrelease -verbose conf/tonino.pro
 
@@ -65,6 +74,7 @@ mkdir dist/Resources
 mkdir dist/Resources/qt_plugins
 mkdir dist/Resources/qt_plugins/imageformats
 mkdir dist/Resources/qt_plugins/iconengines
+mkdir dist/Resources/qt_plugins/platforms
 mkdir dist/includes
 mkdir dist/includes/linux
 cp includes/tonino-*.hex dist/includes
@@ -75,6 +85,8 @@ cp $QT/plugins/imageformats/libqgif.so dist/Resources/qt_plugins/imageformats
 patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/imageformats/libqgif.so
 cp $QT/plugins/iconengines/libqsvgicon.so dist/Resources/qt_plugins/iconengines
 patchelf --set-rpath '/../../..${ORIGIN}:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/iconengines/libqsvgicon.so
+cp $QT/plugins/platforms/libqxcb.so dist/Resources/qt_plugins/platforms
+patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/platforms/libqxcb.so
 cp conf/qt.conf dist
 mkdir dist/translations
 cp translations/*.qm dist/translations

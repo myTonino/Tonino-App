@@ -22,8 +22,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import QLibraryInfo
+try:
+    from PyQt5.QtCore import QLibraryInfo
+    pyqtversion = 5
+except:
+    pyqtversion = 4
+
+# PyQt4:
+if pyqtversion < 5:    
+    from PyQt4.QtGui import QApplication
+    from PyQt4.QtCore import QLibraryInfo
+# PyQt5:
+else:
+    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtCore import QLibraryInfo
+    
 import platform
 import os
 import sys

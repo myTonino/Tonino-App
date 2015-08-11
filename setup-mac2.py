@@ -26,7 +26,7 @@ from distutils import sysconfig
 their_parse_makefile = sysconfig.parse_makefile
 def my_parse_makefile(filename, g):
     their_parse_makefile(filename, g)
-    g['MACOSX_DEPLOYMENT_TARGET'] = '10.6'
+    g['MACOSX_DEPLOYMENT_TARGET'] = '10.7'
 sysconfig.parse_makefile = my_parse_makefile
 
 import sys, os
@@ -43,8 +43,12 @@ import lib
 VERSION = lib.__version__
 LICENSE = 'GNU General Public License (GPL)'
 
-
-QTDIR = r'/Developer/Applications/Qt/'
+#Qt4:
+#QTDIR = r'/Developer/Applications/Qt/'
+# Qt5:
+from os.path import expanduser
+HOME = expanduser("~")
+QTDIR = HOME + r'/Qt5.5.0/5.5/clang_64/'
 
 APP = ['tonino.py']
 
@@ -61,6 +65,8 @@ DATA_FILES = [
     "doc/LICENSE.txt",
     ("../Resources/qt_plugins/iconengines", [QTDIR + r'/plugins/iconengines/libqsvgicon.dylib']),
     ("../Resources/qt_plugins/imageformats", [QTDIR + r'/plugins/imageformats/libqsvg.dylib']),
+# Qt5 only:
+    ("../Resources/qt_plugins/platforms", [QTDIR + r'/plugins/platforms/libqcocoa.dylib']),
 # standard QT translation needed to get the Application menu bar and 
 # the standard dialog elements translated
     ("../Resources/translations", [QTDIR + r'/translations/qt_de.qm']),
@@ -84,7 +90,7 @@ plist.update({ 'CFBundleDisplayName': 'Tonino',
                     'CFBundleIdentifier': 'com.tonino',
                     'CFBundleShortVersionString': VERSION,
                     'CFBundleVersion': 'Tonino ' + VERSION,
-                    'LSMinimumSystemVersion': '10.6',
+                    'LSMinimumSystemVersion': '10.7',
                     'LSMultipleInstancesProhibited': 'false',
                     'LSPrefersPPC': False,
                     'LSArchitecturePriority': 'x86_64',
@@ -132,26 +138,61 @@ os.system(r'cp scales/*.toni dist/scales')
 os.chdir('./dist')
 
 # delete unused Qt.framework files (py2app exclude does not seem to work)
+# for Qt4
+#print '*** Removing unused Qt frameworks ***'
+#for fw in [
+#            'phonon',
+#            'QtDeclarative',
+#            'QtHelp',
+#            'QtMultimedia',
+#            'QtNetwork',
+#            'QtOpenGL',
+#            'QtScript',
+#            'QtScriptTools',
+#            'QtSql',
+#            'QtDBus',
+#            'QtDesigner',
+#            'QtTest',
+#            'QtWebKit',
+#            'QtXMLPatterns']:
+#    for root,dirs,files in os.walk('./Artisan.app/Contents/Frameworks/' + fw + ".framework"):
+#        for file in files:
+#            print 'Deleting', file
+#            os.remove(os.path.join(root,file))
+# for Qt5
 print '*** Removing unused Qt frameworks ***'
 for fw in [
-            'phonon',
-            'QtDeclarative',
-            'QtHelp',
-            'QtMultimedia',
-            'QtNetwork',
-            'QtOpenGL',
-            'QtScript',
-            'QtScriptTools',
-            'QtSql',
-            'QtDBus',
-            'QtDesigner',
-            'QtTest',
-            'QtWebKit',
-            'QtXMLPatterns']:
-    for root,dirs,files in os.walk('./Tonino.app/Contents/Frameworks/' + fw + ".framework"):
+            'QtDeclarative.framework',
+            'QtHelp.framework',
+            'QtMultimedia.framework',
+            'QtNetwork.framework',
+            'QtOpenGL.framework',
+            'QtScript.framework',
+            'QtScriptTools.framework',
+            'QtSql.framework',
+            'QtDesigner.framework',
+            'QtTest.framework',
+            'QtWebKit.framework',
+            'QtWebKitWidgets.framework',
+            'QtXMLPatterns.framework',
+            'QtCLucene.framework',
+            'QtPositioning.framework',
+            'QtQml.framework',
+            'QtSensors.framework',
+            'QtWebChannel.framework',
+            'QtQuick.framework',
+            'QtMultimediaWidgets.framework',
+            'QtCore.framework/Versions/4',
+            'QtCore.framework/Versions/4.0',
+            'QtGui.framework/Versions/4',
+            'QtGui.framework/Versions/4.0',
+            'QtWidgets.framework/Versions/4',
+            'QtWidgets.framework/Versions/4.0']:
+    for root,dirs,files in os.walk('./Artisan.app/Contents/Frameworks/' + fw):
         for file in files:
             print 'Deleting', file
             os.remove(os.path.join(root,file))
+
 
 print('*** Removing Qt debug libs ***')
 for root, dirs, files in os.walk('.'):

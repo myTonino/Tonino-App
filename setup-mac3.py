@@ -26,7 +26,7 @@ from distutils import sysconfig
 their_parse_makefile = sysconfig.parse_makefile
 def my_parse_makefile(filename, g):
     their_parse_makefile(filename, g)
-    g['MACOSX_DEPLOYMENT_TARGET'] = '10.6'
+    g['MACOSX_DEPLOYMENT_TARGET'] = '10.7'
 sysconfig.parse_makefile = my_parse_makefile
 
 import sys, os
@@ -35,7 +35,7 @@ from setuptools import setup
 import string
 from plistlib import Plist
 
-from PyQt4.QtCore import (QDir)
+from PyQt5.QtCore import (QDir)
 
 
 import lib
@@ -46,11 +46,11 @@ LICENSE = 'GNU General Public License (GPL)'
 
 
 #Qt4:
-QTDIR = r'/Developer/Applications/Qt/'
+#QTDIR = r'/Developer/Applications/Qt/'
 # Qt5:
-#from os.path import expanduser
-#HOME = expanduser("~")
-#QTDIR = HOME + r'/Qt5.1.1/5.1.1/clang_64/'
+from os.path import expanduser
+HOME = expanduser("~")
+QTDIR = HOME + r'/Qt5.5.0/5.5/clang_64/'
 
 APP = ['tonino.py']
 
@@ -68,7 +68,7 @@ DATA_FILES = [
     ("../Resources/qt_plugins/iconengines", [QTDIR + r'/plugins/iconengines/libqsvgicon.dylib']),
     ("../Resources/qt_plugins/imageformats", [QTDIR + r'/plugins/imageformats/libqsvg.dylib']),
 # Qt5 only:
-#    ("../Resources/qt_plugins/platforms", [QTDIR + r'/plugins/platforms/libqcocoa.dylib']),
+    ("../Resources/qt_plugins/platforms", [QTDIR + r'/plugins/platforms/libqcocoa.dylib']),
 # standard QT translation needed to get the Application menu bar and 
 # the standard dialog elements translated
     ("../Resources/translations", [QTDIR + r'/translations/qt_de.qm']),
@@ -92,7 +92,7 @@ plist.update({ 'CFBundleDisplayName': 'Tonino',
                     'CFBundleIdentifier': 'com.tonino',
                     'CFBundleShortVersionString': VERSION,
                     'CFBundleVersion': 'Tonino ' + VERSION,
-                    'LSMinimumSystemVersion': '10.6',
+                    'LSMinimumSystemVersion': '10.7',
                     'LSMultipleInstancesProhibited': 'false',
                     'LSPrefersPPC': False,
                     'LSArchitecturePriority': 'x86_64',
@@ -118,9 +118,10 @@ OPTIONS = {
 #                 'PyQt5.QtWidgets',
 #                 'PyQt5.QtSvg'],
 # PyQt4
-                 'PyQt4.QtCore',
-                 'PyQt4.QtGui',
-                 'PyQt4.QtSvg'],
+#                 'PyQt4.QtCore',
+#                 'PyQt4.QtGui',
+#                 'PyQt4.QtSvg'
+                 ],
     'excludes' :  ['_tkagg','_ps','_fltkagg','Tkinter','Tkconstants',
                       '_agg','_cairo','_gtk','gtkcairo','pydoc','sqlite3',
                       'bsddb','curses','tcl',

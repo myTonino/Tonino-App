@@ -22,8 +22,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from PyQt4.QtCore import (SIGNAL,QAbstractTableModel,Qt,QSize,QRegExp,QTimer)
-from PyQt4.QtGui import (QBrush,QColor,QStyledItemDelegate,QLineEdit,QRegExpValidator,QItemSelection,QItemSelectionModel)
+try:
+    from PyQt5.QtCore import QLibraryInfo
+    pyqtversion = 5
+except:
+    pyqtversion = 4
+
+# PyQt4:
+if pyqtversion < 5:
+    from PyQt4.QtCore import (QAbstractTableModel,Qt,QSize,QRegExp,QTimer)
+    from PyQt4.QtGui import (QBrush,QColor,QStyledItemDelegate,QLineEdit,QRegExpValidator,QItemSelection,QItemSelectionModel)
+else:
+# PyQt5:
+    from PyQt5.QtCore import (QAbstractTableModel,Qt,QSize,QRegExp,QTimer,QItemSelection,QItemSelectionModel)
+    from PyQt5.QtWidgets import (QStyledItemDelegate,QLineEdit)
+    from PyQt5.QtGui import (QBrush,QColor,QRegExpValidator)
 
 import numpy as np
 import numpy.polynomial.polynomial as poly
@@ -309,7 +322,8 @@ class Scales(QAbstractTableModel):
                 # convert to int
                 try:
                     self.setVisibleCoordinate(index.row(),index.column(),int(value))
-                    self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),index, index)
+                    #self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),index, index)
+                    self.dataChanged.emit(index, index, ())
                     # trigger the redraw of the matplotlib graph canvas
                     self.computePolyfit()
                     self.app.contentModified()
@@ -317,7 +331,8 @@ class Scales(QAbstractTableModel):
                     pass
             elif index.column() == 1:
                 self.setVisibleCoordinate(index.row(),index.column(),value)
-                self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),index, index)
+                #self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),index, index)
+                self.dataChanged.emit(index, index, ())
                 # trigger the redraw of the matplotlib graph canvas
                 self.app.aw.ui.widget.canvas.redraw()
                 self.app.contentModified()

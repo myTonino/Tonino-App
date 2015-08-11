@@ -41,14 +41,21 @@ try:
 except:
     pass
 
-# PyQt5:
-#    from PyQt5.QtWidgets import (QApplication,QMainWindow,QWidget,QDialog,QMessageBox,QMenuBar,QTextBrowser,QAction,QLineEdit,QVBoxLayout,QFileDialog)
-#    from PyQt5.QtGui import (QIcon)
-#    from PyQt5.QtCore import (QCoreApplication,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent)
+try:
+    from PyQt5.QtCore import QLibraryInfo
+    pyqtversion = 5
+except:
+    pyqtversion = 4
 
 # PyQt4:
-from PyQt4.QtGui import (QFont, QColor,QApplication,QMainWindow,QDialog,QMessageBox,QAction,QFileDialog,QIcon,QItemSelection,QItemSelectionModel,QProgressDialog,QDialogButtonBox)
-from PyQt4.QtCore import (Qt,QProcess,QTimer,QSettings,QLocale,QTranslator,QDir,QFileInfo,QEvent,Qt,pyqtSignal)
+if pyqtversion < 5:
+    from PyQt4.QtGui import (QFont, QColor, QApplication, QMainWindow, QDialog, QMessageBox, QAction, QFileDialog, QIcon, QItemSelection, QItemSelectionModel, QProgressDialog, QDialogButtonBox)
+    from PyQt4.QtCore import (QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal)
+else:
+# PyQt5:
+    from PyQt5.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QAction, QFileDialog, )
+    from PyQt5.QtGui import (QIcon,QFont,QColor)
+    from PyQt5.QtCore import (QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection, QItemSelectionModel)
 
 
 from lib import __version__
@@ -73,9 +80,24 @@ else:
     def u(x): # convert to unicode string
         return str(x)
 
-def dependencies_for_freezing():
-    from scipy.special import _ufuncs_cxx
+# to make py2exe happy with scipy >0.11
+def __dependencies_for_freezing():
     from scipy.sparse.csgraph import _validation
+    from scipy.special import _ufuncs_cxx
+#    from scipy import integrate
+#    from scipy import interpolate
+    if pyqtversion < 5:
+        import PyQt4.QtSvg
+        import PyQt4.QtXml
+        import PyQt4.QtDBus # needed for QT5 builds
+        import PyQt5.QtPrintSupport # needed for by platform plugin libqcocoa
+    else:
+        import PyQt5.QtSvg
+        import PyQt5.QtXml
+        import PyQt5.QtDBus # needed for QT5 builds
+        import PyQt5.QtPrintSupport # needed for by platform plugin libqcocoa
+
+del __dependencies_for_freezing
 
 
 ###########################################################################################################################################
@@ -108,7 +130,7 @@ class Tonino(QApplication):
         self.std_calib_target_high = 3.7
         # the tolerance distance of the calib measurements to the expected values above that still allow the recognition
         self.calib_red_range_low = 1300
-        self.calib_red_range_high = 4800
+        self.calib_red_range_high = 5700
         self.calib_blue_range_low = 800
         self.calib_blue_range_high = 1550
         
@@ -1285,71 +1307,71 @@ class ApplicationWindow(QMainWindow):
 
 ###########################################################################################################################################
 
-def main():
-    # suppress all warnings
-    warnings.filterwarnings('ignore')
-    # font fix for OS X 10.9
-    try:
-        v, _, _ = platform.mac_ver()
-        #v = float('.'.join(v.split('.')[:2]))
-        v = v.split('.')[:2]
-        major = int(v[0])
-        minor = int(v[1])
-        if major >= 10 and minor >= 10: #v >= 10.10:
-            # fix Mac OS X 10.10 (Yosemite) font issue
-            # https://bugreports.qt-project.org/browse/QTBUG-40833
-            QFont.insertSubstitution(".Helvetica Neue DeskInterface", "Helvetica Neue")
-        if major >= 10 and minor >= 9: #v >= 10.9:
-            # fix Mac OS X 10.9 (mavericks) font issue
-            # https://bugreports.qt-project.org/browse/QTBUG-32789
-            QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
-    except:
-        pass
+
+# suppress all warnings
+warnings.filterwarnings('ignore')
+
+global aw
+aw = None # this is to ensure that the variable aw is already defined during application initialization
+
+
+try:
+    v, _, _ = platform.mac_ver()
+    #v = float('.'.join(v.split('.')[:2]))
+    v = v.split('.')[:2]
+    major = int(v[0])
+    minor = int(v[1])
+    if major >= 10 and minor >= 10: #v >= 10.10:
+        # fix Mac OS X 10.10 (Yosemite) font issue
+        # https://bugreports.qt-project.org/browse/QTBUG-40833
+        QFont.insertSubstitution(".Helvetica Neue DeskInterface", "Helvetica Neue")
+    if major >= 10 and minor >= 9: #v >= 10.9:
+        # fix Mac OS X 10.9 (mavericks) font issue
+        # https://bugreports.qt-project.org/browse/QTBUG-32789
+        QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
+except:
+    pass
+
+# define app
+app = Tonino(sys.argv)
+app.setApplicationName("Tonino")                  #needed by QSettings() to store windows geometry in operating system
+app.setOrganizationName("BottledSense")           #needed by QSettings() to store windows geometry in operating system
+app.setOrganizationDomain("my-tonino.com")        #needed by QSettings() to store windows geometry in operating system 
+if platform.system() == 'Windows':
+    app.setWindowIcon(QIcon("tonino.png"))
+    if resources.main_is_frozen():
+        try:
+            sys.stderr = sys.stdout
+        except:
+            pass
     
-    # define app
-    app = Tonino(sys.argv)
-    app.setApplicationName("Tonino")                  #needed by QSettings() to store windows geometry in operating system
-    app.setOrganizationName("BottledSense")           #needed by QSettings() to store windows geometry in operating system
-    app.setOrganizationDomain("my-tonino.com")        #needed by QSettings() to store windows geometry in operating system 
-    if platform.system() == 'Windows':
-        app.setWindowIcon(QIcon("tonino.png"))
-        if resources.main_is_frozen():
-            try:
-                sys.stderr = sys.stdout
-            except:
-                pass
-        
-        
-    if platform.system() == 'Darwin':
-        import objc
-        from Cocoa import NSUserDefaults
-        defs = NSUserDefaults.standardUserDefaults() 
-        langs = defs.objectForKey_("AppleLanguages")
-        lang = langs.objectAtIndex_(0)
-    else:
-        lang = QLocale.system().name()[:2]
     
-    # load localization
-    translator = QTranslator(app)
-    if translator.load("tonino_" + lang + ".qm",resources.getTranslationsPath()):
-        app.installTranslator(translator)        
-    translator = QTranslator(app)  
-    if translator.load("qt_" + lang + ".qm",resources.getSystemTranslationsPath()):
-        app.installTranslator(translator)
-    
-    aw = ApplicationWindow(app=app)
-    aw.show()
-    
-    # load Tonino scale on double click a *.toni file in the Finder while Tonino.app is not yet running
-    try:
-        if sys.argv and len(sys.argv) > 1:
-            aw.loadFile(sys.argv[1])
-    except Exception:
-        pass
-    
-    # start the Tonino discovery process
-    aw.deviceCheck()
-    
-    #the following line is to trap numpy warnings
-    with numpy.errstate(invalid='ignore'):
-        sys.exit(app.exec_())
+if platform.system() == 'Darwin':
+    import objc
+    from Cocoa import NSUserDefaults
+    defs = NSUserDefaults.standardUserDefaults() 
+    langs = defs.objectForKey_("AppleLanguages")
+    lang = langs.objectAtIndex_(0)
+else:
+    lang = QLocale.system().name()[:2]
+
+# load localization
+translator = QTranslator(app)
+if translator.load("tonino_" + lang + ".qm",resources.getTranslationsPath()):
+    app.installTranslator(translator)        
+translator = QTranslator(app)  
+if translator.load("qt_" + lang + ".qm",resources.getSystemTranslationsPath()):
+    app.installTranslator(translator)
+
+aw = ApplicationWindow(app=app)
+aw.show()
+
+# load Tonino scale on double click a *.toni file in the Finder while Tonino.app is not yet running
+try:
+    if sys.argv and len(sys.argv) > 1:
+        aw.loadFile(sys.argv[1])
+except Exception:
+    pass
+
+# start the Tonino discovery process
+aw.deviceCheck()

@@ -20,6 +20,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.10 Updated build setup
 - v1.0.9 Font fix for OS X 10.10
 - v1.0.8 Updated firmware to v1.1.1
 - v1.0.7 Simplified calibration and bugfixes

@@ -22,9 +22,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from PyQt4.QtGui import (QSizePolicy,QMenu,QWidget,QVBoxLayout,QAction,QCursor)
-from PyQt4.QtCore import (Qt)
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+try:
+    from PyQt5.QtCore import QLibraryInfo
+    pyqtversion = 5
+except:
+    pyqtversion = 4
+
+import matplotlib as mpl
+
+# PyQt4:
+if pyqtversion < 5:    
+    from PyQt4.QtGui import (QSizePolicy,QMenu,QWidget,QVBoxLayout,QAction,QCursor)
+    from PyQt4.QtCore import (Qt)
+    mpl.use('qt4agg')
+    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+# PyQt5:
+else:
+    from PyQt5.QtWidgets import (QSizePolicy,QMenu,QWidget,QVBoxLayout,QAction)
+    from PyQt5.QtGui import (QCursor)
+    from PyQt5.QtCore import (Qt)
+    mpl.use('qt5agg')
+    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+    
 from matplotlib.figure import Figure
 from matplotlib import rcParams
 from matplotlib import patheffects
@@ -322,7 +341,8 @@ class mplwidget(QWidget):
             self.app = None
         self.canvas = MplCanvas(self.app)
         self.vbl = QVBoxLayout()
-        self.vbl.setMargin(0) 
+#        self.vbl.setMargin(0)
+        self.vbl.setContentsMargins(1,1,1,1)
         self.vbl.setSpacing(0) 
         self.vbl.addWidget(self.canvas)
         self.setLayout(self.vbl)

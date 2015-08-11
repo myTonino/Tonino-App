@@ -11,8 +11,8 @@ The project home of this app is on GitHub were all source and binary files are a
 
 FEATURES
 
-o runs on Mac OS X >10.6 on Intel, Windows, and Linux
-(on OS X >10.7 Mountain Lion you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app)
+o runs on Mac OS X >10.7 on Intel, Windows, and Linux
+(on OS X >=10.8 Mountain Lion you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app)
 o allows to connect to a Tonino device and trigger the measurements
 o designer for custom scales
 o save/load of custom scales
@@ -30,7 +30,7 @@ o Windows
    http://www.ftdichip.com/Drivers/VCP.htm
 - Download and run the Tonino App Windows installer
 
-o Mac OS X (>=10.6.x)
+o Mac OS X (>=10.7.x)
 
 - Install USB/serial driver from FTDI
    http://www.ftdichip.com/Drivers/VCP.htm
@@ -81,7 +81,7 @@ The Tonino app uses the following libraries in unmodified forms:
 
 - Python 2.7.x and 3.4.x released under the PSF licence http://www.python.org/psf/
   http://www.python.org/
-- QT 4.8.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
+- QT 5.5.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
   http://qt-project.org/products/licensing
 - Numpy 1.8.x and Scipy 0.14.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
   http://www.scipy.org/
@@ -99,6 +99,10 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+
+v1.0.10 (12.8.2015)
+ - Updated build setup
+ - Bug fixes
 
 v1.0.9 (10.1.2015)
  - Font fix for OS X 10.10
