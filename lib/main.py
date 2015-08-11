@@ -53,8 +53,8 @@ if pyqtversion < 5:
     from PyQt4.QtCore import (QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal)
 else:
 # PyQt5:
-    from PyQt5.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QAction, QFileDialog, )
-    from PyQt5.QtGui import (QIcon,QFont,QColor)
+    from PyQt5.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QAction, QFileDialog, QProgressDialog, QDialogButtonBox)
+    from PyQt5.QtGui import (QIcon, QFont, QColor)
     from PyQt5.QtCore import (QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection, QItemSelectionModel)
 
 
