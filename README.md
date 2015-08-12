@@ -9,6 +9,8 @@ This app connects to a Tonino via USB. Besides triggering the device calibration
 
 [Download](https://github.com/myTonino/Tonino-App/releases/latest) (Mac/Windows/Linux)
 
+A short description of the main features of the app is given in the [QuickStart guide](QuickStart/QuickStart.md).
+
 Tonino Resources
 ---------------
 - [Tonino site](http://my-tonino.com)
