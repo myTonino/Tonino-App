@@ -23,22 +23,26 @@ Setup
 
   **Windows**
 
- > Download and run the Tonino App Windows installer.
+	> Download and unpack [tonino-win-<version>.zip](https://github.com/myTonino/Tonino-App/releases/latest), then run the Tonino App Windows installer.
     
   **Mac OS X (>=10.7.x)**
 
-	> Download and open Tonino App disk image, then drag the Tonino app icon to your Applications directory.
+	> Download and open the Tonino App disk image [tonino-mac-<version>.dmg](https://github.com/myTonino/Tonino-App/releases/latest), then drag the Tonino app icon to your Applications directory.
 
   **Ubuntu/Debian**
 
+	> Download the [tonino-linux-<version>.deb](https://github.com/myTonino/Tonino-App/releases/latest) installer, start a shell and type
 
- 		# sudo dpkg -i tonino_<version>.deb
+
+ 		# sudo dpkg -i tonino-linux-<version>.deb
 
 
   **CentOS/Redhat**
 
+	> Download the [tonino-linux-<version>.rpm](https://github.com/myTonino/Tonino-App/releases/latest) installer, start a shell and type
 
- 		# sudo rpm -i tonino_<version>.rpm
+
+ 		# sudo rpm -i tonino-linux-<version>.rpm
 
 
 3. Connect the Tonino
@@ -108,3 +112,13 @@ Once uploaded the Tonino will display readings according to this new scale. To r
 A number of example scales are provided along the app to ease the experimentation.
 
 ![](example-scales.png?raw=true)
+
+
+Tonino Resources
+---------------
+- [Tonino site](http://my-tonino.com)
+- [Tonino app](https://github.com/myTonino/Tonino-App)
+- [Tonino firmware](https://github.com/myTonino/Tonino-Firmware)
+- [Tonino serial protocol](https://github.com/myTonino/Tonino-Firmware/blob/master/Tonino-Serial.md)
+- [Tonino hardware](https://github.com/myTonino/Tonino-Hardware)
+- Tonino example scales: [tonino-scales.zip](https://github.com/myTonino/Tonino-App/releases/download/v1.0.8/tonino-scales.zip)  (1.8Kb)
