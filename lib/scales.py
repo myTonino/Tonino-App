@@ -323,7 +323,7 @@ class Scales(QAbstractTableModel):
                 try:
                     self.setVisibleCoordinate(index.row(),index.column(),int(value))
                     #self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),index, index)
-                    self.dataChanged.emit(index, index, ())
+                    self.dataChanged.emit(index, index, [])
                     # trigger the redraw of the matplotlib graph canvas
                     self.computePolyfit()
                     self.app.contentModified()
@@ -332,7 +332,7 @@ class Scales(QAbstractTableModel):
             elif index.column() == 1:
                 self.setVisibleCoordinate(index.row(),index.column(),value)
                 #self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),index, index)
-                self.dataChanged.emit(index, index, ())
+                self.dataChanged.emit(index, index, [])
                 # trigger the redraw of the matplotlib graph canvas
                 self.app.aw.ui.widget.canvas.redraw()
                 self.app.contentModified()
