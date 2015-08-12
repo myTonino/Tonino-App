@@ -80,7 +80,7 @@
 		<key>PythonExecutable</key>
 		<string>/Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4</string>
 		<key>PythonLongVersion</key>
-		<string>3.4.1 (v3.4.1:c0e311e010fc, May 18 2014, 00:54:21) 
+		<string>3.4.3 (v3.4.3:c0e311e010fc, May 18 2014, 00:54:21) 
 [GCC 4.2.1 (Apple Inc. build 5666) (dot 3)]</string>
 		<key>PythonShortVersion</key>
 		<string>3.4</string>

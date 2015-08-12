@@ -1,7 +1,7 @@
 rem
 rem build-win.bat
 rem
-rem Copyright (c) 2014, Paul Holleis, Marko Luther
+rem Copyright (c) 2015, Paul Holleis, Marko Luther
 rem All rights reserved.
 rem 
 rem 

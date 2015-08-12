@@ -3,7 +3,7 @@
 #
 # serialport.py
 #
-# Copyright (c) 2014, Paul Holleis, Marko Luther
+# Copyright (c) 2015, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 

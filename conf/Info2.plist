@@ -80,7 +80,7 @@
 		<key>PythonExecutable</key>
 		<string>/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python</string>
 		<key>PythonLongVersion</key>
-		<string>2.7.8 (v2.7.8:ee879c0ffa11, Jun 29 2014, 21:07:35) 
+		<string>2.7.10 (v2.7.10:ee879c0ffa11, Jun 29 2014, 21:07:35) 
 [GCC 4.2.1 (Apple Inc. build 5666) (dot 3)]</string>
 		<key>PythonShortVersion</key>
 		<string>2.7</string>

@@ -63,14 +63,14 @@
         <translation>Kalibrierung</translation>
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="90"/>
-        <source>Copyright &#xc2;&#xa9; 2014 Marko Luther, Paul Holleis</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../lib/main.py" line="1137"/>
         <source>Tonino*</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../uic/AboutDialogUI.py" line="90"/>
+        <source>Copyright &#xc2;&#xa9; 2014 Marko Luther, Paul Holleis</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
