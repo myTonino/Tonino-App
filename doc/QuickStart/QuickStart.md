@@ -86,7 +86,7 @@ The visualization on the right side displays the measurements as dots in a coord
 
 The Tonino measurements can be sorted by the underlying raw color values (button "`Sort`"), the selected individuals can be deleted (button "`Delete`") and the table can be initialized (button "`Clear`").
 
-In the top left, three LCD values display the [arithmetic mean](https://en.wikipedia.org/wiki/Arithmetic_mean) of the selected T-values ("`AVG`"), the [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation) ("`DEV`") and the [95% confidence interval](https://en.wikipedia.org/wiki/Confidence_interval).
+In the top left, three LCD values display the [arithmetic mean](https://en.wikipedia.org/wiki/Arithmetic_mean) of the selected T-values ("`AVG`"), the [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation) ("`DEV`") and the [95% confidence interval](https://en.wikipedia.org/wiki/Confidence_interval) ("`Conf95%`").
 
 
 Tonino Scales
