@@ -1,14 +1,20 @@
+tonino (1.0.11-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.10:
+   - updated build setup
+ --  <dev@my-tonino.com>  Fri, 21 Aug 2015 19:32:14 +0200
+ 
 tonino (1.0.10-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.9:
    - updated build setup
- --  <dev@my-tonino.com>  Wed, 12 Aug 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Wed, 12 Aug 2015 19:32:14 +0200
 
 tonino (1.0.9-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.8:
    - font fix for OS X 10.10
- --  <dev@my-tonino.com>  Sat, 10 Jan 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Sat, 10 Jan 2015 19:32:14 +0200
 
 tonino (1.0.8-1) precise; urgency=low
   * new upstream release
