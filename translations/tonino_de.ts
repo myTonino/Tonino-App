@@ -69,7 +69,7 @@
     </message>
     <message>
         <location filename="../uic/AboutDialogUI.py" line="90"/>
-        <source>Copyright &#xc2;&#xa9; 2014 Marko Luther, Paul Holleis</source>
+        <source>Copyright &#xc2;&#xa9; 2015 Marko Luther, Paul Holleis</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
