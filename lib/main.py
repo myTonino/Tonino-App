@@ -122,17 +122,17 @@ class Tonino(QApplication):
         # calib constants
         self.calib_dark_scan = False
         self.clib_double_scan = False
-        self.std_calib_low_r = 2420. # brown disk red reading
-        self.std_calib_low_b = 1570. # brown disk blue reading
-        self.std_calib_high_r = 13000. # red disk red reading
-        self.std_calib_high_b = 3150. # red disk blue reading
+        self.std_calib_low_r = 2600. # brown disk red reading
+        self.std_calib_low_b = 1600. # brown disk blue reading
+        self.std_calib_high_r = 15000. # red disk red reading
+        self.std_calib_high_b = 3500. # red disk blue reading
         self.std_calib_target_low = 1.5
         self.std_calib_target_high = 3.7
         # the tolerance distance of the calib measurements to the expected values above that still allow the recognition
         self.calib_red_range_low = 1300
-        self.calib_red_range_high = 5700
-        self.calib_blue_range_low = 800
-        self.calib_blue_range_high = 1550
+        self.calib_red_range_high = 6000
+        self.calib_blue_range_low = 1000
+        self.calib_blue_range_high = 1600
         
         # variables
         self.workingDirectory = None
