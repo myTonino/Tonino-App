@@ -1,3 +1,15 @@
+tonino (1.0.12-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.11:
+   - bug fixes
+ --  <dev@my-tonino.com>  Mon, 28 Sep 2014 19:32:14 +0200
+
+tonino (1.0.11-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.10:
+   - bug fixes
+ --  <dev@my-tonino.com>  Fri, 21 Aug 2014 19:32:14 +0200
+
 tonino (1.0.10-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.9:
@@ -62,7 +74,7 @@ tonino (1.0.2-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.1:
    - improved calibration
- --  <dev@my-tonino.com>  Fr, 17 Jan 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Fri, 17 Jan 2014 19:32:14 +0200
  
 tonino (1.0.1-1) precise; urgency=low
   * new upstream release

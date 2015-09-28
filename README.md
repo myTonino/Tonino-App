@@ -22,6 +22,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.12 Bug fixes
 - v1.0.11 Bug fixes
 - v1.0.10 Updated build setup
 - v1.0.9 Font fix for OS X 10.10

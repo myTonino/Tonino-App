@@ -8,12 +8,12 @@
         <translation>Guardar como</translation>
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="88"/>
+        <location filename="../uic/AboutDialogUI.py" line="75"/>
         <source>Tonino</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="91"/>
+        <location filename="../uic/AboutDialogUI.py" line="78"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -28,7 +28,7 @@
         <translation>¿Desea actualizar a %s?</translation>
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="89"/>
+        <location filename="../uic/AboutDialogUI.py" line="76"/>
         <source>Version</source>
         <translation>Versión</translation>
     </message>
@@ -53,12 +53,12 @@
         <translation>La escala ha sido modificada.</translation>
     </message>
     <message>
-        <location filename="../uic/CalibDialogUI.py" line="92"/>
+        <location filename="../uic/CalibDialogUI.py" line="79"/>
         <source>Scan</source>
         <translation>Escanear</translation>
     </message>
     <message>
-        <location filename="../uic/CalibDialogUI.py" line="91"/>
+        <location filename="../uic/CalibDialogUI.py" line="78"/>
         <source>Calibration</source>
         <translation>Calibración</translation>
     </message>
@@ -68,7 +68,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="90"/>
+        <location filename="../uic/AboutDialogUI.py" line="77"/>
         <source>Copyright &#xc2;&#xa9; 2015 Marko Luther, Paul Holleis</source>
         <translation type="unfinished"></translation>
     </message>
@@ -114,7 +114,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="340"/>
+        <location filename="../uic/MainWindowUI.py" line="327"/>
         <source>Tonino</source>
         <translation></translation>
     </message>
@@ -134,172 +134,172 @@
         <translation>eliminar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="350"/>
+        <location filename="../uic/MainWindowUI.py" line="337"/>
         <source>3 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="352"/>
+        <location filename="../uic/MainWindowUI.py" line="339"/>
         <source>Upload</source>
         <translation>Cargar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="347"/>
+        <location filename="../uic/MainWindowUI.py" line="334"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="345"/>
+        <location filename="../uic/MainWindowUI.py" line="332"/>
         <source>Delete</source>
         <translation>Eliminar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="344"/>
+        <location filename="../uic/MainWindowUI.py" line="331"/>
         <source>Add</source>
         <translation>Añadir</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="353"/>
+        <location filename="../uic/MainWindowUI.py" line="340"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="354"/>
+        <location filename="../uic/MainWindowUI.py" line="341"/>
         <source>Open Recent</source>
         <translation>Abrir recientes</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="364"/>
+        <location filename="../uic/MainWindowUI.py" line="351"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="358"/>
+        <location filename="../uic/MainWindowUI.py" line="345"/>
         <source>Open...</source>
         <translation>Abrir...</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="359"/>
+        <location filename="../uic/MainWindowUI.py" line="346"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="360"/>
+        <location filename="../uic/MainWindowUI.py" line="347"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="361"/>
+        <location filename="../uic/MainWindowUI.py" line="348"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="362"/>
+        <location filename="../uic/MainWindowUI.py" line="349"/>
         <source>Save As...</source>
         <translation>Guarda como...</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="363"/>
+        <location filename="../uic/MainWindowUI.py" line="350"/>
         <source>Ctrl+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="365"/>
+        <location filename="../uic/MainWindowUI.py" line="352"/>
         <source>Ctrl+?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="366"/>
+        <location filename="../uic/MainWindowUI.py" line="353"/>
         <source>About</source>
         <translation>Acerca</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="367"/>
+        <location filename="../uic/MainWindowUI.py" line="354"/>
         <source>About Qt</source>
         <translation>Acerca de Qt</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="368"/>
+        <location filename="../uic/MainWindowUI.py" line="355"/>
         <source>Settings</source>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="351"/>
+        <location filename="../uic/MainWindowUI.py" line="338"/>
         <source>Defaults</source>
         <translation>Por Defecto</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="369"/>
+        <location filename="../uic/MainWindowUI.py" line="356"/>
         <source>Cut</source>
         <translation>Cortar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="370"/>
+        <location filename="../uic/MainWindowUI.py" line="357"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="371"/>
+        <location filename="../uic/MainWindowUI.py" line="358"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="372"/>
+        <location filename="../uic/MainWindowUI.py" line="359"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="373"/>
+        <location filename="../uic/MainWindowUI.py" line="360"/>
         <source>Paste</source>
         <translation>Pegar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="374"/>
+        <location filename="../uic/MainWindowUI.py" line="361"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="357"/>
+        <location filename="../uic/MainWindowUI.py" line="344"/>
         <source> Edit</source>
         <translation> Edición</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="355"/>
+        <location filename="../uic/MainWindowUI.py" line="342"/>
         <source>Apply Recent</source>
         <translation>Aplicar Reciente</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="375"/>
+        <location filename="../uic/MainWindowUI.py" line="362"/>
         <source>Apply...</source>
         <translation>Aplicar...</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="348"/>
+        <location filename="../uic/MainWindowUI.py" line="335"/>
         <source>Calibrate</source>
         <translation>Calibrar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="346"/>
+        <location filename="../uic/MainWindowUI.py" line="333"/>
         <source>Sort</source>
         <translation>Ordenar</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="349"/>
+        <location filename="../uic/MainWindowUI.py" line="336"/>
         <source>0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="341"/>
+        <location filename="../uic/MainWindowUI.py" line="328"/>
         <source>AVG</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="342"/>
+        <location filename="../uic/MainWindowUI.py" line="329"/>
         <source>STDEV</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="343"/>
+        <location filename="../uic/MainWindowUI.py" line="330"/>
         <source>CONF95%</source>
         <translation></translation>
     </message>
@@ -395,22 +395,22 @@
 <context>
     <name>Preferences</name>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="89"/>
+        <location filename="../uic/PreferencesDialogUI.py" line="76"/>
         <source>Preferences</source>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="90"/>
+        <location filename="../uic/PreferencesDialogUI.py" line="77"/>
         <source>Tonino Display</source>
         <translation>Pantalla Tonino</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="91"/>
+        <location filename="../uic/PreferencesDialogUI.py" line="78"/>
         <source>dim</source>
         <translation>atenuar</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="92"/>
+        <location filename="../uic/PreferencesDialogUI.py" line="79"/>
         <source>bright</source>
         <translation>brillo</translation>
     </message>
