@@ -965,14 +965,17 @@ class ApplicationWindow(QMainWindow):
         if action:
             self.loadFile(action.data())
     
+    # returns True if saving suceeded and was not canceled
     def saveFile(self):
         currentFile = self.app.currentFile
         if currentFile:
             self.app.saveScale(currentFile)
             self.setCurrentFile(currentFile)
+            return True
         else:
-            self.saveAsFile()
+            return self.saveAsFile()
         
+    # returns True if saving suceeded and was not canceled
     def saveAsFile(self):
         filename = self.fileDialog(_translate("Dialog","Save As",None),ffilter=self.toninoFileFilter,openFile=False)
         if filename:
@@ -980,6 +983,11 @@ class ApplicationWindow(QMainWindow):
             if res:
                 self.setCurrentFile(filename)
                 self.updateWindowTitle()
+                return True
+            else:
+                return False
+        else:
+            return False
                 
     def applyFile(self):
         self.applyScale(self.fileDialog(_translate("Dialog","Apply Scale",None),ffilter=self.toninoFileFilter))
@@ -1050,7 +1058,6 @@ class ApplicationWindow(QMainWindow):
         n = len(a)
         m, se = np.mean(a), scipy.stats.sem(a)
         h = se * sp.stats.t._ppf((1+confidence)/2., n-1)
-#        print(h,m,m-h,m+h)        
         return h
     
     def updateLCDS(self):
@@ -1289,11 +1296,11 @@ class ApplicationWindow(QMainWindow):
             msgBox.setDefaultButton(QMessageBox.Save)
             ret = msgBox.exec_()
             if ret == QMessageBox.Save:
-                self.saveFile()
-                return True
+                return self.saveFile()
             elif ret == QMessageBox.Cancel:
                 return False
             else:
+                self.app.currentFileDirty = False
                 return True
         else:
             return True
@@ -1304,6 +1311,7 @@ class ApplicationWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+        
 
 ###########################################################################################################################################
 
