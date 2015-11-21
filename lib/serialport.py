@@ -22,6 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import serial
 import serial.tools.list_ports
 import time
 import sys
@@ -30,12 +31,15 @@ import platform
 
 # on OS X load the Makerbot modified list_ports module patched for P3k
 # we still keep this hack under pyserial 2.7 as it does not work as expected on Python3 (reporting an empty port list always)
-if sys.platform == 'darwin':
-    from lib.list_ports_osx import comports
-    serial.tools.list_ports.comports = comports
-    from lib.list_ports_vid_pid_osx_posix import *
-elif os.name == 'posix':
-    from lib.list_ports_vid_pid_osx_posix import *
+
+#   list_ports module patched for P3k from new pyserial GitHub repository
+if serial.VERSION.split(".")[0].strip() == "2":
+    if sys.platform == 'darwin':
+        from lib.list_ports_osx import comports
+        serial.tools.list_ports.comports = comports
+        from lib.list_ports_vid_pid_osx_posix import *
+    elif os.name == 'posix':
+        from lib.list_ports_vid_pid_osx_posix import *
 
 if sys.version < '3':
     def str2cmd(s):
@@ -63,14 +67,22 @@ class SerialPort(object):
     #loads configuration to ports
     def configurePort(self,port):
         self.port = port
-        self.SP.setPort(self.port)
-        self.SP.setBaudrate(self.baudrate)
-        self.SP.setByteSize(self.bytesize)
-        self.SP.setParity(self.parity)
-        self.SP.setStopbits(self.stopbits)
-        self.SP.setTimeout(self.timeout)
         if platform.system() == 'Windows':
             self.SP.setDTR(False)
+        if serial.VERSION.split(".")[0].strip() == "2":
+            self.SP.setPort(self.port)
+            self.SP.setBaudrate(self.baudrate)
+            self.SP.setByteSize(self.bytesize)
+            self.SP.setParity(self.parity)
+            self.SP.setStopbits(self.stopbits)
+            self.SP.setTimeout(self.timeout)
+        else:
+            self.SP.port = self.port
+            self.SP.baudrate = self.baudrate
+            self.SP.bytesize = self.bytesize
+            self.SP.parity = self.parity
+            self.SP.stopbits = self.stopbits
+            self.SP.timeout = self.timeout
 
     def openPort(self,port):
         try:
@@ -143,14 +155,39 @@ class SerialPort(object):
                 return None
             
     def getSerialPorts(self):
-        if platform.system() == 'Windows':
-            # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned
-            return list(p[0] for p in serial.tools.list_ports.grep("VID_0403\+PID_6001"))
+        # we are looking for VID 403(hex)/1027(dec) and PID 6001(hex)/24577(dec)
+        if serial.VERSION.split(".")[0].strip() == "2":
+            # pyserial v2.7 version
+            if platform.system() == 'Windows':
+                # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned
+                return list(p[0] for p in serial.tools.list_ports.grep("VID_0403\+PID_6001"))
+            else:
+                ports = serial.tools.list_ports.comports()
+                # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned
+                # TODO: this might crash on Linux (test!)
+                return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=1027,pid=24577))
         else:
             ports = serial.tools.list_ports.comports()
-            # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned
-            # TODO: this might crash on Linux (test!)
-            return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=1027,pid=24577))
+            return list(self.filter_ports_by_vid_pid(ports,1027,24577))
+            
+    def filter_ports_by_vid_pid(self,ports,vid=None,pid=None):
+        """ Given a VID and PID value, scans for available port, and
+    	f matches are found, returns a dict of 'VID/PID/iSerial/Port'
+    	that have those values.
+    
+        @param list ports: Ports object of valid ports
+        @param int vid: The VID value for a port
+        @param int pid: The PID value for a port
+        @return iterator: Ports that are currently active with these VID/PID values
+        """
+        for port in ports:
+            #Parse some info out of the identifier string
+            try: 
+                if vid == None or port.vid == vid:
+                    if  pid == None or  port.pid == pid:
+                        yield port.device
+            except:
+                pass
         
 #    def sendReset(self,port):
 #        if not self.SP.isOpen():

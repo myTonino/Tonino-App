@@ -48,7 +48,7 @@ LICENSE = 'GNU General Public License (GPL)'
 # Qt5:
 from os.path import expanduser
 HOME = expanduser("~")
-QTDIR = HOME + r'/Qt5.5.0/5.5/clang_64/'
+QTDIR = HOME + r'/Qt5.4.2/5.4/clang_64/'
 
 APP = ['tonino.py']
 
@@ -136,6 +136,12 @@ os.system(r'cp doc/LICENSE.txt dist')
 os.system(r'mkdir dist/scales')
 os.system(r'cp scales/*.toni dist/scales')
 os.chdir('./dist')
+
+# (independent) matplotlib (installed via pip) shared libs are not copied by py2app (both cp are needed!)
+os.system(r'mkdir Tonino.app/Contents/Resources/lib/python2.7/lib-dynload/matplotlib/.dylibs')
+os.system(r'cp -R /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/matplotlib/.dylibs/* Tonino.app/Contents/Resources/lib/python2.7/lib-dynload/matplotlib/.dylibs')
+os.system(r'cp /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/matplotlib/.dylibs/* Tonino.app/Contents/Frameworks')
+
 
 # delete unused Qt.framework files (py2app exclude does not seem to work)
 # for Qt4

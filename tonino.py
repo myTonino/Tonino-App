@@ -55,6 +55,46 @@ if system() == 'Darwin':
                 QApplication.addLibraryPath(str(os.path.dirname(os.path.abspath( __file__ ))) + "/qt_plugins/")
         except:
             pass
+elif system().startswith("Windows"):
+    try:
+        ib = (hasattr(sys, "frozen") or # new py2exe
+            hasattr(sys, "importers") # old py2exe
+            or imp.is_frozen("__main__")) # tools/freeze
+        from PyQt5.QtWidgets import QApplication
+        if ib:
+            QApplication.addLibraryPath(os.path.join(os.path.dirname(os.path.realpath(sys.executable)), "plugins"))            
+        else:
+            import site
+            QApplication.addLibraryPath(os.path.dirname(site.getsitepackages()[0]) + "\\PyQt5\\plugins")
+    except Exception:
+        try:
+            from PyQt4.QtGui import QApplication
+            if ib:
+                QApplication.addLibraryPath(os.path.join(os.path.dirname(os.path.realpath(sys.executable)), "plugins"))
+            else:
+                import site
+                QApplication.addLibraryPath(os.path.dirname(site.getsitepackages()[0]) + "\\PyQt4\\plugins")
+        except:
+            pass
+else: # Linux
+    try:
+        ib = getattr(sys, 'frozen', False)
+        from PyQt5.QtWidgets import QApplication
+        if ib:
+            QApplication.addLibraryPath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Resources/qt_plugins"))            
+        else:
+            import site
+            QApplication.addLibraryPath(os.path.dirname(site.getsitepackages()[0]) + "/PyQt5/qt_plugins")
+    except Exception:
+        try:
+            from PyQt4.QtGui import QApplication
+            if ib:
+                QApplication.addLibraryPath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Resources/qt_plugins"))
+            else:
+                import site
+                QApplication.addLibraryPath(os.path.dirname(site.getsitepackages()[0]) + "/PyQt4/qt_plugins")
+        except:
+            pass
         
 # supress any console/error-log output on all platforms, but Mac OS X
 if not sys.platform.startswith("darwin"):

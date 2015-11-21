@@ -95,7 +95,7 @@ RequestExecutionLevel admin
 !define py2exeOutputDir 'dist'
 !define PRODUCT_NAME "Tonino"
 !define PRODUCT_EXE "tonino.exe"
-!define PRODUCT_VERSION "1.0.12.0"
+!define PRODUCT_VERSION "1.0.13.0"
 !define PRODUCT_PUBLISHER "Marko Luther, Paul Holleis"
 !define PRODUCT_WEB_SITE "http://my-tonino.com"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_EXE}"

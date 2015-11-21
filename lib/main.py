@@ -700,6 +700,8 @@ class ApplicationWindow(QMainWindow):
         self.ui.setupUi(self)
         self.app.aw = self
         
+        self.closing = False # set to True if app is closing down
+        
         # reinitialize QAbstractTable model to ensure the tables parent is initialized to the main window
         self.app.scales = lib.scales.Scales(self.app,self)
 
@@ -716,7 +718,10 @@ class ApplicationWindow(QMainWindow):
         self.popupdelete = _translate("MainWindow","delete",None)
 
         # variables
-        self.debug = False
+        self.debug = 0 
+            # 0: debug off
+            # 1: debug on (calib replaced by debug & newer firmware versions can be replaced)
+            # 2: debug on + no communication before firmware upgrade
         self.progress = None # holds the QProgressDialog indicating the firmware update progress
         self.deviceCheckCounter = 0
         self.resetsettings = 0 # if set, settings are not loaded on app start
@@ -1134,14 +1139,18 @@ class ApplicationWindow(QMainWindow):
         ui.pushButton.clicked.connect(Dialog.accept)        
         Dialog.setContextMenuPolicy(Qt.CustomContextMenu)
         Dialog.customContextMenuRequested.connect(lambda _: self.toggleDebug(ui))
-        if self.debug:
+        if self.debug == 1:
             ui.nameLabel.setText(_translate("Dialog", "Tonino*", None))
+        elif self.debug == 2:
+            ui.nameLabel.setText(_translate("Dialog", "Tonino**", None))
         Dialog.show()
         
     def toggleDebug(self,ui):
-        self.debug = not self.debug
-        if self.debug:
+        self.debug = (self.debug + 1) % 3
+        if self.debug == 1:
             ui.nameLabel.setText(_translate("Dialog", "Tonino*", None))
+        elif self.debug == 2:
+            ui.nameLabel.setText(_translate("Dialog", "Tonino**", None))
         else:
             ui.nameLabel.setText(_translate("Dialog", "Tonino", None))
         
@@ -1216,6 +1225,8 @@ class ApplicationWindow(QMainWindow):
             msgBox.setDefaultButton(QMessageBox.Ok)
             ret = msgBox.exec_()
             if ret == QMessageBox.Ok:
+                if self.debug == 2:
+                    self.debug = 0
                 self.updateFirmware()
 
 
@@ -1259,8 +1270,13 @@ class ApplicationWindow(QMainWindow):
                     # Tonino port disappeared
                     self.disconnectTonino()
             else:
-                # test if any of the new ports is connected to a Tonino
-                res = self.checkPorts(list(set(newports) - set(self.ports)))
+                new_ports = list(set(newports) - set(self.ports))
+                if self.debug == 2 and new_ports:                    
+                    self.app.toninoPort = new_ports[0]
+                    self.checkFirmwareVersion()
+                else:
+                    # test if any of the new ports is connected to a Tonino
+                    res = self.checkPorts(new_ports)
         # update serial ports
         self.ports = newports
         # connect if version was returned
@@ -1306,8 +1322,10 @@ class ApplicationWindow(QMainWindow):
             return True
     
     def closeEvent(self,event):
-        self.app.saveSettings()
-        if self.verifyDirty():
+        if self.closing or self.verifyDirty():
+            if not self.closing:
+                self.app.saveSettings()
+            self.closing = True
             event.accept()
         else:
             event.ignore()
