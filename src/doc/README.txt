@@ -99,6 +99,8 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.13 (25.11.2015)
+ - Bug fixes
 
 v1.0.12 (28.9.2015)
  - Bug fixes

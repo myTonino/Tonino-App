@@ -3,13 +3,13 @@
 
 Open-Source app for the [Tonino Color Meter](http://my-tonino.com)
 
-![](img/app-screen.png?raw=true)
+![](src/img/app-screen.png?raw=true)
 
 This app connects to a Tonino via USB. Besides triggering the device calibration, it allows to measure sample colors and link them to reference values. The set of linked measurements defines a custom scale that is computed by linear, quadratic or cubic regression and can be uploaded to the connected Tonino. 
 
 [Download](https://github.com/myTonino/Tonino-App/releases/latest) (Mac/Windows/Linux)
 
-A short description of the main features of the app is given in the [QuickStart guide](doc/QuickStart/QuickStart.md).
+A short description of the main features of the app is given in the [QuickStart guide](src/doc/QuickStart/QuickStart.md).
 
 Tonino Resources
 ---------------
@@ -22,6 +22,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.13 Bug fixes
 - v1.0.12 Bug fixes
 - v1.0.11 Bug fixes
 - v1.0.10 Updated build setup
