@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="app">
+    <file>../icons/tonino_small.png</file>
+  </qresource>
+</RCC>

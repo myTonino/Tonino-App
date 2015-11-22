@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=0.6
+Type=Application
+Name=Tonino
+GenericName=Roast Color Analyzer
+Comment=Roast Color Analyzer
+Exec=tonino %U
+TryExec=tonino
+Icon=tonino.png
+Terminal=false
+Categories=Utility;
+MimeType=application/x-tonino-toni;
+

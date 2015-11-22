@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# prerm-tonino
+#
+# prepm for installing Tonino
+#
+# Author: Paul Holleis and Marko Luther
+
+set -e
+
+clear_mime()
+{
+xdg-icon-resource uninstall --size 16  application-x-tonino-toni
+xdg-icon-resource uninstall --size 32  application-x-tonino-toni
+xdg-icon-resource uninstall --size 64  application-x-tonino-toni
+xdg-icon-resource uninstall --size 128 application-x-tonino-toni
+xdg-icon-resource uninstall --size 256 application-x-tonino-toni
+xdg-mime uninstall /usr/share/tonino/tonino-toni.xml
+}
+
+case "$1" in
+   remove|upgrade)
+   if dpkg-query -W xdg-utils; 
+       then clear_mime;
+   fi
+   ;;
+
+   *)
+
+   ;;
+esac
+
+exit 0
+

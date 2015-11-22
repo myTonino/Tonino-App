@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="app">
+    <file>../icons/calib_high.png</file>
+  </qresource>
+</RCC>
