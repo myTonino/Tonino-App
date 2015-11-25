@@ -115,12 +115,14 @@ class MplCanvas(FigureCanvas):
             which='both',       # both major and minor ticks are affected
             bottom='off',       # ticks along the bottom edge are off
             top='off',          # ticks along the top edge are off
-            labelbottom='off')  # labels along the bottom edge are off
+            labelbottom='off',  # labels along the bottom edge are off
+            )    
         self.ax.tick_params(\
             color=self.toninoBlue,
             axis='y', 
             which='both',
             right='off',
+            direction="out",    # draw the ticks outside of the graph
             labelright='off') 
         self.ax.set_ylim([0, 205])
         self.ax.set_xlim([self.x_min, self.x_max])
