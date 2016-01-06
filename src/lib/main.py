@@ -111,21 +111,34 @@ class Tonino(QApplication):
         self.aw = None
         
         # constants
+        self.tonino_model = 1 # 0: Classic Tonino (@115200 baud); 1: Tiny Tonino (@57600 baud)
         if platform.system() == 'Windows':
             self.avrdude = "avrdude.exe"
         else:
             self.avrdude = "avrdude"
         self.avrdude_conf = "avrdude.conf"
+        # ClassicTonino firmware (v1.x.x)
         self.included_firmware_name = None
         self.included_firmware_version = None # a list of three int indicating major, minor and build versions of the included firmware
+        # TinyTonino firmware (v2.x.x)
+        self.included_tinyTonino_firmware_name = None
+        self.included_tinyTonino_firmware_version = None # a list of three int indicating major, minor and build versions of the included firmware
         
         # calib constants
         self.calib_dark_scan = False
         self.clib_double_scan = False
-        self.std_calib_low_r = 2600. # brown disk red reading
-        self.std_calib_low_b = 1600. # brown disk blue reading
-        self.std_calib_high_r = 15000. # red disk red reading
-        self.std_calib_high_b = 3500. # red disk blue reading
+        if self.tonino_model == 0:
+            # for the Classic Tonino
+            self.std_calib_low_r = 2600. # brown disk red reading
+            self.std_calib_low_b = 1600. # brown disk blue reading
+            self.std_calib_high_r = 15000. # red disk red reading
+            self.std_calib_high_b = 3500. # red disk blue reading
+        else:
+            # for the Tiny Tonino
+            self.std_calib_low_r = 6684. # brown disk red reading
+            self.std_calib_low_b = 4330. # brown disk blue reading
+            self.std_calib_high_r = 32152. # red disk red reading
+            self.std_calib_high_b = 8618. # red disk blue reading
         self.std_calib_target_low = 1.5
         self.std_calib_target_high = 3.7
         # the tolerance distance of the calib measurements to the expected values above that still allow the recognition
@@ -145,7 +158,7 @@ class Tonino(QApplication):
         self.toninoFirmwareVersion = None # a list of three int indicating major, minor and build versions of the connected device
         self.toninoControllerType = None # the type of the Tonino micro controller (Arduino Nano, Micro,..)
         self.scales = lib.scales.Scales(self,self)
-        self.ser = lib.serialport.SerialPort() # the serial connection object
+        self.ser = lib.serialport.SerialPort(model=self.tonino_model) # the serial connection object
         # calibration raw readings
         self.calib_low_r = None
         self.calib_low_b = None
@@ -212,12 +225,22 @@ class Tonino(QApplication):
     def retrieveIncludedFirmware(self):
         qd = QDir()
         qd.setCurrent(resources.getResourcePath())
+        # retrieve included Classic Tonino firmware version
         fileinfos = qd.entryInfoList(["tonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
         if len(fileinfos) > 0:
             fn = fileinfos[0].fileName()
             try:
                 self.included_firmware_version = [int(s) for s in fn.split("-")[1].rsplit(".")[:3]]
                 self.included_firmware_name = fn
+            except:
+                pass
+        # retrieve included Classic Tonino firmware version
+        fileinfos = qd.entryInfoList(["tinyTonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
+        if len(fileinfos) > 0:
+            fn = fileinfos[0].fileName()
+            try:
+                self.included_tinyTonino_firmware_version = [int(s) for s in fn.split("-")[1].rsplit(".")[:3]]
+                self.included_tinyTonino_firmware_name = fn
             except:
                 pass
         
@@ -316,7 +339,12 @@ class Tonino(QApplication):
         resourceBinaryPath = resources.getResourceBinaryPath()
         avrdude = resourceBinaryPath + self.avrdude
         avrdudeconf = resourceBinaryPath + self.avrdude_conf
-        toninoSketch = resourcePath + self.included_firmware_name
+        if self.tonino_model == 1:
+            # TinyTonino firmware
+            toninoSketch = resourcePath + self.included_tinyTonino_firmware_name
+        else:
+            # ClassicTonino firmware
+            toninoSketch = resourcePath + self.included_firmware_name
         args = ["-C",avrdudeconf,"-q","-q","-patmega328p","-carduino","-P",self.toninoPort,"-b57600","-D","-Uflash:w:" + u(toninoSketch) + ":i"]
         # -s : Disable safemode prompting
         # -V : Disable automatic verify check when uploading data
@@ -380,7 +408,35 @@ class Tonino(QApplication):
     def setDisplayBrightness(self,port,brightness):
         if port:
             self.ser.sendCommand(port,self.formatCommand("SETBRIGHTNESS",[brightness]))
-        
+
+    # cmd: GETTARGET
+    def getTarget(self,port):
+        res = None
+        if port:
+            response = self.ser.sendCommand(port,"GETTARGET")
+            if response:
+                res = self.response2values(response,int,2)
+        return res
+    
+    # cmd: SETTARGET (value: 0-200 / range: 0-10)
+    def setTarget(self,port,value,range):
+        if port:
+            self.ser.sendCommand(port,self.formatCommand("SETTARGET",[value,range]))
+            
+    # cmd: GETSCALE
+    def getScaleName(self,port):
+        res = None
+        if port:
+            response = self.ser.sendCommand(port,"GETSCALE")
+            if response:
+                res = self.response2values(response,str,2)
+        return res
+    
+    # cmd: SETSCALE (a string of length 8)
+    def setScaleName(self,port,name):
+        if port:
+            self.ser.sendCommand(port,self.formatCommand("SETSCALE",[u(name[:8]).encode('ascii', 'ignore')]))
+                    
     # cmd: GETSCALING
     def getScale(self,port):
         res = None
@@ -528,6 +584,10 @@ class PreferencesDialog(ToninoDialog):
         self.ui.setupUi(self)
         self.displayBrightness = None
         self.lastBrightness = None # remember the last setting to avoid resending the same setting
+        self.targetValue = None
+        self.lastTargetValue = None
+        self.targetRange = None
+        self.lastTargetRange = None
         if self.app.toninoPort:
             try:
                 v = self.app.getDisplayBrightness(self.app.toninoPort)
@@ -535,21 +595,40 @@ class PreferencesDialog(ToninoDialog):
                 self.ui.displaySlider.setValue(self.displayBrightness)
             except:
                 pass
+            if self.app.tonino_model == 1:
+                try:
+                    v = self.app.getTarget(self.app.toninoPort)
+                    self.targetValue = self.lastTargetValue = v[0]
+                    self.targetRange = self.lastTargetRange = v[1]
+                    self.ui.targetValueSpinBox.setValue(self.targetValue)
+                    self.ui.rangeSlider.setValue(self.targetRange)
+                except:
+                    pass
+                
+            else:
+                self.ui.groupBoxToninoTarget.setEnabled(False)
         else:
             self.ui.groupBoxToninoDisplay.setEnabled(False)
+            self.ui.groupBoxToninoTarget.setEnabled(False)
         self.ui.buttonBox.accepted.connect(self.accept)
         self.ui.buttonBox.rejected.connect(self.reject)
         
         self.ui.displaySlider.setTracking(False) # no valueChanged signals while moving
-        self.ui.displaySlider.valueChanged.connect(self.sliderChanged)
-        
-    def sliderChanged(self):
+        self.ui.displaySlider.valueChanged.connect(self.displaySliderChanged)
+
+    def displaySliderChanged(self):
         v = self.ui.displaySlider.value()
         if self.displayBrightness != None and self.lastBrightness != v:
             self.app.setDisplayBrightness(self.app.toninoPort,v)
-            self.lastBrightness = v # remember this as last setting
+            self.lastBrightness = v # remember this as last setting  
 
     def accept(self):
+        v = self.ui.targetValueSpinBox.value()
+        r = self.ui.rangeSlider.value()
+        self.app.setTarget(self.app.toninoPort,v,r)
+        # remember this as last setting
+        self.lastTargetValue = v
+        self.lastTargetRange = r        
         self.done(0)
         
     def reject(self):
@@ -885,7 +964,7 @@ class ApplicationWindow(QMainWindow):
                 res = QFileDialog.getSaveFileName(self,msg,path,ffilter)
 
             if res != None and res != "":
-                if isinstance(res,list):
+                if isinstance(res,list) or isinstance(res,tuple):
                     res = res[0]
                 self.app.setWorkingDirectory(res)
             return res
@@ -1016,6 +1095,9 @@ class ApplicationWindow(QMainWindow):
         scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
         self.app.setScale(self.app.toninoPort,scale)
         self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
+        if self.app.currentFile and self.app.tonino_model == 1:
+            scaleName = self.app.strippedName(self.app.currentFile).split(".")[0]
+            self.app.setScaleName(self.app.toninoPort,scaleName)
         self.showMessage(_translate("Message","Scale uploaded",None))
         
     def addCoordinate(self,retry=True):
@@ -1133,8 +1215,15 @@ class ApplicationWindow(QMainWindow):
         ui = AboutDialogUI.Ui_Dialog()
         ui.setupUi(Dialog)
         version = _translate("Dialog", "Version", None) + " " + __version__
-        if self.app.included_firmware_version:        
-            version += " (firmware " + self.version2str(self.app.included_firmware_version,prefix="") + ")"
+        if self.app.included_firmware_version or self.app.included_tinyTonino_firmware_version:  
+            version += " (firmware "
+            if self.app.included_firmware_version:
+                version += self.version2str(self.app.included_firmware_version,prefix="")
+            if self.app.included_firmware_version and self.app.included_tinyTonino_firmware_version:
+                version += "/"
+            if self.app.included_tinyTonino_firmware_version:
+                version += self.version2str(self.app.included_tinyTonino_firmware_version,prefix="")
+            version += ")"
         ui.versionLabel.setText(version)
         ui.pushButton.clicked.connect(Dialog.accept)        
         Dialog.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -1220,7 +1309,11 @@ class ApplicationWindow(QMainWindow):
         if self.debug or self.app.versionGT(self.app.included_firmware_version,self.app.toninoFirmwareVersion):
             msgBox = QMessageBox(self)
             msgBox.setText(_translate("Dialog","The Tonino firmware is outdated!",None))
-            msgBox.setInformativeText(_translate("Dialog","Do you want to update to %s?",None)%self.version2str(self.app.included_firmware_version))
+            if self.app.tonino_model == 1:
+                firmware_version = self.app.included_tinyTonino_firmware_version
+            else:
+                firmware_version = self.app.included_firmware_version
+            msgBox.setInformativeText(_translate("Dialog","Do you want to update to %s?",None)%self.version2str(firmware_version))
             msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msgBox.setDefaultButton(QMessageBox.Ok)
             ret = msgBox.exec_()
@@ -1245,7 +1338,10 @@ class ApplicationWindow(QMainWindow):
         self.app.toninoPort = port
         self.app.toninoFirmwareVersion = version
         self.setEnabledUI(True)
-        self.showMessage(_translate("Message","Connected to Tonino",None) + " " + self.version2str(version))
+        if self.app.tonino_model == 0:
+            self.showMessage(_translate("Message","Connected to Tonino",None) + " " + self.version2str(version))
+        else:
+            self.showMessage(_translate("Message","Connected to TinyTonino",None) + " " + self.version2str(version))
         try:
             self.app.scales.setDeviceCoefficients(self.app.getScale(port))
         except:
@@ -1257,6 +1353,8 @@ class ApplicationWindow(QMainWindow):
     # on first call, the self.ports list is initialized, all other calls compare the list of ports with that one
     def deviceCheck(self):
         newports = self.app.ser.getSerialPorts()
+        if newports:
+            self.app.tonino_model = self.app.ser.getModel() # we update the Tonino model based on the new finds
         res = None
         if self.ports == None:
             # we just started up, check if there is already a Tonino connected we can attach too

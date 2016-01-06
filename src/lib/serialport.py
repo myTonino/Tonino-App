@@ -53,8 +53,10 @@ else:
         return str(c,"latin1")
         
 class SerialPort(object):
-    def __init__(self):
+    def __init__(self,model=0):
         self.port = None
+        self.model = None
+        self.setModel(model) # set model and correspoding baudrate
         self.baudrate = 115200
         self.bytesize = serial.EIGHTBITS
         self.parity= serial.PARITY_NONE
@@ -63,6 +65,18 @@ class SerialPort(object):
         self.SP = serial.Serial(rtscts=0, dsrdtr=0)
         self.SP = serial.Serial()
         self.cmdSeparatorChar = ":"
+        
+    def setModel(self,model=0):
+        self.model = model
+        if self.model == 1:
+            # Tiny Tonino
+            self.baudrate = 57600
+        else: 
+            # Classic Tonino
+            self.baudrate = 115200
+            
+    def getModel(self):
+        return self.model
         
     #loads configuration to ports
     def configurePort(self,port):
@@ -155,20 +169,46 @@ class SerialPort(object):
                 return None
             
     def getSerialPorts(self):
-        # we are looking for VID 403(hex)/1027(dec) and PID 6001(hex)/24577(dec)
+        # we are looking for 
+        #   Classic Tonino: VID 403(hex)/1027(dec) and PID 6001(hex)/24577(dec)
+        #      Tiny Tonino: VID 403(hex)/1027(dec) and PID 6015(hex)/24597(dec)
+        vid = 1027 # 403 (hex)
+        # ClassicTonino model (0)
+        classicToninoProduct = "VID_0403\+PID_6001"
+        classicToninoPID = 24577 # 6001 (hex)
+        # TinyTonino model (1)
+        tinyToninoProduct = "VID_0403\+PID_6015"
+        tinyToninoPID = 24597 # 6015 (hex)
         if serial.VERSION.split(".")[0].strip() == "2":
             # pyserial v2.7 version
             if platform.system() == 'Windows':
-                # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned
-                return list(p[0] for p in serial.tools.list_ports.grep("VID_0403\+PID_6001"))
+                tinyToninos = list(p[0] for p in serial.tools.list_ports.grep(tinyToninoProduct))
+                if tinyToninos and len(tinyToninos) > 0:
+                    self.setModel(1)
+                    return tinyToninos
+                else:
+                    self.setModel(0)
+                    return list(p[0] for p in serial.tools.list_ports.grep(classicToninoProduct))
             else:
                 ports = serial.tools.list_ports.comports()
-                # only connected FTDI FT232R products (VID=403(hex), PID=6001) are returned
                 # TODO: this might crash on Linux (test!)
-                return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=1027,pid=24577))
+                tinyToninos = list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=tinyToninoPID))
+                if tinyToninos and len(tinyToninos) > 0:
+                    self.setModel(1)
+                    return tinyToninos
+                else:
+                    self.setModel(0)
+                    return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=classicToninoPID))
         else:
+            # pyserial >2.7
             ports = serial.tools.list_ports.comports()
-            return list(self.filter_ports_by_vid_pid(ports,1027,24577))
+            tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
+            if tinyToninos and len(tinyToninos) > 0:
+                self.setModel(1)
+                return tinyToninos
+            else:
+                self.setModel(0)
+                return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
             
     def filter_ports_by_vid_pid(self,ports,vid=None,pid=None):
         """ Given a VID and PID value, scans for available port, and
@@ -188,15 +228,3 @@ class SerialPort(object):
                         yield port.device
             except:
                 pass
-        
-#    def sendReset(self,port):
-#        if not self.SP.isOpen():
-#            self.openPort(port)
-#        try:
-#            if self.SP.isOpen():
-#                self.SP.setDTR(0)
-#                time.sleep(0.1)
-#                self.SP.setDTR(1)
-#                self.closePort()
-#        except:
-#            self.closePort()

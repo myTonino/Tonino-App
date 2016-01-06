@@ -18,6 +18,8 @@ Setup
 1. Install the USB driver
 
 	Download and install the FTDI VCP driver for your platform from [http://www.ftdichip.com/Drivers/VCP.htm](http://www.ftdichip.com/Drivers/VCP.htm)
+	
+	NOTE: on Ubuntu as well as Mac OS X 10.9 and newer already include the required USB driver, so no additional installation is required on those platforms
 
 2. Install the Tonino app
 

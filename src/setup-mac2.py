@@ -35,7 +35,8 @@ from setuptools import setup
 import string
 from plistlib import Plist
 
-from PyQt4.QtCore import (QDir)
+#from PyQt4.QtCore import (QDir)
+from PyQt5.QtCore import (QDir)
 
 import lib
 
@@ -52,14 +53,6 @@ QTDIR = HOME + r'/Qt5.4.2/5.4/clang_64/'
 
 APP = ['tonino.py']
 
-# firmware file name
-qd_include = QDir(os.path.dirname(os.path.realpath(__file__)) + "/includes/")
-firmware_files = qd_include.entryInfoList(["tonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
-if len(firmware_files) > 0:
-    firmware_name = str(firmware_files[0].fileName())
-else:
-    print("firmware *.hex missing!")
-    quit()
 
 DATA_FILES = [
     "doc/LICENSE.txt",
@@ -80,9 +73,23 @@ DATA_FILES = [
     ("../Resources", [r"conf/qt.conf"]),
     ("../Resources", [r"includes/mac/avrdude.conf"]),
     ("../Resources", [r"includes/mac/avrdude"]),
-    ("../Resources", [r"includes/" + firmware_name]),
     ("../Resources", [r"icons/tonino_doc.icns"]),
   ]
+
+# firmware file name
+qd_include = QDir(os.path.dirname(os.path.realpath(__file__)) + "/includes/")
+firmware_files = qd_include.entryInfoList(["tonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
+tiny_firmware_files = qd_include.entryInfoList(["tinyTonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
+if len(firmware_files) + len(tiny_firmware_files) > 0:
+    if len(firmware_files) > 0:
+        firmware_name = str(firmware_files[0].fileName())
+        DATA_FILES = DATA_FILES + [("../Resources", [r"includes/" + firmware_name])]
+    if len(tiny_firmware_files) > 0:
+        tiny_firmware_name = str(tiny_firmware_files[0].fileName())
+        DATA_FILES = DATA_FILES + [("../Resources", [r"includes/" + tiny_firmware_name])]
+else:
+    print("firmware *.hex missing!")
+    quit()
   
 plist = Plist.fromFile('conf/Info2.plist')
 plist.update({ 'CFBundleDisplayName': 'Tonino',
