@@ -113,7 +113,7 @@ class Ui_Preferences(object):
         self.horizontalLayout_2.addWidget(self.range_min_label)
         self.rangeSlider = QtWidgets.QSlider(self.groupBoxTargetRange)
         self.rangeSlider.setMinimumSize(QtCore.QSize(0, 22))
-        self.rangeSlider.setMaximum(10)
+        self.rangeSlider.setMaximum(5)
         self.rangeSlider.setPageStep(2)
         self.rangeSlider.setProperty("value", 0)
         self.rangeSlider.setTracking(False)
@@ -149,6 +149,6 @@ class Ui_Preferences(object):
         self.groupBoxTargetValue.setTitle(_translate("Preferences", "Value"))
         self.groupBoxTargetRange.setTitle(_translate("Preferences", "Range"))
         self.range_min_label.setText(_translate("Preferences", "0"))
-        self.range_max_label.setText(_translate("Preferences", "10"))
+        self.range_max_label.setText(_translate("Preferences", "5"))
 
 from . import icons_rc

@@ -70,12 +70,12 @@
     <message>
         <location filename="../uic/AboutDialogUI.py" line="77"/>
         <source>Copyright &#xc2;&#xa9; 2015 Marko Luther, Paul Holleis</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../lib/main.py" line="1242"/>
         <source>Tonino**</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -404,7 +404,7 @@
     <message>
         <location filename="../lib/main.py" line="1344"/>
         <source>Connected to TinyTonino</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbonden met TinyTonino</translation>
     </message>
 </context>
 <context>
@@ -432,27 +432,27 @@
     <message>
         <location filename="../uic/PreferencesDialogUI.py" line="148"/>
         <source>Target</source>
-        <translation type="unfinished"></translation>
+        <translation>Doel</translation>
     </message>
     <message>
         <location filename="../uic/PreferencesDialogUI.py" line="149"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarde</translation>
     </message>
     <message>
         <location filename="../uic/PreferencesDialogUI.py" line="150"/>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Marge</translation>
     </message>
     <message>
         <location filename="../uic/PreferencesDialogUI.py" line="151"/>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../uic/PreferencesDialogUI.py" line="152"/>
-        <source>10</source>
-        <translation type="unfinished"></translation>
+        <source>5</source>
+        <translation>5</translation>
     </message>
 </context>
 <context>

@@ -446,7 +446,7 @@
     </message>
     <message>
         <location filename="../uic/PreferencesDialogUI.py" line="152"/>
-        <source>10</source>
+        <source>5</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

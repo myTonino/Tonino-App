@@ -260,7 +260,7 @@
                </size>
               </property>
               <property name="maximum">
-               <number>10</number>
+               <number>5</number>
               </property>
               <property name="pageStep">
                <number>2</number>
@@ -285,7 +285,7 @@
             <item>
              <widget class="QLabel" name="range_max_label">
               <property name="text">
-               <string>10</string>
+               <string>5</string>
               </property>
              </widget>
             </item>
