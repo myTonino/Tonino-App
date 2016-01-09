@@ -91,7 +91,7 @@ class Ui_Preferences(object):
         self.targetValueSpinBox.setMinimumSize(QtCore.QSize(0, 22))
         self.targetValueSpinBox.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.targetValueSpinBox.setMaximum(200)
-        self.targetValueSpinBox.setSingleStep(0)
+        self.targetValueSpinBox.setSingleStep(1)
         self.targetValueSpinBox.setObjectName("targetValueSpinBox")
         self.gridLayout.addWidget(self.targetValueSpinBox, 0, 0, 1, 1)
         self.horizontalLayout_3.addWidget(self.groupBoxTargetValue)
