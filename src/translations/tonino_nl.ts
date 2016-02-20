@@ -367,7 +367,7 @@
         <translation>Verbinden...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1370"/>
+        <location filename="../lib/main.py" line="1372"/>
         <source>Connected to Tonino</source>
         <translation>Verbonden met Tonino</translation>
     </message>
@@ -397,12 +397,12 @@
         <translation>Niet verbonden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1376"/>
+        <location filename="../lib/main.py" line="1378"/>
         <source>Scale could not be retrieved</source>
         <translation>Schaal kon niet worden ontvangen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1372"/>
+        <location filename="../lib/main.py" line="1374"/>
         <source>Connected to TinyTonino</source>
         <translation>Verbonden met TinyTonino</translation>
     </message>

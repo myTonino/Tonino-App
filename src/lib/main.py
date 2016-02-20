@@ -654,7 +654,7 @@ class PreferencesDialog(ToninoDialog):
         self.app.setTarget(self.app.toninoPort,v,r)
         # remember this as last setting
         self.lastTargetValue = v
-        self.lastTargetRange = r        
+        self.lastTargetRange = r
         self.done(0)
         
     def reject(self):
@@ -1365,6 +1365,8 @@ class ApplicationWindow(QMainWindow):
     def connectTonino(self,port,version):
         self.app.toninoPort = port
         self.app.toninoFirmwareVersion = version
+        # we update the Tonino model based on the new finds
+        self.app.setModel(self.app.ser.getModel())
         self.setEnabledUI(True)
         if self.app.getModel() == 0:
             self.showMessage(_translate("Message","Connected to Tonino",None) + " " + self.version2str(version))
@@ -1374,8 +1376,6 @@ class ApplicationWindow(QMainWindow):
             self.app.scales.setDeviceCoefficients(self.app.getScale(port))
         except:
             self.showMessage(_translate("Message","Scale could not be retrieved",None) + " " + self.version2str(version))
-        # we update the Tonino model based on the new finds
-        self.app.setModel(self.app.ser.getModel())
         self.deviceCheckInterval = self.slowCheck
         self.checkFirmwareVersion()
 

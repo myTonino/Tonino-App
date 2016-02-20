@@ -342,7 +342,7 @@
         <translation>Connection en cours...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1370"/>
+        <location filename="../lib/main.py" line="1372"/>
         <source>Connected to Tonino</source>
         <translation>Connecté à Tonino</translation>
     </message>
@@ -392,12 +392,12 @@
         <translation>Non connecté</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1376"/>
+        <location filename="../lib/main.py" line="1378"/>
         <source>Scale could not be retrieved</source>
         <translation>L&apos;échelle n&apos;a pas pu être récupéré</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1372"/>
+        <location filename="../lib/main.py" line="1374"/>
         <source>Connected to TinyTonino</source>
         <translation>Connecté à TinyTonino</translation>
     </message>

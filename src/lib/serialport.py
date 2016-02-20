@@ -134,6 +134,7 @@ class SerialPort(object):
             return None
         
     def sendCommand(self,port,command,retry=True):
+        #print("sendCommand",port,command,retry,self.baudrate)
         res = None
         if not self.SP.isOpen():
             self.openPort(port)
@@ -146,10 +147,12 @@ class SerialPort(object):
                 time.sleep(0.3)
                 r = self.SP.readline()
                 response = cmd2str(r)
+                #print("response",response)
                 if not (response and len(response) > 0):
                     # we got an empty line, maybe the next line contains the response
                     r = self.SP.readline()
                     response = cmd2str(r)
+                    #print("second response",response)
                 if response and len(response) > 0:
                     # each <command> is answered by the Tonino by returning "<command>:<result>\n"
                     parts = response.split(command + self.cmdSeparatorChar)
@@ -162,6 +165,7 @@ class SerialPort(object):
             else:
                 return res
         except:
+            #print("exception")
             self.closePort()
             if retry:
                 return self.sendCommand(port,command,False)
@@ -180,17 +184,28 @@ class SerialPort(object):
         tinyToninoProduct = "VID_0403\+PID_6015"
         tinyToninoPID = 24597 # 6015 (hex)
         if platform.system() == 'Windows':
-            tinyToninos = list(p[0] for p in serial.tools.list_ports.grep(tinyToninoProduct))
-            if tinyToninos and len(tinyToninos) > 0:
-                self.setModel(1)
-                return tinyToninos
+            if serial.VERSION.split(".")[0].strip() == "2":
+                tinyToninos = list(p[0] for p in serial.tools.list_ports.grep(tinyToninoProduct))
+                if tinyToninos and len(tinyToninos) > 0:
+                    self.setModel(1)
+                    return tinyToninos
+                else:
+                    self.setModel(0)
+                    return list(p[0] for p in serial.tools.list_ports.grep(classicToninoProduct))
             else:
-                self.setModel(0)
-                return list(p[0] for p in serial.tools.list_ports.grep(classicToninoProduct))
+                # pyserial >2.7
+                ports = list(serial.tools.list_ports.comports())
+                tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
+                if tinyToninos and len(tinyToninos) > 0:
+                    self.setModel(1)
+                    return tinyToninos
+                else:
+                    self.setModel(0)
+                    return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
         else:
             if serial.VERSION.split(".")[0].strip() == "2":
                 # pyserial v2.7 version
-                ports = serial.tools.list_ports.comports()
+                ports = list(serial.tools.list_ports.comports())
                 # TODO: this might crash on Linux (test!)
                 tinyToninos = list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=tinyToninoPID))
                 if tinyToninos and len(tinyToninos) > 0:
@@ -201,7 +216,7 @@ class SerialPort(object):
                     return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=classicToninoPID))
             else:
                 # pyserial >2.7
-                ports = serial.tools.list_ports.comports()
+                ports = list(serial.tools.list_ports.comports())
                 tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
                 if tinyToninos and len(tinyToninos) > 0:
                     self.setModel(1)
@@ -224,7 +239,7 @@ class SerialPort(object):
             #Parse some info out of the identifier string
             try: 
                 if vid == None or port.vid == vid:
-                    if  pid == None or  port.pid == pid:
+                    if pid == None or  port.pid == pid:
                         yield port.device
             except:
                 pass
