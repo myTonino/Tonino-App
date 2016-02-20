@@ -3,7 +3,7 @@
 #
 # scales.py
 #
-# Copyright (c) 2015, Paul Holleis, Marko Luther
+# Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -49,8 +49,7 @@ class Scales(QAbstractTableModel):
     def __init__(self, app=None, parent=None, *args):
         QAbstractTableModel.__init__(self,parent,*args)
         self.app = app
-        self.defaultCoefficients = [.0, .0, 102.2727273, -128.4090909] # x3, x2, x, c 
-        # old w/b: [.0, .0, 91.24835742, -254.9145861]
+        self.defaultCoefficients = [.0, .0, 102.2727273, -128.4090909] # x3, x2, x, c
         self.deviceCoefficients = None
         # coefficients are recomputed on loading/setting from coordinates if possible (eg. coordinates are given)
         self.coefficients = None
@@ -304,7 +303,7 @@ class Scales(QAbstractTableModel):
         elif role == Qt.BackgroundColorRole:
             raw_tonino_value = self.coordinates[index.row()][0]
             tonino_value = self.coordinates[index.row()][1]
-            if raw_tonino_value < self.app.aw.ui.widget.canvas.x_min or raw_tonino_value > self.app.aw.ui.widget.canvas.x_max or tonino_value > 200 or tonino_value < 0:
+            if raw_tonino_value < self.app.aw.ui.widget.canvas.x_min or raw_tonino_value > self.app.aw.ui.widget.canvas.x_max or tonino_value > 250 or tonino_value < 0:
                 return None
             else:
                 return QBrush(QColor(234,229,216))
@@ -370,7 +369,7 @@ class ValidatedItemDelegate(QStyledItemDelegate):
         if index.column() == 0: #only on the cells in the first column
             editor = QLineEdit(widget)
             # accept only numbers from 0-200
-            validator = QRegExpValidator(QRegExp("200|1\d\d|\d\d|\d"), editor)
+            validator = QRegExpValidator(QRegExp("2\d\d|1\d\d|\d\d|\d"), editor)
             editor.setValidator(validator)
             return editor
         return super(ValidatedItemDelegate, self).createEditor(widget, option, index)

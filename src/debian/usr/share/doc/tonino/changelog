@@ -1,26 +1,38 @@
+tonino (1.0.14-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.13:
+   - adds support for TinyTonino
+ --  <dev@my-tonino.com>  Sat, 20 Feb 2016 19:32:14 +0200
+
+tonino (1.0.13-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.12:
+   - adds quick firmware updater
+ --  <dev@my-tonino.com>  Wed, 25 Nov 2015 19:32:14 +0200
+ 
 tonino (1.0.12-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.11:
    - bug fixes
- --  <dev@my-tonino.com>  Mon, 28 Sep 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Mon, 28 Sep 2015 19:32:14 +0200
 
 tonino (1.0.11-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.10:
    - bug fixes
- --  <dev@my-tonino.com>  Fri, 21 Aug 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Fri, 21 Aug 2015 19:32:14 +0200
 
 tonino (1.0.10-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.9:
    - updated build setup
- --  <dev@my-tonino.com>  Wed, 12 Aug 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Wed, 12 Aug 2015 19:32:14 +0200
 
 tonino (1.0.9-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.8:
    - font fix for OS X 10.10
- --  <dev@my-tonino.com>  Sat, 10 Jan 2014 19:32:14 +0200
+ --  <dev@my-tonino.com>  Sat, 10 Jan 2015 19:32:14 +0200
 
 tonino (1.0.8-1) precise; urgency=low
   * new upstream release

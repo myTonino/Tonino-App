@@ -22,7 +22,8 @@ Tonino Resources
 
 Version History
 ---------------
-- v1.0.13 Bug fixes
+- v1.0.14 Adds support for TinyTonino
+- v1.0.13 Adds quick firmware updater
 - v1.0.12 Bug fixes
 - v1.0.11 Bug fixes
 - v1.0.10 Updated build setup

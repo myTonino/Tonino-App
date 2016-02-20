@@ -2,7 +2,7 @@
 #
 # build-linux.sh
 #
-# Copyright (c) 2015, Paul Holleis, Marko Luther
+# Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 

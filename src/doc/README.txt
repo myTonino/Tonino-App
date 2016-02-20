@@ -34,10 +34,12 @@ o Mac OS X (>=10.7.x)
 
 - Install USB/serial driver from FTDI
    http://www.ftdichip.com/Drivers/VCP.htm
+   NOTE: OS X 10.9 and later contain already support for the FTDI hardware and therefore no additional driver needs to be installed on those systems
 - Download and run the Tonino App OS X installer
 - Double click on the dmg file you just downloaded
 - Double click the disk image which appears on your desktop
 - Drag the Tonino application icon to your Applications directory
+- On OS X 10.8 Mountain Lion and higher you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app
 
 
 o Linux
@@ -99,8 +101,12 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.14 (20.02.2016)
+ - Adds support for TinyTonino
+ - Updated firmware to v1.1.6
+
 v1.0.13 (25.11.2015)
- - Bug fixes
+ - Adds quick firmware updater
 
 v1.0.12 (28.9.2015)
  - Bug fixes

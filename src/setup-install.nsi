@@ -1,7 +1,7 @@
 ;
 ; setup-install.nsi
 ;
-; Copyright (c) 2015, Paul Holleis, Marko Luther
+; Copyright (c) 2016, Paul Holleis, Marko Luther
 ; All rights reserved.
 ; 
 ; 
@@ -95,7 +95,7 @@ RequestExecutionLevel admin
 !define py2exeOutputDir 'dist'
 !define PRODUCT_NAME "Tonino"
 !define PRODUCT_EXE "tonino.exe"
-!define PRODUCT_VERSION "1.0.13.0"
+!define PRODUCT_VERSION "1.0.14.0"
 !define PRODUCT_PUBLISHER "Marko Luther, Paul Holleis"
 !define PRODUCT_WEB_SITE "http://my-tonino.com"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_EXE}"

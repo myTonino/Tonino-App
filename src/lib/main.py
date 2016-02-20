@@ -3,7 +3,7 @@
 #
 # main.py
 #
-# Copyright (c) 2015, Paul Holleis, Marko Luther
+# Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -127,25 +127,23 @@ class Tonino(QApplication):
         # calib constants
         self.calib_dark_scan = False
         self.clib_double_scan = False
-        if self.tonino_model == 0:
-            # for the Classic Tonino
-            self.std_calib_low_r = 2600. # brown disk red reading
-            self.std_calib_low_b = 1600. # brown disk blue reading
-            self.std_calib_high_r = 15000. # red disk red reading
-            self.std_calib_high_b = 3500. # red disk blue reading
-        else:
-            # for the Tiny Tonino
-            self.std_calib_low_r = 6684. # brown disk red reading
-            self.std_calib_low_b = 4330. # brown disk blue reading
-            self.std_calib_high_r = 32152. # red disk red reading
-            self.std_calib_high_b = 8618. # red disk blue reading
+        
+        ### NOTE: the calib target and range values are reset by the function setModel below!!!
+        # setup for the Classic Tonino (this will be updated dynamically based on the model of the connected Tonino in setModel())
+        self.std_calib_low_r = 2600. # brown disk red reading
+        self.std_calib_low_b = 1600. # brown disk blue reading
+        self.std_calib_high_r = 15000. # red disk red reading
+        self.std_calib_high_b = 3600. # red disk blue reading
+
+        # calib targets
         self.std_calib_target_low = 1.5
         self.std_calib_target_high = 3.7
+        
         # the tolerance distance of the calib measurements to the expected values above that still allow the recognition
-        self.calib_red_range_low = 1300
-        self.calib_red_range_high = 6000
-        self.calib_blue_range_low = 1000
-        self.calib_blue_range_high = 1600
+        self.std_calib_low_r_range = 2000 # brown disk red reading range 
+        self.std_calib_low_b_range = 1300 # brown disk blue reading range
+        self.std_calib_high_r_range = 6500 # red disk red reading range 
+        self.std_calib_high_b_range = 2000 # red disk blue reading range
         
         # variables
         self.workingDirectory = None
@@ -158,13 +156,41 @@ class Tonino(QApplication):
         self.toninoFirmwareVersion = None # a list of three int indicating major, minor and build versions of the connected device
         self.toninoControllerType = None # the type of the Tonino micro controller (Arduino Nano, Micro,..)
         self.scales = lib.scales.Scales(self,self)
-        self.ser = lib.serialport.SerialPort(model=self.tonino_model) # the serial connection object
+        self.ser = lib.serialport.SerialPort() # the serial connection object
         # calibration raw readings
         self.calib_low_r = None
         self.calib_low_b = None
         self.calib_high_r = None
         self.calib_high_b = None
         self.retrieveIncludedFirmware()
+        
+    def setModel(self,model):
+        self.tonino_model = model
+        if self.tonino_model == 0:
+            # for the Classic Tonino
+            self.std_calib_low_r = 2600. # brown disk red reading
+            self.std_calib_low_b = 1600. # brown disk blue reading
+            self.std_calib_high_r = 15000. # red disk red reading
+            self.std_calib_high_b = 3600. # red disk blue reading
+            # --
+            self.std_calib_low_r_range = 2100 # brown disk red reading rang
+            self.std_calib_low_b_range = 1500 # brown disk blue reading range 
+            self.std_calib_high_r_range = 7000 # red disk red reading range 
+            self.std_calib_high_b_range = 2100 # red disk blue reading range
+        else:
+            # for the Tiny Tonino
+            self.std_calib_low_r = 14792. # brown disk red reading
+            self.std_calib_low_b = 8616. # brown disk blue reading
+            self.std_calib_high_r = 71392. # red disk red reading
+            self.std_calib_high_b = 16806. # red disk blue reading
+            # --
+            self.std_calib_low_r_range = 1500 # brown disk red reading range
+            self.std_calib_low_b_range = 1000 # brown disk blue reading range
+            self.std_calib_high_r_range = 6000 # red disk red reading range
+            self.std_calib_high_b_range = 1600 # red disk blue reading range
+        
+    def getModel(self):
+        return self.tonino_model
       
     def clearCalibReadings(self):
         self.calib_low_r = None
@@ -175,11 +201,11 @@ class Tonino(QApplication):
     # detects if the given red and blue readings are in the range of either the low or the high calibration disk
     # and sets the corresponding variables accordingly
     def setCalibReadings(self,r,b):
-        if abs(r - self.std_calib_low_r) < self.calib_red_range_low and abs(b - self.std_calib_low_b) < self.calib_blue_range_low:
+        if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range:
             # calib_low disk recognized
             self.calib_low_r = r
             self.calib_low_b = b
-        elif abs(r - self.std_calib_high_r) < self.calib_red_range_high and abs(b - self.std_calib_high_b) < self.calib_blue_range_high:
+        elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range:
             # calib_high disk recognized
             self.calib_high_r = r
             self.calib_high_b = b
@@ -339,7 +365,7 @@ class Tonino(QApplication):
         resourceBinaryPath = resources.getResourceBinaryPath()
         avrdude = resourceBinaryPath + self.avrdude
         avrdudeconf = resourceBinaryPath + self.avrdude_conf
-        if self.tonino_model == 1:
+        if self.getModel() == 1:
             # TinyTonino firmware
             toninoSketch = resourcePath + self.included_tinyTonino_firmware_name
         else:
@@ -595,7 +621,7 @@ class PreferencesDialog(ToninoDialog):
                 self.ui.displaySlider.setValue(self.displayBrightness)
             except:
                 pass
-            if self.app.tonino_model == 1:
+            if self.app.getModel() == 1:
                 try:
                     v = self.app.getTarget(self.app.toninoPort)
                     self.targetValue = self.lastTargetValue = v[0]
@@ -725,7 +751,7 @@ class DebugDialog(ToninoDialog):
         self.app.processEvents()
         self.insertRequestResponse("GETBRIGHTNESS")
         self.app.processEvents()
-        if self.app.tonino_model == 0: 
+        if self.app.getModel() == 0: 
             # followings are only supported by the Classic Tonino:
             self.insertRequestResponse("GETCAL")
             self.app.processEvents()
@@ -1097,7 +1123,7 @@ class ApplicationWindow(QMainWindow):
         scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
         self.app.setScale(self.app.toninoPort,scale)
         self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
-        if self.app.currentFile and self.app.tonino_model == 1:
+        if self.app.currentFile and self.app.getModel() == 1:
             scaleName = self.app.strippedName(self.app.currentFile).split(".")[0]
             self.app.setScaleName(self.app.toninoPort,scaleName)
         self.showMessage(_translate("Message","Scale uploaded",None))
@@ -1311,7 +1337,7 @@ class ApplicationWindow(QMainWindow):
         if self.debug or self.app.versionGT(self.app.included_firmware_version,self.app.toninoFirmwareVersion):
             msgBox = QMessageBox(self)
             msgBox.setText(_translate("Dialog","The Tonino firmware is outdated!",None))
-            if self.app.tonino_model == 1:
+            if self.app.getModel() == 1:
                 firmware_version = self.app.included_tinyTonino_firmware_version
             else:
                 firmware_version = self.app.included_firmware_version
@@ -1340,7 +1366,7 @@ class ApplicationWindow(QMainWindow):
         self.app.toninoPort = port
         self.app.toninoFirmwareVersion = version
         self.setEnabledUI(True)
-        if self.app.tonino_model == 0:
+        if self.app.getModel() == 0:
             self.showMessage(_translate("Message","Connected to Tonino",None) + " " + self.version2str(version))
         else:
             self.showMessage(_translate("Message","Connected to TinyTonino",None) + " " + self.version2str(version))
@@ -1348,6 +1374,8 @@ class ApplicationWindow(QMainWindow):
             self.app.scales.setDeviceCoefficients(self.app.getScale(port))
         except:
             self.showMessage(_translate("Message","Scale could not be retrieved",None) + " " + self.version2str(version))
+        # we update the Tonino model based on the new finds
+        self.app.setModel(self.app.ser.getModel())
         self.deviceCheckInterval = self.slowCheck
         self.checkFirmwareVersion()
 
@@ -1355,8 +1383,6 @@ class ApplicationWindow(QMainWindow):
     # on first call, the self.ports list is initialized, all other calls compare the list of ports with that one
     def deviceCheck(self):
         newports = self.app.ser.getSerialPorts()
-        if newports:
-            self.app.tonino_model = self.app.ser.getModel() # we update the Tonino model based on the new finds
         res = None
         if self.ports == None:
             # we just started up, check if there is already a Tonino connected we can attach too

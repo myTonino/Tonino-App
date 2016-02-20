@@ -3,7 +3,7 @@
 <context>
     <name>Dialog</name>
     <message>
-        <location filename="../lib/main.py" line="1066"/>
+        <location filename="../lib/main.py" line="1092"/>
         <source>Save As</source>
         <translation>Opslaan Als</translation>
     </message>
@@ -13,12 +13,12 @@
         <translation>Versie</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1318"/>
+        <location filename="../lib/main.py" line="1344"/>
         <source>Do you want to update to %s?</source>
         <translation>Wilt u updaten naar %s?</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1410"/>
+        <location filename="../lib/main.py" line="1436"/>
         <source>Do you want to save your changes?</source>
         <translation>Wilt u uw wijzigingen opslaan?</translation>
     </message>
@@ -33,22 +33,22 @@
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1047"/>
+        <location filename="../lib/main.py" line="1073"/>
         <source>Open Scale</source>
         <translation>Open Schaal</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1079"/>
+        <location filename="../lib/main.py" line="1105"/>
         <source>Apply Scale</source>
         <translation>Schaal Toepassen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1313"/>
+        <location filename="../lib/main.py" line="1339"/>
         <source>The Tonino firmware is outdated!</source>
         <translation>De Tonino firmware is verouderd!</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1409"/>
+        <location filename="../lib/main.py" line="1435"/>
         <source>The scale has been modified.</source>
         <translation>De schaal is gewijzigd.</translation>
     </message>
@@ -63,55 +63,55 @@
         <translation>Kalibratie</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1242"/>
+        <location filename="../lib/main.py" line="1268"/>
         <source>Tonino*</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="77"/>
-        <source>Copyright &#xc2;&#xa9; 2015 Marko Luther, Paul Holleis</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../lib/main.py" line="1244"/>
+        <location filename="../lib/main.py" line="1270"/>
         <source>Tonino**</source>
         <translation></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../uic/AboutDialogUI.py" line="77"/>
+        <source>Copyright © 2016 Marko Luther, Paul Holleis</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MAC_APPLICATION_MENU</name>
     <message>
-        <location filename="../lib/main.py" line="879"/>
+        <location filename="../lib/main.py" line="905"/>
         <source>Services</source>
         <translation>Voorzieningen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="880"/>
+        <location filename="../lib/main.py" line="906"/>
         <source>Hide %1</source>
         <translation>Verberg %1</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="881"/>
+        <location filename="../lib/main.py" line="907"/>
         <source>Hide Others</source>
         <translation>Anderen Verbergen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="882"/>
+        <location filename="../lib/main.py" line="908"/>
         <source>Show All</source>
         <translation>Toon Alles</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="883"/>
+        <location filename="../lib/main.py" line="909"/>
         <source>Preferences...</source>
         <translation>Voorkeuren...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="884"/>
+        <location filename="../lib/main.py" line="910"/>
         <source>Quit %1</source>
         <translation>Sluiten %1</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="885"/>
+        <location filename="../lib/main.py" line="911"/>
         <source>About %1</source>
         <translation>Over %1</translation>
     </message>
@@ -124,17 +124,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="797"/>
+        <location filename="../lib/main.py" line="823"/>
         <source>Name</source>
         <translation>Naam</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="798"/>
+        <location filename="../lib/main.py" line="824"/>
         <source>add</source>
         <translation>toevoegen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="799"/>
+        <location filename="../lib/main.py" line="825"/>
         <source>delete</source>
         <translation>verwijder</translation>
     </message>
@@ -317,92 +317,92 @@
 <context>
     <name>Message</name>
     <message>
-        <location filename="../lib/main.py" line="542"/>
+        <location filename="../lib/main.py" line="568"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="364"/>
+        <location filename="../lib/main.py" line="390"/>
         <source>Firmware update failed</source>
         <translation>Firmware update mislukt</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="366"/>
+        <location filename="../lib/main.py" line="392"/>
         <source>Firmware successfully updated</source>
         <translation>Firmware geupdatet</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="509"/>
+        <location filename="../lib/main.py" line="535"/>
         <source>Scale could not be loaded</source>
         <translation>Schaal kon niet worden geladen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="528"/>
+        <location filename="../lib/main.py" line="554"/>
         <source>Scale could not be saved</source>
         <translation>Schaal kon niet worden opgeslagen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="917"/>
+        <location filename="../lib/main.py" line="943"/>
         <source>Updating firmware...</source>
         <translation>Firmware updaten...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1093"/>
+        <location filename="../lib/main.py" line="1119"/>
         <source>Tonino reset to defaults</source>
         <translation>Tonino voorkeuren resetten</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1103"/>
+        <location filename="../lib/main.py" line="1129"/>
         <source>Scale uploaded</source>
         <translation>Schaal geupload</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1118"/>
+        <location filename="../lib/main.py" line="1144"/>
         <source>Coordinate out of range</source>
         <translation>Coordinaat buiten bereik</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1295"/>
+        <location filename="../lib/main.py" line="1321"/>
         <source>Connecting...</source>
         <translation>Verbinden...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1344"/>
+        <location filename="../lib/main.py" line="1370"/>
         <source>Connected to Tonino</source>
         <translation>Verbonden met Tonino</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="542"/>
+        <location filename="../lib/main.py" line="568"/>
         <source>Scale could not be applied</source>
         <translation>Schaal kon niet worden toegepast</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="300"/>
+        <location filename="../lib/main.py" line="326"/>
         <source>Loading settings failed</source>
         <translation>Instellingen konden niet worden geladen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="316"/>
+        <location filename="../lib/main.py" line="342"/>
         <source>Saving settings failed</source>
         <translation>Instellingen konden niet worden opgeslagen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="208"/>
+        <location filename="../lib/main.py" line="234"/>
         <source>Calibration updated</source>
         <translation>Kalibratie geupdatet</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1333"/>
+        <location filename="../lib/main.py" line="1359"/>
         <source>Not connected</source>
         <translation>Niet verbonden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1350"/>
+        <location filename="../lib/main.py" line="1376"/>
         <source>Scale could not be retrieved</source>
         <translation>Schaal kon niet worden ontvangen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1346"/>
+        <location filename="../lib/main.py" line="1372"/>
         <source>Connected to TinyTonino</source>
         <translation>Verbonden met TinyTonino</translation>
     </message>
@@ -458,37 +458,37 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../lib/main.py" line="887"/>
+        <location filename="../lib/main.py" line="913"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="888"/>
+        <location filename="../lib/main.py" line="914"/>
         <source>Save</source>
         <translation>Opslaan</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="890"/>
+        <location filename="../lib/main.py" line="916"/>
         <source>Open</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="891"/>
+        <location filename="../lib/main.py" line="917"/>
         <source>Cancel</source>
         <translation>Annuleer</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="892"/>
+        <location filename="../lib/main.py" line="918"/>
         <source>Close</source>
         <translation>Sluit</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="893"/>
+        <location filename="../lib/main.py" line="919"/>
         <source>Abort</source>
         <translation>Afbreken</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="889"/>
+        <location filename="../lib/main.py" line="915"/>
         <source>Don&apos;t Save</source>
         <translation>Niet Opslaan</translation>
     </message>

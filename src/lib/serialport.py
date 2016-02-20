@@ -3,7 +3,7 @@
 #
 # serialport.py
 #
-# Copyright (c) 2015, Paul Holleis, Marko Luther
+# Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -179,17 +179,17 @@ class SerialPort(object):
         # TinyTonino model (1)
         tinyToninoProduct = "VID_0403\+PID_6015"
         tinyToninoPID = 24597 # 6015 (hex)
-        if serial.VERSION.split(".")[0].strip() == "2":
-            # pyserial v2.7 version
-            if platform.system() == 'Windows':
-                tinyToninos = list(p[0] for p in serial.tools.list_ports.grep(tinyToninoProduct))
-                if tinyToninos and len(tinyToninos) > 0:
-                    self.setModel(1)
-                    return tinyToninos
-                else:
-                    self.setModel(0)
-                    return list(p[0] for p in serial.tools.list_ports.grep(classicToninoProduct))
+        if platform.system() == 'Windows':
+            tinyToninos = list(p[0] for p in serial.tools.list_ports.grep(tinyToninoProduct))
+            if tinyToninos and len(tinyToninos) > 0:
+                self.setModel(1)
+                return tinyToninos
             else:
+                self.setModel(0)
+                return list(p[0] for p in serial.tools.list_ports.grep(classicToninoProduct))
+        else:
+            if serial.VERSION.split(".")[0].strip() == "2":
+                # pyserial v2.7 version
                 ports = serial.tools.list_ports.comports()
                 # TODO: this might crash on Linux (test!)
                 tinyToninos = list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=tinyToninoPID))
@@ -199,16 +199,16 @@ class SerialPort(object):
                 else:
                     self.setModel(0)
                     return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=classicToninoPID))
-        else:
-            # pyserial >2.7
-            ports = serial.tools.list_ports.comports()
-            tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
-            if tinyToninos and len(tinyToninos) > 0:
-                self.setModel(1)
-                return tinyToninos
             else:
-                self.setModel(0)
-                return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
+                # pyserial >2.7
+                ports = serial.tools.list_ports.comports()
+                tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
+                if tinyToninos and len(tinyToninos) > 0:
+                    self.setModel(1)
+                    return tinyToninos
+                else:
+                    self.setModel(0)
+                    return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
             
     def filter_ports_by_vid_pid(self,ports,vid=None,pid=None):
         """ Given a VID and PID value, scans for available port, and
