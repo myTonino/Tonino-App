@@ -111,7 +111,7 @@ class Tonino(QApplication):
         self.aw = None
         
         # constants
-        self.tonino_model = 1 # 0: Classic Tonino (@115200 baud); 1: Tiny Tonino (@57600 baud)
+        self.tonino_model = 0 # 0: Classic Tonino (@115200 baud); 1: Tiny Tonino (@57600 baud)
         if platform.system() == 'Windows':
             self.avrdude = "avrdude.exe"
         else:
