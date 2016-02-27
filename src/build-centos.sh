@@ -29,9 +29,9 @@ do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
 # PyQt5
-#    pyuic5 -o uic/${fn}.py --from-imports ui/${fn}.ui
+    pyuic5 -o uic/${fn}.py --from-imports ui/${fn}.ui
 # PyQt4
-    pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui 
+#    pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui 
 done
 
 # qrc
@@ -40,16 +40,18 @@ do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
 # PyQt5
-#    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
+    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
 # PyQt4
-    pyrcc4 -py3 -o uic/${fn}_rc.py qrc/${fn}.qrc
+#    pyrcc4 -o uic/${fn}_rc.py qrc/${fn}.qrc
+#    pyrcc4 -py3 -o uic/${fn}_rc.py qrc/${fn}.qrc
 done
 
 # translations
 # PyQt5
-#pylupdate5 conf/tonino.pro
+pylupdate5 conf/tonino.pro
 # PyQt4
-pylupdate4 conf/tonino.pro
+#pylupdate4 conf/tonino.pro
+
 lrelease -verbose conf/tonino.pro
 
 # distribution
