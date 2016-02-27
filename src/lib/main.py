@@ -86,6 +86,9 @@ def __dependencies_for_freezing():
     from scipy.special import _ufuncs_cxx
 #    from scipy import integrate
 #    from scipy import interpolate
+    # to make bbfreeze on Linux happy with scipy > 0.17.0
+    import scipy.linalg.cython_blas
+    import scipy.linalg.cython_lapack
     if pyqtversion < 5:
         import PyQt4.QtSvg
         import PyQt4.QtXml
