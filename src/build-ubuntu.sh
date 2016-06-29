@@ -84,8 +84,12 @@ cp $QT/plugins/imageformats/libqsvg.so dist/Resources/qt_plugins/imageformats
 patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/imageformats/libqsvg.so
 cp $QT/plugins/imageformats/libqgif.so dist/Resources/qt_plugins/imageformats
 patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/imageformats/libqgif.so
+#cp $QT/plugins/imageformats/libqjpeg.so dist/Resources/qt_plugins/imageformats
+#patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/imageformats/libqjpeg.so
+#cp $QT/plugins/imageformats/libqtiff.so dist/Resources/qt_plugins/imageformats
+#patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/imageformats/libqtiff.so
 cp $QT/plugins/iconengines/libqsvgicon.so dist/Resources/qt_plugins/iconengines
-patchelf --set-rpath '/../../..${ORIGIN}:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/iconengines/libqsvgicon.so
+patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/iconengines/libqsvgicon.so
 cp $QT/plugins/platforms/libqxcb.so dist/Resources/qt_plugins/platforms
 patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/platforms/libqxcb.so
 cp conf/qt.conf dist
