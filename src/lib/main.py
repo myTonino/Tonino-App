@@ -1031,9 +1031,11 @@ class ApplicationWindow(QMainWindow):
             # update window title
             self.updateWindowTitle()
             # update recent file menu
+            if self.app.recentFiles == None:
+                self.app.recentFiles = []
             try:
                 self.app.recentFiles = list(filter((filename).__ne__, self.app.recentFiles))
-            except ValueError:
+            except Error:
                 pass
             self.app.recentFiles.insert(0, filename)
             del self.app.recentFiles[self.app.maxRecentFiles:]
@@ -1095,6 +1097,8 @@ class ApplicationWindow(QMainWindow):
     def saveAsFile(self):
         filename = self.fileDialog(_translate("Dialog","Save As",None),ffilter=self.toninoFileFilter,openFile=False)
         if filename:
+            if not filename.endswith("." + self.toninoFileExtension):
+                filename = filename + "." + self.toninoFileExtension
             res = self.app.saveScale(filename)
             if res:
                 self.setCurrentFile(filename)
