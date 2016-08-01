@@ -75,7 +75,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Tonino</string>
+          <string>Tonino App</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>

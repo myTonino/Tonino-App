@@ -356,8 +356,17 @@ class Tonino(QApplication):
             res = [elemType(v) for v in values]
         return res
         
+    def toString(self,o):
+        if sys.version < '3':
+            return str(o)
+        else:
+            if type(o) == bytes:
+                return str(o,"latin1")
+            else:
+                return str(o)
+
     def formatCommand(self,cmd,values,onSend=False):
-        return cmd + (" " if onSend else ":") + self.paramSeparatorChar + self.paramSeparatorChar.join([str(v) for v in values])
+        return cmd + (" " if onSend else ":") + self.paramSeparatorChar + self.paramSeparatorChar.join([self.toString(v) for v in values])
     
     def resetArduino(self):
         if self.toninoPort:
@@ -436,7 +445,7 @@ class Tonino(QApplication):
     # cmd: SETBRIGHTNESS (0-15)
     def setDisplayBrightness(self,port,brightness):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETBRIGHTNESS",[brightness]))
+            self.ser.sendCommand(port,self.formatCommand("SETBRIGHTNESS",[brightness],onSend=True))
 
     # cmd: GETTARGET
     def getTarget(self,port):
@@ -450,7 +459,7 @@ class Tonino(QApplication):
     # cmd: SETTARGET (value: 0-200 / range: 0-10)
     def setTarget(self,port,value,range):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETTARGET",[value,range]))
+            self.ser.sendCommand(port,self.formatCommand("SETTARGET",[value,range],onSend=True))
             
     # cmd: GETSCALE
     def getScaleName(self,port):
@@ -458,13 +467,27 @@ class Tonino(QApplication):
         if port:
             response = self.ser.sendCommand(port,"GETSCALE")
             if response:
-                res = self.response2values(response,str,2)
+                res = self.response2values(response,str,1)
         return res
     
     # cmd: SETSCALE (a string of length 8)
     def setScaleName(self,port,name):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETSCALE",[u(name[:8]).encode('ascii', 'ignore')]))
+            self.ser.sendCommand(port,self.formatCommand("SETSCALE",[u(name[:8]).encode('ascii', 'ignore')],onSend=True))
+            
+    # cmd: GETNAME
+    def getUserName(self,port):
+        res = None
+        if port:
+            response = self.ser.sendCommand(port,"GETNAME")
+            if response:
+                res = self.response2values(response,str,1)
+        return res
+    
+    # cmd: SETNAME (a string of length 8)
+    def setUserName(self,port,name):
+        if port:
+            self.ser.sendCommand(port,self.formatCommand("SETNAME",[u(name[:8]).encode('ascii', 'ignore')],onSend=True))
                     
     # cmd: GETSCALING
     def getScale(self,port):
@@ -478,7 +501,7 @@ class Tonino(QApplication):
     # cmd: SETSCALING
     def setScale(self,port,scaling):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETSCALING",scaling))
+            self.ser.sendCommand(port,self.formatCommand("SETSCALING",scaling,onSend=True))
         
     # cmd: SETCAL
     def setCal(self,port,cal):
@@ -624,7 +647,7 @@ class PreferencesDialog(ToninoDialog):
                 self.ui.displaySlider.setValue(self.displayBrightness)
             except:
                 pass
-            if self.app.getModel() == 1:
+            if self.app.getModel() == 1: # TinyTonino
                 try:
                     v = self.app.getTarget(self.app.toninoPort)
                     self.targetValue = self.lastTargetValue = v[0]
@@ -634,16 +657,25 @@ class PreferencesDialog(ToninoDialog):
                 except:
                     pass
                 
-            else:
+            else: # Classic Tonino
                 self.ui.groupBoxToninoTarget.setEnabled(False)
-        else:
+                self.ui.groupBoxToninoName.setEnabled(False)
+        else: # not connected
             self.ui.groupBoxToninoDisplay.setEnabled(False)
             self.ui.groupBoxToninoTarget.setEnabled(False)
+            self.ui.groupBoxToninoName.setEnabled(False)
         self.ui.buttonBox.accepted.connect(self.accept)
         self.ui.buttonBox.rejected.connect(self.reject)
         
         self.ui.displaySlider.setTracking(False) # no valueChanged signals while moving
         self.ui.displaySlider.valueChanged.connect(self.displaySliderChanged)
+        self.ui.pushButtonNameSet.clicked.connect(self.setUserName)
+        
+    def setUserName(self):
+        try:
+            self.app.setUserName(self.app.toninoPort,self.ui.lineEditName.text())
+        except:
+            pass
 
     def displaySliderChanged(self):
         v = self.ui.displaySlider.value()
@@ -1534,5 +1566,5 @@ except Exception:
     pass
 
 # start the Tonino discovery process
-aw.deviceCheck()
+QTimer.singleShot(aw.deviceCheckInterval,aw.deviceCheck)
     

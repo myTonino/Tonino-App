@@ -50,7 +50,7 @@ LICENSE = 'GNU General Public License (GPL)'
 # Qt5:
 from os.path import expanduser
 HOME = expanduser("~")
-QTDIR = HOME + r'/Qt5.4.2/5.4/clang_64/'
+QTDIR = HOME + r'/Qt5.6.1/5.6/clang_64/'
 
 APP = ['tonino.py']
 

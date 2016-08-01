@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/AboutDialogUI.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.2-snapshot-5b5f0fb1b3f6
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -72,7 +72,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        self.nameLabel.setText(_translate("Dialog", "Tonino"))
+        self.nameLabel.setText(_translate("Dialog", "Tonino App"))
         self.versionLabel.setText(_translate("Dialog", "Version"))
         self.copyrightLabel.setText(_translate("Dialog", "Copyright © 2016 Marko Luther, Paul Holleis"))
         self.pushButton.setText(_translate("Dialog", "OK"))

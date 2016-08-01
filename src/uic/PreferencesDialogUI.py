@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/PreferencesDialogUI.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.2-snapshot-5b5f0fb1b3f6
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,11 +11,18 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Preferences(object):
     def setupUi(self, Preferences):
         Preferences.setObjectName("Preferences")
-        Preferences.resize(402, 258)
+        Preferences.resize(420, 316)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Preferences.sizePolicy().hasHeightForWidth())
+        Preferences.setSizePolicy(sizePolicy)
+        Preferences.setMaximumSize(QtCore.QSize(420, 316))
         Preferences.setModal(True)
         self.verticalLayout = QtWidgets.QVBoxLayout(Preferences)
         self.verticalLayout.setObjectName("verticalLayout")
         self.groupBoxToninoDisplay = QtWidgets.QGroupBox(Preferences)
+        self.groupBoxToninoDisplay.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.groupBoxToninoDisplay.setObjectName("groupBoxToninoDisplay")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.groupBoxToninoDisplay)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -128,8 +135,30 @@ class Ui_Preferences(object):
         self.horizontalLayout_4.addLayout(self.horizontalLayout_2)
         self.horizontalLayout_3.addWidget(self.groupBoxTargetRange)
         self.verticalLayout.addWidget(self.groupBoxToninoTarget)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem2)
+        self.groupBoxToninoName = QtWidgets.QGroupBox(Preferences)
+        self.groupBoxToninoName.setMinimumSize(QtCore.QSize(0, 80))
+        self.groupBoxToninoName.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.groupBoxToninoName.setFlat(False)
+        self.groupBoxToninoName.setCheckable(False)
+        self.groupBoxToninoName.setObjectName("groupBoxToninoName")
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.groupBoxToninoName)
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        spacerItem2 = QtWidgets.QSpacerItem(75, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_6.addItem(spacerItem2)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.lineEditName = QtWidgets.QLineEdit(self.groupBoxToninoName)
+        self.lineEditName.setMaxLength(8)
+        self.lineEditName.setObjectName("lineEditName")
+        self.horizontalLayout_5.addWidget(self.lineEditName)
+        self.pushButtonNameSet = QtWidgets.QPushButton(self.groupBoxToninoName)
+        self.pushButtonNameSet.setObjectName("pushButtonNameSet")
+        self.horizontalLayout_5.addWidget(self.pushButtonNameSet)
+        self.horizontalLayout_6.addLayout(self.horizontalLayout_5)
+        spacerItem3 = QtWidgets.QSpacerItem(74, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_6.addItem(spacerItem3)
+        self.verticalLayout.addWidget(self.groupBoxToninoName)
         self.buttonBox = QtWidgets.QDialogButtonBox(Preferences)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
@@ -150,5 +179,7 @@ class Ui_Preferences(object):
         self.groupBoxTargetRange.setTitle(_translate("Preferences", "Range"))
         self.range_min_label.setText(_translate("Preferences", "0"))
         self.range_max_label.setText(_translate("Preferences", "5"))
+        self.groupBoxToninoName.setTitle(_translate("Preferences", "Name"))
+        self.pushButtonNameSet.setText(_translate("Preferences", "Set"))
 
 from . import icons_rc

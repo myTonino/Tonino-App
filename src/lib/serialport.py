@@ -48,9 +48,15 @@ if sys.version < '3':
         return c
 else:
     def str2cmd(s):
-        return bytes(s,"ascii")
+        if type(s) == bytes:
+            return s
+        else:
+            return bytes(s,"ascii")
     def cmd2str(c):
-        return str(c,"latin1")
+        if type(c) == bytes:
+        	return str(c,"latin1")
+        else:
+            return c
         
 class SerialPort(object):
     def __init__(self,model=0):
@@ -134,7 +140,7 @@ class SerialPort(object):
             return None
         
     def sendCommand(self,port,command,retry=True):
-        #print("sendCommand",port,command,retry,self.baudrate)
+#        print("sendCommand",port,command,retry,self.baudrate)
         res = None
         if not self.SP.isOpen():
             self.openPort(port)
@@ -147,12 +153,12 @@ class SerialPort(object):
                 time.sleep(0.3)
                 r = self.SP.readline()
                 response = cmd2str(r)
-                #print("response",response)
+#                print("response",len(response),response)
                 if not (response and len(response) > 0):
                     # we got an empty line, maybe the next line contains the response
                     r = self.SP.readline()
                     response = cmd2str(r)
-                    #print("second response",response)
+#                    print("second response",len(response),response)
                 if response and len(response) > 0:
                     # each <command> is answered by the Tonino by returning "<command>:<result>\n"
                     parts = response.split(command + self.cmdSeparatorChar)
@@ -165,7 +171,7 @@ class SerialPort(object):
             else:
                 return res
         except:
-            #print("exception")
+#            print("exception")
             self.closePort()
             if retry:
                 return self.sendCommand(port,command,False)
