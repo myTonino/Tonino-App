@@ -28,7 +28,8 @@ SOURCES = \
     ../uic/MainWindowUI.py \
     ../uic/AboutDialogUI.py \
     ../uic/PreferencesDialogUI.py \
-    ../uic/CalibDialogUI.py 
+    ../uic/CalibDialogUI.py \
+    ../uic/TinyCalibDialogUI.py 
     
 TRANSLATIONS = \
 	../translations/tonino_de.ts \

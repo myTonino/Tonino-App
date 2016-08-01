@@ -61,7 +61,7 @@ else:
 from lib import __version__
 import lib.serialport
 import lib.scales
-from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, DebugDialogUI
+from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, DebugDialogUI
 import uic.resources as resources
 
 
@@ -171,6 +171,9 @@ class Tonino(QApplication):
         self.tonino_model = model
         if self.tonino_model == 0:
             # for the Classic Tonino
+            self.std_calib_target_low = 1.5
+            self.std_calib_target_high = 3.7
+            # --
             self.std_calib_low_r = 2600. # brown disk red reading
             self.std_calib_low_b = 1600. # brown disk blue reading
             self.std_calib_high_r = 15000. # red disk red reading
@@ -182,15 +185,18 @@ class Tonino(QApplication):
             self.std_calib_high_b_range = 2100 # red disk blue reading range
         else:
             # for the Tiny Tonino
-            self.std_calib_low_r = 14792. # brown disk red reading
-            self.std_calib_low_b = 8616. # brown disk blue reading
-            self.std_calib_high_r = 71392. # red disk red reading
-            self.std_calib_high_b = 16806. # red disk blue reading
+            self.std_calib_target_low = 1.316187404
+            self.std_calib_target_high = 2.873957082
             # --
-            self.std_calib_low_r_range = 1500 # brown disk red reading range
-            self.std_calib_low_b_range = 1000 # brown disk blue reading range
-            self.std_calib_high_r_range = 6000 # red disk red reading range
-            self.std_calib_high_b_range = 1600 # red disk blue reading range
+            self.std_calib_low_r = 28252. # green disk red reading
+            self.std_calib_low_b = 19136. # green disk blue reading
+            self.std_calib_high_r = 34916. # red disk red reading
+            self.std_calib_high_b = 11002. # red disk blue reading
+            # --
+            self.std_calib_low_r_range = 4000 # green disk red reading range
+            self.std_calib_low_b_range = 3000 # green disk blue reading range
+            self.std_calib_high_r_range = 5000 # red disk red reading range
+            self.std_calib_high_b_range = 3000 # red disk blue reading range
         
     def getModel(self):
         return self.tonino_model
@@ -704,7 +710,10 @@ class CalibDialog(ToninoDialog):
         super(CalibDialog,self).__init__(parent)
         self.setModal(True)
         self.app = app
-        self.ui = CalibDialogUI.Ui_Dialog()
+        if app.tonino_model == 0: # Classic Tonino
+            self.ui = CalibDialogUI.Ui_Dialog()
+        else: # Tiny Tonino
+            self.ui = TinyCalibDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
         # disable elements
         self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)

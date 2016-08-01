@@ -55,5 +55,3 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Calibration"))
         self.pushButtonScan.setText(_translate("Dialog", "Scan"))
 
-from . import calib_high_rc
-from . import calib_low_rc

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>352</height>
+    <width>519</width>
+    <height>266</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,7 +29,35 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPlainTextEdit" name="logOutput"/>
+      <widget class="QLabel" name="calibLowLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../qrc/calib_low_tiny.qrc">:/app/icons/calib_low_tiny.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -65,6 +93,37 @@
        </item>
       </layout>
      </item>
+     <item>
+      <widget class="QLabel" name="calibHighLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../qrc/calib_high.qrc">:/app/icons/calib_high.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -79,6 +138,10 @@
    </item>
   </layout>
  </widget>
+ <resources>
+  <include location="../qrc/calib_low_tiny.qrc"/>
+  <include location="../qrc/calib_high.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
