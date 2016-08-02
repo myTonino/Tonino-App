@@ -1,3 +1,5 @@
+@echo off
+
 rem
 rem build-win3.bat
 rem
@@ -20,7 +22,6 @@ rem
 rem You should have received a copy of the GNU General Public License
 rem along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-@echo off
 
 rem # set PY2EXE_VERBOSE=1
 

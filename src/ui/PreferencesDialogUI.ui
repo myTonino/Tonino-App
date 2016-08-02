@@ -32,25 +32,12 @@
    <item>
     <widget class="QGroupBox" name="groupBoxToninoDisplay">
      <property name="title">
-      <string>Tonino Display</string>
+      <string>Display</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item>
        <widget class="QLabel" name="dim_label">
         <property name="sizePolicy">
@@ -145,7 +132,14 @@
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
+       <widget class="QCheckBox" name="checkBoxFlip">
+        <property name="text">
+         <string>Flip</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -356,13 +350,6 @@
          <widget class="QLineEdit" name="lineEditName">
           <property name="maxLength">
            <number>8</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonNameSet">
-          <property name="text">
-           <string>Set</string>
           </property>
          </widget>
         </item>

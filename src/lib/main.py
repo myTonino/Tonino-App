@@ -371,7 +371,7 @@ class Tonino(QApplication):
             else:
                 return str(o)
 
-    def formatCommand(self,cmd,values,onSend=False):
+    def formatCommand(self,cmd,values,onSend=True):
         return cmd + (" " if onSend else ":") + self.paramSeparatorChar + self.paramSeparatorChar.join([self.toString(v) for v in values])
     
     def resetArduino(self):
@@ -445,13 +445,13 @@ class Tonino(QApplication):
         if port:
             response = self.ser.sendCommand(port,"GETBRIGHTNESS")
             if response:
-                res = self.response2values(response,int,1)
+                res = self.response2values(response,int,1)[0]
         return res
     
     # cmd: SETBRIGHTNESS (0-15)
     def setDisplayBrightness(self,port,brightness):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETBRIGHTNESS",[brightness],onSend=True))
+            self.ser.sendCommand(port,self.formatCommand("SETBRIGHTNESS",[brightness]))
 
     # cmd: GETTARGET
     def getTarget(self,port):
@@ -465,7 +465,7 @@ class Tonino(QApplication):
     # cmd: SETTARGET (value: 0-200 / range: 0-10)
     def setTarget(self,port,value,range):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETTARGET",[value,range],onSend=True))
+            self.ser.sendCommand(port,self.formatCommand("SETTARGET",[value,range]))
             
     # cmd: GETSCALE
     def getScaleName(self,port):
@@ -473,13 +473,13 @@ class Tonino(QApplication):
         if port:
             response = self.ser.sendCommand(port,"GETSCALE")
             if response:
-                res = self.response2values(response,str,1)
+                res = self.response2values(response,str,1)[0]
         return res
     
     # cmd: SETSCALE (a string of length 8)
     def setScaleName(self,port,name):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETSCALE",[u(name[:8]).encode('ascii', 'ignore')],onSend=True))
+            self.ser.sendCommand(port,self.formatCommand("SETSCALE",[u(name[:8]).encode('ascii', 'ignore')]))
             
     # cmd: GETNAME
     def getUserName(self,port):
@@ -487,13 +487,31 @@ class Tonino(QApplication):
         if port:
             response = self.ser.sendCommand(port,"GETNAME")
             if response:
-                res = self.response2values(response,str,1)
+                res = self.response2values(response,str,1)[0]
         return res
     
     # cmd: SETNAME (a string of length 8)
     def setUserName(self,port,name):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETNAME",[u(name[:8]).encode('ascii', 'ignore')],onSend=True))
+            self.ser.sendCommand(port,self.formatCommand("SETNAME",[u(name[:8]).encode('ascii', 'ignore')]))
+            
+    # cmd: GETDFLIP
+    def getDisplayFlip(self,port):
+        res = None
+        if port:
+            response = self.ser.sendCommand(port,"GETDFLIP")
+            if response:
+                res = self.response2values(response,int,1)[0]
+        return res
+    
+    # cmd: SETDFLIP (a string of length 8)
+    def setSetDisplayFlip(self,port,flipFlag):
+        if port:
+            if flipFlag:
+                value = 1
+            else:
+                value = 0
+            self.ser.sendCommand(port,self.formatCommand("SETDFLIP",[value]))
                     
     # cmd: GETSCALING
     def getScale(self,port):
@@ -507,12 +525,12 @@ class Tonino(QApplication):
     # cmd: SETSCALING
     def setScale(self,port,scaling):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETSCALING",scaling,onSend=True))
+            self.ser.sendCommand(port,self.formatCommand("SETSCALING",scaling))
         
     # cmd: SETCAL
     def setCal(self,port,cal):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETCAL",cal,onSend=True))
+            self.ser.sendCommand(port,self.formatCommand("SETCAL",cal))
         
     # cmd: I_SCAN
     def getRawCalibratedReading(self,port):
@@ -641,31 +659,38 @@ class PreferencesDialog(ToninoDialog):
         self.ui = PreferencesDialogUI.Ui_Preferences()
         self.ui.setupUi(self)
         self.displayBrightness = None
-        self.lastBrightness = None # remember the last setting to avoid resending the same setting
         self.targetValue = None
-        self.lastTargetValue = None
         self.targetRange = None
-        self.lastTargetRange = None
+        self.userName = None
+        self.displayFlip = None
         if self.app.toninoPort:
             try:
-                v = self.app.getDisplayBrightness(self.app.toninoPort)
-                self.displayBrightness = self.lastBrightness = v[0]
+                self.displayBrightness = self.app.getDisplayBrightness(self.app.toninoPort)
                 self.ui.displaySlider.setValue(self.displayBrightness)
             except:
                 pass
             if self.app.getModel() == 1: # TinyTonino
                 try:
                     v = self.app.getTarget(self.app.toninoPort)
-                    self.targetValue = self.lastTargetValue = v[0]
-                    self.targetRange = self.lastTargetRange = v[1]
+                    self.targetValue = v[0]
+                    self.targetRange = v[1]
                     self.ui.targetValueSpinBox.setValue(self.targetValue)
                     self.ui.rangeSlider.setValue(self.targetRange)
+                    self.userName = self.app.getUserName(self.app.toninoPort)
+                    self.ui.lineEditName.setText(self.userName)
+                    self.displayFlip = self.app.getDisplayFlip(self.app.toninoPort)                    
+                    if self.displayFlip:
+                        self.ui.checkBoxFlip.setChecked(True)
+                    else:
+                        self.ui.checkBoxFlip.setChecked(False)
+                        
                 except:
                     pass
                 
             else: # Classic Tonino
                 self.ui.groupBoxToninoTarget.setEnabled(False)
                 self.ui.groupBoxToninoName.setEnabled(False)
+                self.ui.checkBoxFlip.setEnabled(False)
         else: # not connected
             self.ui.groupBoxToninoDisplay.setEnabled(False)
             self.ui.groupBoxToninoTarget.setEnabled(False)
@@ -675,27 +700,38 @@ class PreferencesDialog(ToninoDialog):
         
         self.ui.displaySlider.setTracking(False) # no valueChanged signals while moving
         self.ui.displaySlider.valueChanged.connect(self.displaySliderChanged)
-        self.ui.pushButtonNameSet.clicked.connect(self.setUserName)
-        
-    def setUserName(self):
-        try:
-            self.app.setUserName(self.app.toninoPort,self.ui.lineEditName.text())
-        except:
-            pass
+
 
     def displaySliderChanged(self):
         v = self.ui.displaySlider.value()
-        if self.displayBrightness != None and self.lastBrightness != v:
+        if self.displayBrightness != None and self.displayBrightness != v:
             self.app.setDisplayBrightness(self.app.toninoPort,v)
-            self.lastBrightness = v # remember this as last setting  
 
     def accept(self):
-        v = self.ui.targetValueSpinBox.value()
-        r = self.ui.rangeSlider.value()
-        self.app.setTarget(self.app.toninoPort,v,r)
-        # remember this as last setting
-        self.lastTargetValue = v
-        self.lastTargetRange = r
+        try:
+            v = self.ui.targetValueSpinBox.value()
+            r = self.ui.rangeSlider.value()
+            if not (self.targetValue and self.targetRange and self.targetValue == v and self.targetRange == r):
+                # target values have been changed, we write them back to the device
+                self.app.setTarget(self.app.toninoPort,v,r)
+        except:
+            pass
+        try:
+            n = self.ui.lineEditName.text()
+            if not (self.userName and self.userName == n):
+                # user name has been changed, we write it back to the device
+                self.app.setUserName(self.app.toninoPort,n)
+        except:
+            pass
+        try:
+            if self.ui.checkBoxFlip.isChecked():
+                f = 1
+            else:
+                f = 0
+            if not (self.displayFlip and self.displayFlip == f):
+                self.app.setSetDisplayFlip(self.app.toninoPort,f)
+        except:
+            pass
         self.done(0)
         
     def reject(self):
