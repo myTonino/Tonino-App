@@ -1475,6 +1475,7 @@ class ApplicationWindow(QMainWindow):
                     res = self.checkPorts(newports,True)
         else:
             # in case ports were detected before
+            self.app.setModel(self.app.ser.getModel())
             if self.toninoConnected():
                 # a Tonino was already connected before
                 if not self.app.toninoPort in newports:

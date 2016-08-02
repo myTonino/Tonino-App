@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="es_ES">
+<!DOCTYPE TS><TS version="2.0" language="es_ES" sourcelanguage="">
 <context>
     <name>Dialog</name>
     <message>
@@ -9,7 +8,7 @@
         <translation>Guardar como</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1357"/>
+        <location filename="../uic/AboutDialogUI.py" line="75"/>
         <source>Tonino</source>
         <translation></translation>
     </message>
@@ -19,7 +18,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1521"/>
+        <location filename="../lib/main.py" line="1522"/>
         <source>Do you want to save your changes?</source>
         <translation>¿Desea guardar los cambios?</translation>
     </message>
@@ -49,7 +48,7 @@
         <translation>¡El firmware de Tonino está desactualizado!</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1520"/>
+        <location filename="../lib/main.py" line="1521"/>
         <source>The scale has been modified.</source>
         <translation>La escala ha sido modificada.</translation>
     </message>
@@ -73,15 +72,10 @@
         <source>Tonino**</source>
         <translation></translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../uic/AboutDialogUI.py" line="77"/>
         <source>Copyright © 2016 Marko Luther, Paul Holleis</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../uic/AboutDialogUI.py" line="75"/>
-        <source>Tonino App</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

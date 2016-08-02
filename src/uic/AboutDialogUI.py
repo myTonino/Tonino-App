@@ -72,7 +72,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        self.nameLabel.setText(_translate("Dialog", "Tonino App"))
+        self.nameLabel.setText(_translate("Dialog", "Tonino"))
         self.versionLabel.setText(_translate("Dialog", "Version"))
         self.copyrightLabel.setText(_translate("Dialog", "Copyright © 2016 Marko Luther, Paul Holleis"))
         self.pushButton.setText(_translate("Dialog", "OK"))

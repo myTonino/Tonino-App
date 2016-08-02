@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<!DOCTYPE TS><TS version="2.0" language="de_DE" sourcelanguage="">
 <context>
     <name>Dialog</name>
     <message>
-        <location filename="../lib/main.py" line="1357"/>
+        <location filename="../uic/AboutDialogUI.py" line="75"/>
         <source>Tonino</source>
         <translation></translation>
     </message>
@@ -19,12 +18,12 @@
         <translation>Speichern unter</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1521"/>
+        <location filename="../lib/main.py" line="1522"/>
         <source>Do you want to save your changes?</source>
         <translation>Wollen Sie die Änderungen speichern?</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1520"/>
+        <location filename="../lib/main.py" line="1521"/>
         <source>The scale has been modified.</source>
         <translation>Die Skala wurde geändert.</translation>
     </message>
@@ -73,15 +72,10 @@
         <source>Tonino**</source>
         <translation></translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../uic/AboutDialogUI.py" line="77"/>
         <source>Copyright © 2016 Marko Luther, Paul Holleis</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../uic/AboutDialogUI.py" line="75"/>
-        <source>Tonino App</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
