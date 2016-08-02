@@ -87,7 +87,7 @@ The Tonino app uses the following libraries in unmodified forms:
   http://qt-project.org/products/licensing
 - Numpy 1.8.x and Scipy 0.14.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
   http://www.scipy.org/
-- PyQt 4.11.x and SIP 4.16.x under the Qt GNU GPL v. 3.0 licence; Copyright (c) 2010 Riverbank Computing Limited
+- PyQt 5.x and SIP 4.16.x under the Qt GNU GPL v. 3.0 licence; Copyright (c) 2010 Riverbank Computing Limited
   http://www.riverbankcomputing.co.uk/software/pyqt/
 - matplotlib 1.3.x, Copyright (c) 2002-2013 John D. Hunter; All Rights Reserved. Distributed under a licence based on PSF.
   http://matplotlib.sourceforge.net
@@ -100,6 +100,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 
 VERSION HISTORY
+
+v1.0.15 (2.08.2016)
+ - Adds TinyTonino firmware v2.0.4
 
 v1.0.14 (20.02.2016)
  - Adds support for TinyTonino
