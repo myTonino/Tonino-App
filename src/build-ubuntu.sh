@@ -79,6 +79,7 @@ mkdir dist/Resources/qt_plugins/platforms
 mkdir dist/includes
 mkdir dist/includes/linux
 cp includes/tonino-*.hex dist/includes
+cp includes/tinyTonino-*.hex dist/includes
 cp includes/linux/* dist/includes/linux
 cp $QT/plugins/imageformats/libqsvg.so dist/Resources/qt_plugins/imageformats
 patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/imageformats/libqsvg.so
