@@ -1,3 +1,9 @@
+tonino (1.0.15-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.14:
+   - includes TinyTonino firmware
+ --  <dev@my-tonino.com>  Tue, 2 Aug 2016 19:32:14 +0200
+
 tonino (1.0.14-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.13:
