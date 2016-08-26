@@ -60,7 +60,7 @@ Tonino Configuration
 
 ![](display-brightness.png?raw=true)
 
-Under the application settings (e.g. menu Tonino >> Preferences on the Mac) you can set the display brightness of the connected Tonino.
+Under the application settings (e.g. menu Tonino >> Preferences on the Mac) you can set the display brightness of the connected Tonino. On newer models you can also set the screen orientation, a target value and range, as well as give the device a name.
 
 
 Tonino Calibration
@@ -123,4 +123,4 @@ Tonino Resources
 - [Tonino firmware](https://github.com/myTonino/Tonino-Firmware)
 - [Tonino serial protocol](https://github.com/myTonino/Tonino-Firmware/blob/master/Tonino-Serial.md)
 - [Tonino hardware](https://github.com/myTonino/Tonino-Hardware)
-- Tonino example scales: [tonino-scales.zip](https://github.com/myTonino/Tonino-App/releases/download/v1.0.8/tonino-scales.zip)  (1.8Kb)
+- Tonino example scales: [tonino-scales.zip](https://github.com/myTonino/Tonino-App/releases/download/v1.0.16/tonino-scales.zip)  (1.8Kb)

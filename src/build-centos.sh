@@ -77,6 +77,7 @@ mkdir dist/Resources/qt_plugins
 mkdir dist/Resources/qt_plugins/imageformats
 mkdir dist/Resources/qt_plugins/iconengines
 mkdir dist/Resources/qt_plugins/platforms
+mkdir dist/Resources/qt_plugins/platformthemes
 mkdir dist/includes
 mkdir dist/includes/linux
 cp includes/tonino-*.hex dist/includes
@@ -94,6 +95,8 @@ cp $QT/plugins/iconengines/libqsvgicon.so dist/Resources/qt_plugins/iconengines
 patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/iconengines/libqsvgicon.so
 cp $QT/plugins/platforms/libqxcb.so dist/Resources/qt_plugins/platforms
 patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/platforms/libqxcb.so
+cp $QT/plugins/platformthemes/libqgtk2.so dist/Resources/qt_plugins/platformthemes
+patchelf --set-rpath '${ORIGIN}/../../..:${ORIGIN}/../../../../lib' dist/Resources/qt_plugins/platformthemes/libqgtk2.so
 cp conf/qt.conf dist
 mkdir dist/translations
 cp translations/*.qm dist/translations

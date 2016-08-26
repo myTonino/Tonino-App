@@ -148,6 +148,12 @@ class Tonino(QApplication):
         self.std_calib_high_r_range = 6500 # red disk red reading range 
         self.std_calib_high_b_range = 2000 # red disk blue reading range
         
+        # r/b Tiny calibration targets and ranges
+        self.tiny_low_rb = 1.45 # green disk r/b target
+        self.tiny_high_rb = 3.11 # red disk r/b target
+        self.tiny_rb_range_low = 0.03 # green disk r/b range
+        self.tiny_rb_range_high = 0.2 # red disk r/b range
+        
         # variables
         self.workingDirectory = None
         self.currentFile = None
@@ -188,15 +194,15 @@ class Tonino(QApplication):
             self.std_calib_target_low = 1.316187404
             self.std_calib_target_high = 2.873957082
             # --
-            self.std_calib_low_r = 28252. # green disk red reading
-            self.std_calib_low_b = 19136. # green disk blue reading
-            self.std_calib_high_r = 34916. # red disk red reading
-            self.std_calib_high_b = 11002. # red disk blue reading
+            self.std_calib_low_r = 27800. # green disk red reading
+            self.std_calib_low_b = 19200. # green disk blue reading
+            self.std_calib_high_r = 35500. # red disk red reading
+            self.std_calib_high_b = 11500. # red disk blue reading
             # --
             self.std_calib_low_r_range = 4000 # green disk red reading range
             self.std_calib_low_b_range = 3000 # green disk blue reading range
             self.std_calib_high_r_range = 5000 # red disk red reading range
-            self.std_calib_high_b_range = 3000 # red disk blue reading range
+            self.std_calib_high_b_range = 2000 # red disk blue reading range
         
     def getModel(self):
         return self.tonino_model
@@ -210,11 +216,12 @@ class Tonino(QApplication):
     # detects if the given red and blue readings are in the range of either the low or the high calibration disk
     # and sets the corresponding variables accordingly
     def setCalibReadings(self,r,b):
-        if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range:
+        rb = r/float(b)
+        if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range and abs(rb-self.tiny_low_rb) < self.tiny_rb_range_low:
             # calib_low disk recognized
             self.calib_low_r = r
             self.calib_low_b = b
-        elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range:
+        elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range and abs(rb-self.tiny_high_rb) < self.tiny_rb_range_high:
             # calib_high disk recognized
             self.calib_high_r = r
             self.calib_high_b = b
@@ -1419,13 +1426,13 @@ class ApplicationWindow(QMainWindow):
         return self.app.toninoPort
 
     def checkFirmwareVersion(self):
-        if self.debug or self.app.versionGT(self.app.included_firmware_version,self.app.toninoFirmwareVersion):
+        if self.app.getModel() == 1:
+            firmware_version = self.app.included_tinyTonino_firmware_version
+        else:
+            firmware_version = self.app.included_firmware_version
+        if self.debug or self.app.versionGT(firmware_version,self.app.toninoFirmwareVersion):
             msgBox = QMessageBox(self)
             msgBox.setText(_translate("Dialog","The Tonino firmware is outdated!",None))
-            if self.app.getModel() == 1:
-                firmware_version = self.app.included_tinyTonino_firmware_version
-            else:
-                firmware_version = self.app.included_firmware_version
             msgBox.setInformativeText(_translate("Dialog","Do you want to update to %s?",None)%self.version2str(firmware_version))
             msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msgBox.setDefaultButton(QMessageBox.Ok)
@@ -1571,7 +1578,11 @@ except:
     pass
 
 # define app
-app = Tonino(sys.argv)
+args = sys.argv
+if sys.platform == 'linux' :
+    # avoid a GTK bug in Ubuntu Unity
+    args = args + ['-style','Cleanlooks']
+app = Tonino(args)
 app.setApplicationName("Tonino")                  #needed by QSettings() to store windows geometry in operating system
 app.setOrganizationName("BottledSense")           #needed by QSettings() to store windows geometry in operating system
 app.setOrganizationDomain("my-tonino.com")        #needed by QSettings() to store windows geometry in operating system 
