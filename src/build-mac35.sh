@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# build-mac3.sh
+# build-mac35.sh
 #
 # Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
@@ -23,10 +23,10 @@
 
 export MACOSX_DEPLOYMENT_TARGET=10.7
 export PYTHONPATH="/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages"
-export PATH=/Library/Frameworks/Python.framework/Versions/3.5/bin:$PATH
+export PATH=/Library/Frameworks/Python.framework/Versions/3.5/bin:/Library/Frameworks/Python.framework/Versions/3.5/lib:$PATH
 
 export PATH=/Users/luther/Qt5.7.0/5.7/clang_64/bin:/Users/luther/Qt5.7.0/5.7/clang_64/lib:$PATH
-export DYLD_FRAMEWORK_PATH=/Users/luther/Qt5.7.0/5.7/clang_64/lib/
+#export DYLD_FRAMEWORK_PATH=/Users/luther/Qt5.7.0/5.7/clang_64/lib/
 
 # ui
 find ui -iname "*.ui" | while read f

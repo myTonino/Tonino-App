@@ -89,10 +89,18 @@ def __dependencies_for_freezing():
     # to make bbfreeze on Linux happy with scipy > 0.17.0
     import scipy.linalg.cython_blas
     import scipy.linalg.cython_lapack
+    
+    import appdirs
+    import packaging
+    import packaging.version
+    import packaging.specifiers
+    import packaging.markers
+    import packaging.requirements
+    
     if pyqtversion < 5:
         import PyQt4.QtSvg
         import PyQt4.QtXml
-        import PyQt4.QtDBus # needed for QT5 builds
+        import PyQt4.QtDBus
         import PyQt5.QtPrintSupport # needed for by platform plugin libqcocoa
     else:
         import PyQt5.QtSvg
@@ -151,7 +159,7 @@ class Tonino(QApplication):
         # r/b Tiny calibration targets and ranges
         self.tiny_low_rb = 1.45 # green disk r/b target
         self.tiny_high_rb = 3.11 # red disk r/b target
-        self.tiny_rb_range_low = 0.03 # green disk r/b range
+        self.tiny_rb_range_low = 0.13 # green disk r/b range
         self.tiny_rb_range_high = 0.2 # red disk r/b range
         
         # variables
@@ -217,11 +225,11 @@ class Tonino(QApplication):
     # and sets the corresponding variables accordingly
     def setCalibReadings(self,r,b):
         rb = r/float(b)
-        if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range and abs(rb-self.tiny_low_rb) < self.tiny_rb_range_low:
+        if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range and (not self.tonino_model or abs(rb-self.tiny_low_rb) < self.tiny_rb_range_low):
             # calib_low disk recognized
             self.calib_low_r = r
             self.calib_low_b = b
-        elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range and abs(rb-self.tiny_high_rb) < self.tiny_rb_range_high:
+        elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range and (not self.tonino_model or abs(rb-self.tiny_high_rb) < self.tiny_rb_range_high):
             # calib_high disk recognized
             self.calib_high_r = r
             self.calib_high_b = b

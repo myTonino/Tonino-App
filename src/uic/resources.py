@@ -41,25 +41,27 @@ import platform
 import os
 import sys
 
-# for py2exe
+# for py2exe on Windows
 def main_is_frozen():
     import imp
     return (hasattr(sys, "frozen") or # new py2exe
             hasattr(sys, "importers") # old py2exe
             or imp.is_frozen("__main__")) # tools/freeze
    
-# for py2app
+# for py2app and pyinstaller on MacOS X
 def inBundle():     
     ib = False
     try:
-        # the sys.frozen is set by py2app and is unset otherwise
-        if str(sys.frozen) == "macosx_app":
+        # the sys.frozen is set by py2app and pyinstaller and is unset otherwise
+        if getattr( sys, 'frozen', False ):      
             ib = True
+#        if str(sys.frozen) == "macosx_app":
+#            ib = True
     except:
         pass
     return ib
     
-# for bbfreeze
+# for bbfreeze on Linux
 def isFrozen():
     return sys.executable.endswith("tonino")
     

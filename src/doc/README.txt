@@ -101,6 +101,12 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.17 (5.09.2016)
+ - Bug fixes
+
+v1.0.16 (26.08.2016)
+ - Bug fixes
+
 v1.0.15 (2.08.2016)
  - Adds TinyTonino firmware v2.0.4
 

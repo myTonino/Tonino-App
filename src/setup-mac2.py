@@ -91,7 +91,8 @@ else:
     print("firmware *.hex missing!")
     quit()
   
-plist = Plist.fromFile('conf/Info2.plist')
+plist = Plist.fromFile('conf/Info.plist')
+print(plist)
 plist.update({ 'CFBundleDisplayName': 'Tonino',
                     'CFBundleGetInfoString': 'Tonino, Roast Color Analyzer',
                     'CFBundleIdentifier': 'com.tonino',
@@ -103,7 +104,8 @@ plist.update({ 'CFBundleDisplayName': 'Tonino',
                     'LSArchitecturePriority': 'x86_64',
                     'NSHumanReadableCopyright': LICENSE,
                 })
-  
+print(plist)
+
 OPTIONS = {
     'strip':True,
     'argv_emulation': False,
