@@ -82,4 +82,7 @@ cp doc/LICENSE.txt dist
 mkdir dist/scales
 cp scales/*.toni dist/scales
 
+# remove the executable 
+rm dist/Tonino
+
 $PYTHON/bin/python3 create_dmg.py

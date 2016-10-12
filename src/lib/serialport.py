@@ -212,7 +212,6 @@ class SerialPort(object):
             if serial.VERSION.split(".")[0].strip() == "2":
                 # pyserial v2.7 version
                 ports = list(serial.tools.list_ports.comports())
-                # TODO: this might crash on Linux (test!)
                 tinyToninos = list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=tinyToninoPID))
                 if tinyToninos and len(tinyToninos) > 0:
                     self.setModel(1)

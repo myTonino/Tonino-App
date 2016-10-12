@@ -157,10 +157,10 @@ class Tonino(QApplication):
         self.std_calib_high_b_range = 2000 # red disk blue reading range
         
         # r/b Tiny calibration targets and ranges
-        self.tiny_low_rb = 1.45 # green disk r/b target
-        self.tiny_high_rb = 3.11 # red disk r/b target
+        self.tiny_low_rb = 1.475 # green disk r/b target
+        self.tiny_high_rb = 3.07 # red disk r/b target
         self.tiny_rb_range_low = 0.13 # green disk r/b range
-        self.tiny_rb_range_high = 0.2 # red disk r/b range
+        self.tiny_rb_range_high = 0.245 # red disk r/b range
         
         # variables
         self.workingDirectory = None
@@ -202,15 +202,15 @@ class Tonino(QApplication):
             self.std_calib_target_low = 1.316187404
             self.std_calib_target_high = 2.873957082
             # --
-            self.std_calib_low_r = 27800. # green disk red reading
-            self.std_calib_low_b = 19200. # green disk blue reading
-            self.std_calib_high_r = 35500. # red disk red reading
+            self.std_calib_low_r = 27600. # green disk red reading
+            self.std_calib_low_b = 18800. # green disk blue reading
+            self.std_calib_high_r = 34890. # red disk red reading
             self.std_calib_high_b = 11500. # red disk blue reading
             # --
-            self.std_calib_low_r_range = 4000 # green disk red reading range
-            self.std_calib_low_b_range = 3000 # green disk blue reading range
-            self.std_calib_high_r_range = 5000 # red disk red reading range
-            self.std_calib_high_b_range = 2000 # red disk blue reading range
+            self.std_calib_low_r_range = 5000 # green disk red reading range
+            self.std_calib_low_b_range = 3600 # green disk blue reading range
+            self.std_calib_high_r_range = 5300 # red disk red reading range
+            self.std_calib_high_b_range = 2500 # red disk blue reading range
         
     def getModel(self):
         return self.tonino_model
