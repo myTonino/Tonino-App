@@ -989,7 +989,7 @@ class ApplicationWindow(QMainWindow):
         self.ui.actionCut.triggered.connect(self.actionCut)
         self.ui.actionCopy.triggered.connect(self.actionCopy)
         self.ui.actionPaste.triggered.connect(self.actionPaste)
-        self.ui.pushButtonUpload.setEnabled(True)
+        self.ui.pushButtonUpload.setEnabled(False)
         
         # enable buttons
         self.ui.pushButtonDelete.setEnabled(False)
@@ -1235,14 +1235,15 @@ class ApplicationWindow(QMainWindow):
         self.showMessage(_translate("Message","Tonino reset to defaults",None))
     
     def uploadScale(self):
-        scale = self.app.scales.getCoefficients()        
-        scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
-        self.app.setScale(self.app.toninoPort,scale)
-        self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
-        if self.app.currentFile and self.app.getModel() == 1:
-            scaleName = self.app.strippedName(self.app.currentFile).split(".")[0]
-            self.app.setScaleName(self.app.toninoPort,scaleName)
-        self.showMessage(_translate("Message","Scale uploaded",None))
+        if self.app.toninoPort and self.app.scales.getCoefficients():
+            scale = self.app.scales.getCoefficients()        
+            scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
+            self.app.setScale(self.app.toninoPort,scale)
+            self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
+            if self.app.currentFile and self.app.getModel() == 1:
+                scaleName = self.app.strippedName(self.app.currentFile).split(".")[0]
+                self.app.setScaleName(self.app.toninoPort,scaleName)
+            self.showMessage(_translate("Message","Scale uploaded",None))
         
     def addCoordinate(self,retry=True):
         try:

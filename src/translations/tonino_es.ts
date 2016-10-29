@@ -18,12 +18,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1553"/>
+        <location filename="../lib/main.py" line="1554"/>
         <source>Do you want to save your changes?</source>
         <translation>¿Desea guardar los cambios?</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1460"/>
+        <location filename="../lib/main.py" line="1461"/>
         <source>Do you want to update to %s?</source>
         <translation>¿Desea actualizar a %s?</translation>
     </message>
@@ -43,12 +43,12 @@
         <translation>Aplicar Escala</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1459"/>
+        <location filename="../lib/main.py" line="1460"/>
         <source>The Tonino firmware is outdated!</source>
         <translation>¡El firmware de Tonino está desactualizado!</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1552"/>
+        <location filename="../lib/main.py" line="1553"/>
         <source>The scale has been modified.</source>
         <translation>La escala ha sido modificada.</translation>
     </message>
@@ -63,12 +63,12 @@
         <translation>Calibración</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1384"/>
+        <location filename="../lib/main.py" line="1385"/>
         <source>Tonino*</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1386"/>
+        <location filename="../lib/main.py" line="1387"/>
         <source>Tonino**</source>
         <translation></translation>
     </message>
@@ -337,12 +337,12 @@
         <translation>Firmware actualizado correctamente</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1437"/>
+        <location filename="../lib/main.py" line="1438"/>
         <source>Connecting...</source>
         <translation>Conectando...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1488"/>
+        <location filename="../lib/main.py" line="1489"/>
         <source>Connected to Tonino</source>
         <translation>Conectado a Tonino</translation>
     </message>
@@ -357,12 +357,12 @@
         <translation>Tonino restaurado a valores por defecto</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1260"/>
+        <location filename="../lib/main.py" line="1261"/>
         <source>Coordinate out of range</source>
         <translation>Coordinar fuera de rango</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1245"/>
+        <location filename="../lib/main.py" line="1246"/>
         <source>Scale uploaded</source>
         <translation>Escala cargada</translation>
     </message>
@@ -387,17 +387,17 @@
         <translation>Calibración actualizada</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1475"/>
+        <location filename="../lib/main.py" line="1476"/>
         <source>Not connected</source>
         <translation>No conectado</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1494"/>
+        <location filename="../lib/main.py" line="1495"/>
         <source>Scale could not be retrieved</source>
         <translation>La escala no pudo ser recuperar</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1490"/>
+        <location filename="../lib/main.py" line="1491"/>
         <source>Connected to TinyTonino</source>
         <translation>Conectado a TinyTonino</translation>
     </message>
