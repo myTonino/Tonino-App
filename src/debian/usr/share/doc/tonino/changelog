@@ -1,3 +1,27 @@
+tonino (1.0.18-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.17:
+   - updated calibration recognition
+ --  <dev@my-tonino.com>  Sat, 29 Oct 2016 19:32:14 +0200
+
+tonino (1.0.17-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.16:
+   - bug fixes
+ --  <dev@my-tonino.com>  Mon, 5 Sep 2016 19:32:14 +0200
+
+tonino (1.0.16-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.15:
+   - bug fixes
+ --  <dev@my-tonino.com>  Fri, 26 Aug 2016 19:32:14 +0200
+
+tonino (1.0.15-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.14:
+   - adds Tiny Tonino firmware
+ --  <dev@my-tonino.com>  Tue, 2 Aug 2016 19:32:14 +0200
+
 tonino (1.0.14-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.13:

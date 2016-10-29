@@ -61,7 +61,7 @@ else:
 from lib import __version__
 import lib.serialport
 import lib.scales
-from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, DebugDialogUI
+from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, TinyCalibDialogUI2, DebugDialogUI
 import uic.resources as resources
 
 
@@ -225,14 +225,26 @@ class Tonino(QApplication):
     # and sets the corresponding variables accordingly
     def setCalibReadings(self,r,b):
         rb = r/float(b)
-        if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range and (not self.tonino_model or abs(rb-self.tiny_low_rb) < self.tiny_rb_range_low):
-            # calib_low disk recognized
-            self.calib_low_r = r
-            self.calib_low_b = b
-        elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range and (not self.tonino_model or abs(rb-self.tiny_high_rb) < self.tiny_rb_range_high):
-            # calib_high disk recognized
-            self.calib_high_r = r
-            self.calib_high_b = b
+        if self.tonino_model:
+            # TinyTonino
+            if abs(rb-self.tiny_low_rb) < self.tiny_rb_range_low:
+                # calib_low disk recognized
+                self.calib_low_r = r
+                self.calib_low_b = b
+            elif abs(rb-self.tiny_high_rb) < self.tiny_rb_range_high:
+                # calib_high disk recognized
+                self.calib_high_r = r
+                self.calib_high_b = b
+        else:
+            # ClassicTonino
+            if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range:
+                # calib_low disk recognized
+                self.calib_low_r = r
+                self.calib_low_b = b
+            elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range:
+                # calib_high disk recognized
+                self.calib_high_r = r
+                self.calib_high_b = b
             
     def getCalibLow(self):
         if self.calib_low_r and self.calib_low_b:
@@ -764,7 +776,11 @@ class CalibDialog(ToninoDialog):
         if app.tonino_model == 0: # Classic Tonino
             self.ui = CalibDialogUI.Ui_Dialog()
         else: # Tiny Tonino
-            self.ui = TinyCalibDialogUI.Ui_Dialog()
+            if app.toninoFirmwareVersion and len(app.toninoFirmwareVersion) > 2 and (app.toninoFirmwareVersion[0] > 2 or app.toninoFirmwareVersion[1] > 0):
+                # from v2.1.0 on the red disk is the one to start calibration
+                self.ui = TinyCalibDialogUI2.Ui_Dialog()
+            else:
+                self.ui = TinyCalibDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
         # disable elements
         self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)

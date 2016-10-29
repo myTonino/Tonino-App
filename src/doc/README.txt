@@ -101,6 +101,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.18 (29.10.2016)
+ - Updated calibration recognition
+
 v1.0.17 (5.09.2016)
  - Bug fixes
 
