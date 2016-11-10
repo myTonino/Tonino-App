@@ -69,6 +69,7 @@ mkdir dist/Tonino.app/Contents/Resources/translations
 cp $QT_PATH/translations/qt_de.qm dist/Tonino.app/Contents/Resources/translations
 cp $QT_PATH/translations/qt_es.qm dist/Tonino.app/Contents/Resources/translations
 cp $QT_PATH/translations/qt_fr.qm dist/Tonino.app/Contents/Resources/translations
+cp $QT_PATH/translations/qt_it.qm dist/Tonino.app/Contents/Resources/translations
 cp translations/tonino_??.qm dist/Tonino.app/Contents/Resources/translations
 
 # copy firmware and file icon

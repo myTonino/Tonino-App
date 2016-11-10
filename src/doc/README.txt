@@ -101,6 +101,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.19 (10.11.2016)
+ - Adds Raspian build
+
 v1.0.18 (29.10.2016)
  - Updated calibration recognition
 

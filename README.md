@@ -22,6 +22,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.19 Adds Raspian build
 - v1.0.18 Updated calibration recognition
 - v1.0.17 Bug fixes
 - v1.0.16 Bug fixes

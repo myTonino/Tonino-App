@@ -80,6 +80,11 @@ else: # Linux
     try:
         ib = getattr(sys, 'frozen', False)
         from PyQt5.QtWidgets import QApplication
+        if ib: # on linux delete the matplotlib cache path set to /tmp by pyinstaller
+            try:
+                os.environ.pop("MPLCONFIGDIR")
+            except:
+                pass
         if ib:
             QApplication.addLibraryPath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Resources/qt_plugins"))            
         else:
@@ -97,9 +102,9 @@ else: # Linux
             pass
         
 # supress any console/error-log output on all platforms, but Mac OS X
-if not sys.platform.startswith("darwin"):
-   sys.stderr = sys.stdout = os.devnull
-
+#if not sys.platform.startswith("darwin"):   
+#   sys.stderr = sys.stdout = os.devnull
+    
 import numpy
 from lib import main
 

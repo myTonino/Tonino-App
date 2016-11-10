@@ -702,6 +702,14 @@
       <string>Apply Recent</string>
      </property>
     </widget>
+    <action name="actionQuit">
+     <property name="text">
+      <string>Quit</string>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+Q</string>
+     </property>
+    </action>
     <addaction name="actionOpen"/>
     <addaction name="menuOpen_Recent"/>
     <addaction name="separator"/>
@@ -710,6 +718,8 @@
     <addaction name="separator"/>
     <addaction name="actionApply"/>
     <addaction name="menuOpen_ApplyRecent"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

@@ -61,9 +61,9 @@ def inBundle():
         pass
     return ib
     
-# for bbfreeze on Linux
+# for bbfreeze or pyinstaller on Linux
 def isFrozen():
-    return sys.executable.endswith("tonino")
+    return sys.executable.endswith("tonino") or getattr(sys, 'frozen', False)
     
             
 # returns the path to the platform independent resources

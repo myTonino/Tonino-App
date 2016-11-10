@@ -114,12 +114,13 @@ class SerialPort(object):
                 self.SP.open()
                 time.sleep(.1) # avoid possible hickups on startup
         except serial.SerialException:
-            self.SP.close()
+            self.closePort()
     
     def closePort(self):
         try:
             self.port = None
             self.SP.close()
+            time.sleep(0.7) # on OS X opening a serial port too fast after closing the port get's disabled
         except:
             pass
             

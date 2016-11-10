@@ -33,7 +33,7 @@ sed -i "s/_VERSION_/${VERSION}/g" debian/DEBIAN/control
 
 cp doc/changelog debian/usr/share/doc/tonino
 cp doc/copyright debian/usr/share/doc/tonino
-cp doc/tonino.1 debian/usr/share/man/tonino
+cp doc/tonino.1 debian/usr/share/man/man1/tonino.1
 
 gzip -9 debian/usr/share/man/man1/tonino.1
 gzip -9 debian/usr/share/doc/tonino/changelog

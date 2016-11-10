@@ -1,0 +1,11 @@
+Source: tonino
+Package: tonino
+Version: _VERSION_
+Section: misc
+Depends: libc6 (>= 2.19)
+Priority: extra
+Architecture: armhf
+Installed-Size: 67510
+Maintainer: Marko Luther <dev@my-tonino.com>
+Homepage: http://my-tonino.com
+Description: The Tonino app allows to configure the Tonino roast color meter as well as to design and upload scales

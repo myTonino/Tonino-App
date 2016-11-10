@@ -1,3 +1,9 @@
+tonino (1.0.19-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.18:
+   - adds Raspian build
+ --  <dev@my-tonino.com>  Thu, 10 Nov 2016 19:32:14 +0200
+
 tonino (1.0.18-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.17:

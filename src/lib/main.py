@@ -160,7 +160,7 @@ class Tonino(QApplication):
         self.tiny_low_rb = 1.475 # green disk r/b target
         self.tiny_high_rb = 3.07 # red disk r/b target
         self.tiny_rb_range_low = 0.13 # green disk r/b range
-        self.tiny_rb_range_high = 0.245 # red disk r/b range
+        self.tiny_rb_range_high = 0.255 # red disk r/b range
         
         # variables
         self.workingDirectory = None
@@ -989,6 +989,7 @@ class ApplicationWindow(QMainWindow):
         self.ui.actionCut.triggered.connect(self.actionCut)
         self.ui.actionCopy.triggered.connect(self.actionCopy)
         self.ui.actionPaste.triggered.connect(self.actionPaste)
+        self.ui.actionQuit.triggered.connect(self.close)
         self.ui.pushButtonUpload.setEnabled(False)
         
         # enable buttons
@@ -1565,14 +1566,24 @@ class ApplicationWindow(QMainWindow):
         else:
             return True
     
+    def close(self):
+        self.closeEvent(None)
+        
     def closeEvent(self,event):
         if self.closing or self.verifyDirty():
             if not self.closing:
                 self.app.saveSettings()
+                self.app.ser.closePort()
             self.closing = True
-            event.accept()
+            if event:
+                event.accept()
+            else:
+                QApplication.exit()
         else:
-            event.ignore()
+            if event:
+                event.ignore()
+            else:
+                QApplication.exit()
         
 
 ###########################################################################################################################################

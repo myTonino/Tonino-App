@@ -102,4 +102,5 @@ cp translations/*.qm dist/translations
 cp $QT/translations/qt_de.qm dist/translations
 cp $QT/translations/qt_es.qm dist/translations
 cp $QT/translations/qt_fr.qm dist/translations
+cp $QT/translations/qt_it.qm dist/translations
 tar -cf dist-ubuntu.tar dist
