@@ -157,10 +157,10 @@ class Tonino(QApplication):
         self.std_calib_high_b_range = 2000 # red disk blue reading range
         
         # r/b Tiny calibration targets and ranges
-        self.tiny_low_rb = 1.475 # green disk r/b target
+        self.tiny_low_rb = 1.49 # green disk r/b target
         self.tiny_high_rb = 3.07 # red disk r/b target
-        self.tiny_rb_range_low = 0.13 # green disk r/b range
-        self.tiny_rb_range_high = 0.255 # red disk r/b range
+        self.tiny_rb_range_low = 0.15 # green disk r/b range
+        self.tiny_rb_range_high = 0.27 # red disk r/b range
         
         # variables
         self.workingDirectory = None

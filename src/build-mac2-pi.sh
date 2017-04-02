@@ -25,7 +25,7 @@ export MACOSX_DEPLOYMENT_TARGET=10.7
 
 export PYTHON=/Library/Frameworks/Python.framework/Versions/2.7
 export PYTHONPATH=$PYTHON/lib/python2.7/site-packages
-export QT_PATH=~/Qt5.4.2/5.4/clang_64
+export QT_PATH=~/Qt5.8.0/5.8/clang_64
 
 export PATH=$PYTHON/bin:$PYTHON/lib:$PATH
 export PATH=$QT_PATH/bin:$QT_PATH/lib:$PATH

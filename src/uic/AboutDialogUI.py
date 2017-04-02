@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/AboutDialogUI.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -74,7 +74,7 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         self.nameLabel.setText(_translate("Dialog", "Tonino"))
         self.versionLabel.setText(_translate("Dialog", "Version"))
-        self.copyrightLabel.setText(_translate("Dialog", "Copyright © 2016 Marko Luther, Paul Holleis"))
+        self.copyrightLabel.setText(_translate("Dialog", "Copyright © 2017 Marko Luther, Paul Holleis"))
         self.pushButton.setText(_translate("Dialog", "OK"))
 
 from . import icons_rc

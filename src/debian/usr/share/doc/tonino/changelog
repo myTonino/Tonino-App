@@ -1,3 +1,9 @@
+tonino (1.0.20-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.19:
+   - minor bug fixes
+ --  <dev@my-tonino.com>  Sun, 2 Apr 2017 19:32:14 +0200
+
 tonino (1.0.19-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.18:

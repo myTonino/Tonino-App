@@ -45,12 +45,12 @@ VERSION = lib.__version__
 LICENSE = 'GNU General Public License (GPL)'
 
 
-#Qt4:
-#QTDIR = r'/Developer/Applications/Qt/'
-# Qt5:
-from os.path import expanduser
-HOME = expanduser("~")
-QTDIR = HOME + r'/Qt5.7.0/5.7/clang_64/'
+try:
+    QTDIR = os.environ["QT_PATH"] + r'/'
+except:
+    from os.path import expanduser
+    HOME = expanduser("~")
+    QTDIR = HOME + r'/Qt5.8.0/5.8/clang_64/'
 
 APP = ['tonino.py']
 
@@ -120,17 +120,14 @@ OPTIONS = {
     'arch': 'x86_64',
     'matplotlib_backends': '-', # '-' for imported or explicit 'qt4agg' (without this, the full matplotlib folder is again included in Resources/lib (see above)
     'includes': ['serial',
-# PyQt5
-#                 'PyQt5',
-#                 'PyQt5.QtCore',
-#                 'PyQt5.QtGui',
-#                 'PyQt5.QtWidgets',
-#                 'PyQt5.QtSvg'],
-# PyQt4
-#                 'PyQt4.QtCore',
-#                 'PyQt4.QtGui',
-#                 'PyQt4.QtSvg'
-                 ],
+                 'PyQt5',
+                 'PyQt5.QtCore',
+                 'PyQt5.QtGui',
+                 'PyQt5.QtWidgets',
+                 'PyQt5.QtSvg',
+                 'PyQt5.QtXml',
+                 'PyQt5.QtDBus',
+                 'PyQt5.QtPrintSupport'],
     'excludes' :  ['_tkagg','_ps','_fltkagg','Tkinter','Tkconstants',
                       '_agg','_cairo','_gtk','gtkcairo','pydoc','sqlite3',
                       'bsddb','curses','tcl',

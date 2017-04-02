@@ -22,6 +22,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.20 Bug fixes
 - v1.0.19 Adds Raspbian build
 - v1.0.18 Updated calibration recognition
 - v1.0.17 Bug fixes

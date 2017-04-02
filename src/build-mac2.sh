@@ -25,8 +25,9 @@ export MACOSX_DEPLOYMENT_TARGET=10.7
 export PYTHONPATH="/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages"
 export PATH=/Library/Frameworks/Python.framework/Versions/2.7/bin/:$PATH
 
-export PATH=/Users/luther/Qt5.4.2/5.4/clang_64/bin:$PATH
-export DYLD_FRAMEWORK_PATH=/Users/luther/Qt5.4.2/5.4/clang_64/lib/
+export QT_PATH=~/Qt5.8.0/5.8/clang_64
+export PATH=$QT_PATH/bin:$QT_PATH/lib:$PATH
+export DYLD_FRAMEWORK_PATH=$QT_PATH/lib
 
 # ui
 find ui -iname "*.ui" | while read f
