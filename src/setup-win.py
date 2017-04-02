@@ -26,6 +26,9 @@ from distutils.core import setup
 import matplotlib as mpl
 import py2exe
 
+import numpy
+import sys
+
 import os
 
 INCLUDES = [
@@ -71,6 +74,18 @@ DATAFILES = DATAFILES + \
             'c:\Python27\Lib\site-packages\PyQt4\plugins\iconengines\qsvgicon4.dll',
             ]),
     ]
+    
+def numpy_dll_paths_fix():
+    paths = set()
+    np_path = numpy.__path__[0]
+    for dirpath, _, filenames in os.walk(np_path):
+        for item in filenames:
+            if item.endswith('.dll'):
+                paths.add(dirpath)
+
+    sys.path.append(*list(paths))
+    
+numpy_dll_paths_fix()
 
 setup(
     name ="Tonino",
