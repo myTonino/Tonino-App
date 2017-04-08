@@ -74,7 +74,7 @@
     </message>
     <message encoding="UTF-8">
         <location filename="../uic/AboutDialogUI.py" line="77"/>
-        <source>Copyright © 2017 Marko Luther, Paul Holleis</source>
+        <source>Copyright Â© 2017 Marko Luther, Paul Holleis</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

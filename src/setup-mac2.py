@@ -174,12 +174,12 @@ os.system(r'cp /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/s
 #            'QtTest',
 #            'QtWebKit',
 #            'QtXMLPatterns']:
-#    for root,dirs,files in os.walk('./Artisan.app/Contents/Frameworks/' + fw + ".framework"):
+#    for root,dirs,files in os.walk('./Tonino.app/Contents/Frameworks/' + fw + ".framework"):
 #        for file in files:
 #            print 'Deleting', file
 #            os.remove(os.path.join(root,file))
 # for Qt5
-print '*** Removing unused Qt frameworks ***'
+print('*** Removing unused Qt frameworks ***')
 for fw in [
             'QtDeclarative.framework',
             'QtHelp.framework',
@@ -207,9 +207,9 @@ for fw in [
             'QtGui.framework/Versions/4.0',
             'QtWidgets.framework/Versions/4',
             'QtWidgets.framework/Versions/4.0']:
-    for root,dirs,files in os.walk('./Artisan.app/Contents/Frameworks/' + fw):
+    for root,dirs,files in os.walk('./Tonino.app/Contents/Frameworks/' + fw):
         for file in files:
-            print 'Deleting', file
+            print('Deleting', file)
             os.remove(os.path.join(root,file))
 
 
