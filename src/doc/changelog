@@ -1,3 +1,15 @@
+tonino (1.0.21-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.19:
+   - updated tiny firmware
+ --  <dev@my-tonino.com>  Thu, 25 May 2017 19:32:14 +0200
+
+tonino (1.0.20-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.19:
+   - bug fixes
+ --  <dev@my-tonino.com>  Sat, 8 Apr 2017 19:32:14 +0200
+
 tonino (1.0.19-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.18:
