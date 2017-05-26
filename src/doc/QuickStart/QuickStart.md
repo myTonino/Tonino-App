@@ -62,7 +62,7 @@ Tonino Configuration
 
 Under the application settings (e.g. menu Tonino >> Preferences on the Mac) you can set the display brightness of the connected Tonino. 
 
-On newer models you can also set the screen orientation, a target value and range, as well as give the device a name. If a target value and range other than 0 is given, the newer models present readings in the interval [target value - target range, target value + target range] in green (perfect hit), readings below that interval in blue (to light/cool) and readings above that interval in red (to dark/hot).
+On newer models you can also set the screen orientation, a target value and range, as well as give the device a name. If a target value ```tv``` and range ```r``` other than 0 is given, the newer models present readings in the range from ```tv-r``` to ```tv+r``` in green (perfect hit), readings below that interval in blue (too light/cool) and readings above that interval in red (too dark/hot).
 
 
 Tonino Calibration
