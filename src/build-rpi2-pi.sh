@@ -23,11 +23,11 @@
 
 
 export QT_SELECT="default"
-export QTTOOLDIR="/usr/lib/arm-linux-gnueabihf/qt5/bin"
+export QTTOOLDIR="/usr/lib/arm-linux-gnueabihf/qt4/bin"
 export QTLIBDIR="/usr/lib/arm-linux-gnueabihf"
-export QT_PATH=/usr/share/qt5
+export QT_PATH=/usr/share/qt4
 
-export QT=/usr/lib/arm-linux-gnueabihf/qt5
+export QT=/usr/lib/arm-linux-gnueabihf/qt4
 
 rm -f ui/.*.ui
 rm -f qrc/.*.qrc
@@ -37,7 +37,7 @@ find ui -iname "*.ui" | while read f
 do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
-    pyuic5 -o uic/${fn}.py --from-imports ui/${fn}.ui
+    pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui
 done
 
 # qrc
@@ -45,11 +45,11 @@ find qrc -iname "*.qrc" | while read f
 do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
-    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
+    pyrcc4 -o uic/${fn}_rc.py qrc/${fn}.qrc 
 done
 
 # translations
-pylupdate5 conf/tonino.pro
+pylupdate4 conf/tonino.pro
 lrelease -qt=5 -verbose conf/tonino.pro
 
 # clean build
@@ -61,13 +61,13 @@ rm -rf build dist
 #    --log-level=WARN \
 #    -D \
 #    tonino-linux.spec
-pyinstaller3 -D -n tonino -y -c --log-level=WARN "tonino.py"
+pyinstaller --runtime-hook rthook_pyqt4.py -D -n tonino -y -c --log-level=WARN "tonino.py"
 
 mv dist/tonino dist/tonino.d
 mv dist/tonino.d/* dist
 rm -rf dist/tonino.d
 
-cp -R /usr/local/lib/python3.4/dist-packages/matplotlib/mpl-data/ dist
+cp -R /usr/local/lib/python2.7/dist-packages/matplotlib/mpl-data/ dist
 rm -rf dist/mpl-data/sample_data
 cp conf/tonino-toni.xml dist
 cp -R icons dist
@@ -86,7 +86,7 @@ cp translations/*.qm dist/translations
 cp $QT_PATH/translations/qt_de.qm dist/translations
 cp $QT_PATH/translations/qt_es.qm dist/translations
 cp $QT_PATH/translations/qt_fr.qm dist/translations
-cp $QT_PATH/translations/qt_it.qm dist/translations
+#cp $QT_PATH/translations/qt_it.qm dist/translations
 
 
 
@@ -132,5 +132,5 @@ rm ${NAME}_raspbian-jessie.deb
 chmod 755 debian/DEBIAN
 chmod 755 debian/DEBIAN/postinst
 chmod 755 debian/DEBIAN/prerm
-dpkg-deb --build debian ${NAME}_raspbian-jessie-py3.deb
+dpkg-deb --build debian ${NAME}_raspbian-jessie-py2.deb
 
