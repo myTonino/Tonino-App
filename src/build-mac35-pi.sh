@@ -21,7 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-export MACOSX_DEPLOYMENT_TARGET=10.7
+export MACOSX_DEPLOYMENT_TARGET=10.10
 
 export PYTHON=/Library/Frameworks/Python.framework/Versions/3.5
 export PYTHONPATH=$PYTHON/lib/python3.5/site-packages

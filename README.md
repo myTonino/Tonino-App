@@ -22,6 +22,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.22 Adds PRECAL support
 - v1.0.21 Bug fixes
 - v1.0.20 Bug fixes
 - v1.0.19 Adds Raspbian build

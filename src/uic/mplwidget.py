@@ -153,7 +153,7 @@ class MplCanvas(FigureCanvas):
     def updatePolyfit(self):
         # updates the polyfit line data and calls redraw
         c = self.app.scales.getCoefficients()
-        if c == None:
+        if c is None:
             self.yvalues = None
         else:
             self.yvalues = np.poly1d(np.array(c))(self.xvalues)
@@ -226,7 +226,7 @@ class MplCanvas(FigureCanvas):
         if full or (not self.ax.lines):
             self.ax.lines = []
             # add Tonino curve or device curve
-            if self.yvalues_device != None:
+            if self.yvalues_device is not None:
                 self.ax.plot(self.xvalues, self.yvalues_device,color=self.toninoBlue)
             else:
                 self.ax.plot(self.xvalues, self.yvalues_default,color=self.toninoBlue)
@@ -234,7 +234,7 @@ class MplCanvas(FigureCanvas):
             # remove all but first curve
             self.ax.lines = self.ax.lines[:1]
         # add polyfit curve        
-        if self.yvalues != None:
+        if self.yvalues is not None:
             self.ax.plot(self.xvalues,self.yvalues,color=self.toninoRed)
         # draw annotations at selected coordinates
         if self.app.aw:

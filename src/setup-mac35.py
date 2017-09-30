@@ -26,7 +26,7 @@ from distutils import sysconfig
 their_parse_makefile = sysconfig.parse_makefile
 def my_parse_makefile(filename, g):
     their_parse_makefile(filename, g)
-    g['MACOSX_DEPLOYMENT_TARGET'] = '10.7'
+    g['MACOSX_DEPLOYMENT_TARGET'] = '10.10'
 sysconfig.parse_makefile = my_parse_makefile
 
 import sys, os
@@ -50,7 +50,7 @@ try:
 except:
     from os.path import expanduser
     HOME = expanduser("~")
-    QTDIR = HOME + r'/Qt5.8.0/5.8/clang_64/'
+    QTDIR = HOME + r'/Qt5.9.1/5.9.1/clang_64/'
 
 APP = ['tonino.py']
 
@@ -101,7 +101,7 @@ plist.update({ 'CFBundleDisplayName': 'Tonino',
                     'CFBundleIdentifier': 'com.tonino',
                     'CFBundleShortVersionString': VERSION,
                     'CFBundleVersion': 'Tonino ' + VERSION,
-                    'LSMinimumSystemVersion': '10.7',
+                    'LSMinimumSystemVersion': '10.10',
                     'LSMultipleInstancesProhibited': 'false',
                     'LSPrefersPPC': False,
                     'LSArchitecturePriority': 'x86_64',

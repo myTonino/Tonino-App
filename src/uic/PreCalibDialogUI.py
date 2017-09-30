@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/CalibDialogUI.ui'
+# Form implementation generated from reading ui file 'ui/PreCalibDialogUI.ui'
 #
 # Created by: PyQt5 UI code generator 5.9
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(519, 266)
+        Dialog.resize(575, 352)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -22,45 +22,32 @@ class Ui_Dialog(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(0, 0, -1, -1)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.calibLowLabel = QtWidgets.QLabel(Dialog)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.calibLowLabel.sizePolicy().hasHeightForWidth())
-        self.calibLowLabel.setSizePolicy(sizePolicy)
-        self.calibLowLabel.setMinimumSize(QtCore.QSize(200, 200))
-        self.calibLowLabel.setMaximumSize(QtCore.QSize(200, 200))
-        self.calibLowLabel.setText("")
-        self.calibLowLabel.setPixmap(QtGui.QPixmap(":/app/icons/calib_low.png"))
-        self.calibLowLabel.setScaledContents(True)
-        self.calibLowLabel.setObjectName("calibLowLabel")
-        self.horizontalLayout_2.addWidget(self.calibLowLabel)
+        self.logOutput = QtWidgets.QPlainTextEdit(Dialog)
+        self.logOutput.setObjectName("logOutput")
+        self.horizontalLayout_2.addWidget(self.logOutput)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setContentsMargins(0, -1, -1, -1)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.pushButtonMaster = QtWidgets.QPushButton(Dialog)
+        self.pushButtonMaster.setObjectName("pushButtonMaster")
+        self.verticalLayout_3.addWidget(self.pushButtonMaster)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(-1, -1, 0, -1)
-        self.horizontalLayout.setObjectName("horizontalLayout")
         self.pushButtonScan = QtWidgets.QPushButton(Dialog)
         self.pushButtonScan.setObjectName("pushButtonScan")
-        self.horizontalLayout.addWidget(self.pushButtonScan)
-        self.verticalLayout_3.addLayout(self.horizontalLayout)
+        self.verticalLayout_3.addWidget(self.pushButtonScan)
+        self.pushButtonPreCal = QtWidgets.QPushButton(Dialog)
+        self.pushButtonPreCal.setObjectName("pushButtonPreCal")
+        self.verticalLayout_3.addWidget(self.pushButtonPreCal)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem1)
+        self.pushButtonSet = QtWidgets.QPushButton(Dialog)
+        self.pushButtonSet.setObjectName("pushButtonSet")
+        self.verticalLayout_3.addWidget(self.pushButtonSet)
+        self.pushButtonReset = QtWidgets.QPushButton(Dialog)
+        self.pushButtonReset.setObjectName("pushButtonReset")
+        self.verticalLayout_3.addWidget(self.pushButtonReset)
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
-        self.calibHighLabel = QtWidgets.QLabel(Dialog)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.calibHighLabel.sizePolicy().hasHeightForWidth())
-        self.calibHighLabel.setSizePolicy(sizePolicy)
-        self.calibHighLabel.setMinimumSize(QtCore.QSize(200, 200))
-        self.calibHighLabel.setMaximumSize(QtCore.QSize(200, 200))
-        self.calibHighLabel.setText("")
-        self.calibHighLabel.setPixmap(QtGui.QPixmap(":/app/icons/calib_high.png"))
-        self.calibHighLabel.setScaledContents(True)
-        self.calibHighLabel.setObjectName("calibHighLabel")
-        self.horizontalLayout_2.addWidget(self.calibHighLabel)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -75,8 +62,10 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Calibration"))
+        Dialog.setWindowTitle(_translate("Dialog", "PreCalibration"))
+        self.pushButtonMaster.setText(_translate("Dialog", "Master"))
         self.pushButtonScan.setText(_translate("Dialog", "Scan"))
+        self.pushButtonPreCal.setText(_translate("Dialog", "PreCal"))
+        self.pushButtonSet.setText(_translate("Dialog", "Set"))
+        self.pushButtonReset.setText(_translate("Dialog", "Reset"))
 
-from . import calib_high_rc
-from . import calib_low_rc

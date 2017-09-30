@@ -11,7 +11,7 @@ The project home of this app is on GitHub were all source and binary files are a
 
 FEATURES
 
-o runs on Mac OS X >10.7 on Intel, Windows, and Linux
+o runs on Mac OS X >10.9 on Intel, Windows, and Linux
 (on OS X >=10.8 Mountain Lion you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app)
 o allows to connect to a Tonino device and trigger the measurements
 o designer for custom scales
@@ -30,7 +30,7 @@ o Windows
    http://www.ftdichip.com/Drivers/VCP.htm
 - Download and run the Tonino App Windows installer
 
-o Mac OS X (>=10.7.x)
+o Mac OS X (>=10.9.x)
 
 - Install USB/serial driver from FTDI
    http://www.ftdichip.com/Drivers/VCP.htm
@@ -81,25 +81,27 @@ LIBRARIES
 
 The Tonino app uses the following libraries in unmodified forms:
 
-- Python 2.7.x and 3.4.x released under the PSF licence http://www.python.org/psf/
+- Python 3.5.x released under the PSF licence http://www.python.org/psf/
   http://www.python.org/
-- QT 5.5.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
+- QT 5.9.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
   http://qt-project.org/products/licensing
-- Numpy 1.8.x and Scipy 0.14.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
+- Numpy 1.x and Scipy 0.19.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
   http://www.scipy.org/
-- PyQt 5.x and SIP 4.16.x under the Qt GNU GPL v. 3.0 licence; Copyright (c) 2010 Riverbank Computing Limited
+- PyQt 5.x and SIP 4.x under the Qt GNU GPL v. 3.0 licence; Copyright (c) 2010 Riverbank Computing Limited
   http://www.riverbankcomputing.co.uk/software/pyqt/
-- matplotlib 1.3.x, Copyright (c) 2002-2013 John D. Hunter; All Rights Reserved. Distributed under a licence based on PSF.
+- matplotlib 2.x, Copyright (c) 2002-2013 John D. Hunter; All Rights Reserved. Distributed under a licence based on PSF.
   http://matplotlib.sourceforge.net
 - py2app 0.9.x under the PSF open source licence; Copyright (c) 2004-2006 Bob Ippolito <bob at redivi.com>
   Copyright (c) 2010-2012 Ronald Oussoren <ronaldoussoren at mac.com>.
   http://packages.python.org/py2app/
-- py2exe, Copyright (c) 2000-2005 Thomas Heller, Mark Hammond, Jimmy Retzlaff
+- pyinstaller, Copyright (c) 2000-2005 Thomas Heller, Mark Hammond, Jimmy Retzlaff
   http://www.py2exe.org/
-- bbfreeze, Copyright (c) 2007-2012 brainbot technologies AG. Distributed under the zlib/libpng license.
 
 
 VERSION HISTORY
+
+v1.0.20 (30.9.2017)
+ - Adds PRECAL support
 
 v1.0.20 (2.4.2017)
  - Minor fixes

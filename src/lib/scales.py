@@ -175,7 +175,7 @@ class Scales(QAbstractTableModel):
 
     def addCoordinate(self,x,y,name=""):
         selectedCoordinates = self.getSelectedCoordinates()
-        if y == None:
+        if y is None:
             # y from I_SCAN, we compute the T value
             y2 = int(round(self.computeT(x)))
             new_coordinate = [x,y2,name or str(len(self.coordinates)+1),random.random()]

@@ -92,7 +92,7 @@ RequestExecutionLevel admin
 
 
 ; HM NIS Edit Wizard helper defines
-!define py2exeOutputDir 'dist'
+!define pyinstallerOutputDir 'dist/tonino'
 !define PRODUCT_NAME "Tonino"
 !define PRODUCT_EXE "tonino.exe"
 !define PRODUCT_VERSION "1.0.22.0"
@@ -101,8 +101,6 @@ RequestExecutionLevel admin
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_EXE}"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
-
-;!define MSVC2008 "http://download.microsoft.com/download/1/1/1/1116b75a-9ec3-481a-a3c8-1777b5381140/vcredist_x86.exe"
 
 Caption "${PRODUCT_NAME} Installer"
 VIProductVersion ${PRODUCT_VERSION}
@@ -190,14 +188,14 @@ Section "MainSection" SEC01
   SetShellVarContext all
   SetOutPath "$INSTDIR"
   SetOverwrite on
-  File /r '${py2exeOutputDir}\*.*'
+  File /r '${pyinstallerOutputDir}\*.*'
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_EXE}"
   CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_EXE}"
 SectionEnd
 
-Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC02
-ExecWait '$INSTDIR\vcredist_x86.exe /q:a /c:"VCREDI~3.EXE /q:a /c:""msiexec /i vcredist.msi /qn"" "'
+Section "Microsoft Visual C++ 2015 Redistributable Package (x64)" SEC02
+ExecWait '$INSTDIR\vc_redist.x64.exe /install /passive /norestart'
 SectionEnd
 
 ; Section "FTDI Drivers" SEC03
@@ -248,14 +246,18 @@ Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\${PRODUCT_EXE}"
+  Delete "$INSTDIR\${PRODUCT_EXE}.manifest"
+  Delete "$INSTDIR\*.pyd"
+  Delete "$INSTDIR\*.dll"
+  Delete "$INSTDIR\base_library.zip"
   Delete "$INSTDIR\tonino.png"
   Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\LICENSE.txt"
-  Delete "$INSTDIR\python27.dll"
+  Delete "$INSTDIR\python34.dll"
   Delete "$INSTDIR\w9xpopen.exe"
+  Delete "$INSTDIR\tonino.ico"
   Delete "$INSTDIR\tonino_doc.ico"
-  Delete "$INSTDIR\qt.conf"
-  Delete "$INSTDIR\vcredist_x86.exe"
+  Delete "$INSTDIR\vc_redist.x64.exe"
   Delete "$INSTDIR\avrdude.conf"
   Delete "$INSTDIR\avrdude.exe"
   Delete "$INSTDIR\*.hex"
@@ -269,12 +271,20 @@ Section Uninstall
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk"
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk"
-  
+
   RMDir /r "$INSTDIR\plugins"
   RMDir /r "$INSTDIR\lib"
   RMDir /r "$INSTDIR\mpl-data"
   RMDir /r "$INSTDIR\translations"
   RMDir /r "$INSTDIR\scales"
+  RMDir /r "$INSTDIR\certifi"
+  RMDir /r "$INSTDIR\Include"
+  RMDir /r "$INSTDIR\lib2to3"
+  RMDir /r "$INSTDIR\pytz"
+  RMDir /r "$INSTDIR\qt5_plugins"
+  RMDir /r "$INSTDIR\tcl"
+  RMDir /r "$INSTDIR\tk"
+
   RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
   RMDir "$INSTDIR"
   

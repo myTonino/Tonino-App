@@ -1,3 +1,10 @@
+tonino (1.0.22-1) precise; urgency=low
+  * new upstream release
+  * fixes since 1.0.20:
+   - adds PRECAL support
+   - updated classic and tiny firmware
+ --  <dev@my-tonino.com>  Sat, 30 Sep 2017 19:32:14 +0200
+
 tonino (1.0.21-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.19:

@@ -147,7 +147,7 @@ class SerialPort(object):
             self.openPort(port)
         try:
             if self.SP.isOpen():
-                self.SP.flushInput()
+                self.SP.flushInput() # needed to avoid to interpret leftovers from the buffer
                 self.SP.flushOutput()
                 self.SP.write(str2cmd("\n" + command + "\n"))
                 self.SP.flush()
@@ -172,7 +172,6 @@ class SerialPort(object):
             else:
                 return res
         except:
-#            print("exception")
             self.closePort()
             if retry:
                 return self.sendCommand(port,command,False)
