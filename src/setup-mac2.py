@@ -49,7 +49,7 @@ try:
 except:
     from os.path import expanduser
     HOME = expanduser("~")
-    QTDIR = HOME + r'/Qt5.8.0/5.8/clang_64/'
+    QTDIR = HOME + r'/Qt5.9.3/5.9.3/clang_64/'
 
 APP = ['tonino.py']
 

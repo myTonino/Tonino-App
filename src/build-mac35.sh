@@ -22,10 +22,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export MACOSX_DEPLOYMENT_TARGET=10.10
-export PYTHONPATH="/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages"
-export PATH=/Library/Frameworks/Python.framework/Versions/3.5/bin:/Library/Frameworks/Python.framework/Versions/3.5/lib:$PATH
+export PYTHON=/Library/Frameworks/Python.framework/Versions/3.5
 
-export QT_PATH=~/Qt5.9.1/5.9.1/clang_64
+export PYTHONPATH=$PYTHON/lib/python3.5/site-packages
+
+export PATH=$PYTHON/bin:$PYTHON:/lib:$PATH
+
+export QT_PATH=~/Qt5.9.3/5.9.3/clang_64
 export PATH=$QT_PATH/bin:$QT_PATH/lib:$PATH
 export DYLD_FRAMEWORK_PATH=$QT_PATH/lib
 
@@ -53,11 +56,11 @@ done
 
 # translations
 # PyQt5
-pylupdate5 conf/tonino.pro
+$PYTHON/bin/pylupdate5 conf/tonino.pro
 # PyQt4
 #pylupdate4 conf/tonino.pro
-lrelease -verbose conf/tonino.pro
+$QT_PATH/bin/lrelease -verbose conf/tonino.pro
 
 # distribution
 rm -rf build dist
-python3.5 setup-mac35.py py2app
+$PYTHON/bin/python3.5 setup-mac35.py py2app

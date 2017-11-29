@@ -1224,14 +1224,19 @@ class ApplicationWindow(QMainWindow):
         self.progress.setWindowModality(Qt.WindowModal)
         self.progress.setAutoClose(False)
         self.progress.show()
-        for i in range(20):
+        # this try-except is needed as after the "if self.progress" and before the access, 
+        # the endProgress() might have set self.progress to None already and then the access crashes the app!
+        try: 
+            for i in range(20):
+                if self.progress:
+                    self.progress.setValue(i)
+                time.sleep(1)
             if self.progress:
-                self.progress.setValue(i)
-            time.sleep(1)
-        if self.progress:
-            self.progress.setRange(0,0)
-            self.progress.setValue(0)
-            self.progress.show()
+                self.progress.setRange(0,0)
+                self.progress.setValue(0)
+                self.progress.show()
+        except:
+            pass
         
     def endProgress(self):
         self.disconnectTonino()

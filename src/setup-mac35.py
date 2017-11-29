@@ -50,7 +50,7 @@ try:
 except:
     from os.path import expanduser
     HOME = expanduser("~")
-    QTDIR = HOME + r'/Qt5.9.1/5.9.1/clang_64/'
+    QTDIR = HOME + r'/Qt5.9.3/5.9.3/clang_64/'
 
 APP = ['tonino.py']
 
@@ -217,7 +217,7 @@ for root, dirs, files in os.walk('.'):
         elif '_tests' in file:
 #            print('Deleting', file)            
             os.remove(os.path.join(root,file))            
-        elif file.endswith('.pyc') and file != "site.pyc":
+        elif file.endswith('.pyc') and file != "site.pyc" and os.path.isfile(os.path.join(root,file[:-3] + 'pyo')):
 #            print('Deleting', file)
             os.remove(os.path.join(root,file))
         # remove also all .h .in .cpp .cc .html files 
