@@ -920,8 +920,8 @@ class DebugDialog(ToninoDialog):
             self.app.processEvents()
             self.insertRequestResponse("GETCALINIT")
             self.app.processEvents()
-            self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-            self.ui.pushButtonScan.setEnabled(True)
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        self.ui.pushButtonScan.setEnabled(True)
 
     def insertRequestResponse(self,cmd):
         try:
