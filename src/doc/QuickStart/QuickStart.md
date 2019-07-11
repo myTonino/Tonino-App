@@ -25,26 +25,26 @@ Setup
 
   **Windows**
 
-	> Download and unpack [tonino-win-<version>.zip](https://github.com/myTonino/Tonino-App/releases/latest), then run the Tonino App Windows installer.
+> Download and unpack [tonino-win-<version>.zip](https://github.com/myTonino/Tonino-App/releases/latest), then run the Tonino App Windows installer.
     
   **Mac OS X (>=10.7.x)**
 
-	> Download and open the Tonino App disk image [tonino-mac-<version>.dmg](https://github.com/myTonino/Tonino-App/releases/latest), then drag the Tonino app icon to your Applications directory.
+> Download and open the Tonino App disk image [tonino-mac-<version>.dmg](https://github.com/myTonino/Tonino-App/releases/latest), then drag the Tonino app icon to your Applications directory.
 
   **Ubuntu/Debian**
 
-	> Download the [tonino-linux-<version>.deb](https://github.com/myTonino/Tonino-App/releases/latest) installer, start a shell and type
+> Download the [tonino-linux-<version>.deb](https://github.com/myTonino/Tonino-App/releases/latest) installer, start a shell and type
 
 
- 		# sudo dpkg -i tonino-linux-<version>.deb
+ 	# sudo dpkg -i tonino-linux-<version>.deb
 
 
   **CentOS/Redhat**
 
-	> Download the [tonino-linux-<version>.rpm](https://github.com/myTonino/Tonino-App/releases/latest) installer, start a shell and type
+> Download the [tonino-linux-<version>.rpm](https://github.com/myTonino/Tonino-App/releases/latest) installer, start a shell and type
 
 
- 		# sudo rpm -i tonino-linux-<version>.rpm
+ 	# sudo rpm -i tonino-linux-<version>.rpm
 
 
 3. Connect the Tonino
