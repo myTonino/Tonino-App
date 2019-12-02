@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>Tonino</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -19,33 +23,53 @@
 			<string>Document</string>
 		</dict>
 	</array>
-    	<key>LSApplicationCategoryType</key>  
-    	<string>public.app-category.utilities</string> 
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>Tonino</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Tonino, Roast Color Analyzer</string>
 	<key>CFBundleIconFile</key>
 	<string>tonino.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.tonino</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>Tonino</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.22</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>Artisan 1.0.22</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSArchitecturePriority</key>
+	<array>
+		<string>x86_64</string>
+	</array>
 	<key>LSHasLocalizedDisplayName</key>
 	<false/>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.7</string>
+	<string>10.13</string>
+	<key>LSMultipleInstancesProhibited</key>
+	<string>false</string>
+	<key>LSPrefersPPC</key>
+	<array>
+		<false/>
+	</array>
 	<key>NSAppleScriptEnabled</key>
 	<false/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>GNU General Public License (GPL)</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>NSHighResolutionCapable</key>
-	<string>True</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<string>false</string>
 </dict>
 </plist>

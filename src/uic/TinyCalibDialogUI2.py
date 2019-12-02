@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'ui/TinyCalibDialogUI2.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -77,6 +79,5 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Calibration"))
         self.pushButtonScan.setText(_translate("Dialog", "Scan"))
-
 from . import calib_high_rc
 from . import calib_low_tiny_rc

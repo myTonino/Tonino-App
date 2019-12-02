@@ -33,14 +33,14 @@ import matplotlib as mpl
 # PyQt4:
 if pyqtversion < 5:    
     from PyQt4.QtGui import (QSizePolicy,QMenu,QWidget,QVBoxLayout,QAction,QCursor)
-    from PyQt4.QtCore import (Qt)
+    from PyQt4.QtCore import (Qt,pyqtSlot)
     mpl.use('qt4agg')
     from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 # PyQt5:
 else:
     from PyQt5.QtWidgets import (QSizePolicy,QMenu,QWidget,QVBoxLayout,QAction)
     from PyQt5.QtGui import (QCursor)
-    from PyQt5.QtCore import (Qt)
+    from PyQt5.QtCore import (Qt,pyqtSlot)
     mpl.use('qt5agg')
     from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
     
@@ -95,7 +95,7 @@ class MplCanvas(FigureCanvas):
         rcParams['figure.facecolor'] = 'white'
         rcParams['grid.linewidth'] = 0.0
         rcParams['axes.unicode_minus'] = False
-        rcParams['axes.color_cycle'] = ['b', 'r', 'c', 'm']
+#        rcParams['axes.color_cycle'] = ['b', 'r', 'c', 'm']
         rcParams['xtick.major.size'] = 8
         rcParams['xtick.major.width'] = 3
         rcParams['ytick.major.size'] = 8
@@ -113,17 +113,17 @@ class MplCanvas(FigureCanvas):
             color=self.toninoBlue,
             axis='x',           # changes apply to the x-axis
             which='both',       # both major and minor ticks are affected
-            bottom='off',       # ticks along the bottom edge are off
-            top='off',          # ticks along the top edge are off
-            labelbottom='off',  # labels along the bottom edge are off
+            bottom=False,       # ticks along the bottom edge are off
+            top=False,          # ticks along the top edge are off
+            labelbottom=False,  # labels along the bottom edge are off
             )    
         self.ax.tick_params(\
             color=self.toninoBlue,
             axis='y', 
             which='both',
-            right='off',
+            right=False,
             direction="out",    # draw the ticks outside of the graph
-            labelright='off') 
+            labelright=False) 
         self.ax.set_ylim([0, 205])
         self.ax.set_xlim([self.x_min, self.x_max])
         [t.set_color(self.toninoBlue) for t in self.ax.yaxis.get_ticklabels()]
@@ -324,6 +324,7 @@ class MplCanvas(FigureCanvas):
             menu.triggered.connect(self.event_popup_action)
             menu.popup(QCursor.pos())
     
+    @pyqtSlot("QAction*")
     def event_popup_action(self,action):
         if action.key[0] == "add":
             self.app.scales.addCoordinate(action.key[1],action.key[2])

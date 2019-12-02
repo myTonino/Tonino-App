@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'ui/PreferencesDialogUI.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_Preferences(object):
     def setupUi(self, Preferences):
@@ -179,5 +181,4 @@ class Ui_Preferences(object):
         self.range_min_label.setText(_translate("Preferences", "0"))
         self.range_max_label.setText(_translate("Preferences", "5"))
         self.groupBoxToninoName.setTitle(_translate("Preferences", "Name"))
-
 from . import icons_rc

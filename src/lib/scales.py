@@ -137,6 +137,7 @@ class Scales(QAbstractTableModel):
         self.endResetModel()
         self.redoSelection(selectedCoordinates)
         self.app.contentModified()
+        self.app.aw.ui.tableView.repaint()
         
     def redoSelection(self,selectedCoordinates):
         selection = QItemSelection()
