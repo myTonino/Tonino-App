@@ -70,7 +70,6 @@
          <property name="font">
           <font>
            <pointsize>20</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -78,7 +77,7 @@
           <string>Tonino</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::RichText</enum>
          </property>
         </widget>
        </item>
@@ -99,7 +98,7 @@
        <item>
         <widget class="QLabel" name="copyrightLabel">
          <property name="text">
-          <string>Copyright © 2017 Marko Luther, Paul Holleis</string>
+          <string>Copyright © 2022 Marko Luther, Paul Holleis</string>
          </property>
         </widget>
        </item>

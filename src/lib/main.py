@@ -3,7 +3,7 @@
 #
 # main.py
 #
-# Copyright (c) 2016, Paul Holleis, Marko Luther
+# Copyright (c) 2022, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -23,46 +23,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import warnings
+
+# filter warning in py2app/pyinstaller builds: "The MATPLOTLIBDATA environment variable was deprecated in Matplotlib 3.1 and will be removed in 3.3. "
+#warnings.filterwarnings("ignore", "(?s).*MATPLOTLIBDATA.*", category=UserWarning)
+
 import sys
 import os
 import platform
 import json
-import numpy
 import time
 import numpy as np
 from functools import reduce as freduce
 import numpy.polynomial.polynomial as poly
-import scipy as sp
 import scipy.stats
-#import sip
-
+    
 try: # activate support for hiDPI screens on Windows
-    if str(platform.system()).startswith("Windows"):
-        os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-except:
-    pass
-
-#try:
-#    sip.setapi('QString', 2)
-#    sip.setapi('QVariant', 2)
-#except:
-#    pass
-
-try:
-    from PyQt5.QtCore import QLibraryInfo
-    pyqtversion = 5
-except:
-    pyqtversion = 4
-
-# PyQt4:
-if pyqtversion < 5:
-    from PyQt4.QtGui import (QFont, QColor, QApplication, QMainWindow, QDialog, QMessageBox, QAction, QFileDialog, QIcon, QItemSelection, QItemSelectionModel, QProgressDialog, QDialogButtonBox,QInputDialog)
-    from PyQt4.QtCore import (QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, pyqtSlot)
-else:
-# PyQt5:
-    from PyQt5.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QAction, QFileDialog, QProgressDialog, QDialogButtonBox, QInputDialog)
-    from PyQt5.QtGui import (QIcon, QFont, QColor)
-    from PyQt5.QtCore import (QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection, QItemSelectionModel, pyqtSlot)
+    if str(platform.system()).startswith('Windows'):
+        os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'] = '1'
+        os.environ['QT_ENABLE_HIGHDPI_SCALING'] = '1'
+except Exception: # pylint: disable=broad-except
+    pass    
+    
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QFileDialog, QProgressDialog, QDialogButtonBox, QInputDialog)
+from PyQt6.QtGui import (QAction, QIcon, QFont)
+from PyQt6.QtCore import (QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection, QItemSelectionModel, pyqtSlot)
 
 
 from lib import __version__
@@ -80,42 +64,33 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QApplication.translate(context, text, disambig)
 
-if sys.version < '3':
-    def u(x): # convert to unicode string
-        return unicode(x)
-else:
-    def u(x): # convert to unicode string
-        return str(x)
+def u(x): # convert to unicode string
+    return str(x)
 
-# to make py2exe happy with scipy >0.11
-def __dependencies_for_freezing():
-    from scipy.sparse.csgraph import _validation
-    from scipy.special import _ufuncs_cxx
-#    from scipy import integrate
-#    from scipy import interpolate
-    # to make bbfreeze on Linux happy with scipy > 0.17.0
-    import scipy.linalg.cython_blas
-    import scipy.linalg.cython_lapack
-    
-    import appdirs
-    import packaging
-    import packaging.version
-    import packaging.specifiers
-    import packaging.markers
-    import packaging.requirements
-    
-    if pyqtversion < 5:
-        import PyQt4.QtSvg
-        import PyQt4.QtXml
-        import PyQt4.QtDBus
-        import PyQt5.QtPrintSupport # needed for by platform plugin libqcocoa
-    else:
-        import PyQt5.QtSvg
-        import PyQt5.QtXml
-        import PyQt5.QtDBus # needed for QT5 builds
-        import PyQt5.QtPrintSupport # needed for by platform plugin libqcocoa
-
-del __dependencies_for_freezing
+## to make py2exe happy with scipy >0.11
+#def __dependencies_for_freezing():
+#    from scipy.sparse.csgraph import _validation  # @UnusedImport
+#    from scipy.special import _ufuncs_cxx  # @UnusedImport
+##    from scipy import integrate
+##    from scipy import interpolate
+#    # to make bbfreeze on Linux happy with scipy > 0.17.0
+#    import scipy.linalg.cython_blas  # @UnusedImport
+#    import scipy.linalg.cython_lapack  # @UnusedImport
+#    import pydoc
+#    
+##    import appdirs  # @UnusedImport
+#    import packaging  # @UnusedImport
+#    import packaging.version  # @UnusedImport
+#    import packaging.specifiers  # @UnusedImport
+#    import packaging.markers  # @UnusedImport
+#    import packaging.requirements  # @UnusedImport
+#    
+##    import PyQt5.QtSvg  # @UnusedImport
+##    import PyQt5.QtXml  # @UnusedImport
+##    import PyQt5.QtDBus   # @UnusedImport # needed for QT5 builds
+##    import PyQt5.QtPrintSupport   # @UnusedImport # needed for by platform plugin libqcocoa
+#
+#del __dependencies_for_freezing
 
 
 ###########################################################################################################################################
@@ -124,8 +99,8 @@ del __dependencies_for_freezing
 #
  
 class Tonino(QApplication):
-    def __init__(self, args):
-        super(Tonino, self).__init__(args)
+    def __init__(self, arguments):
+        super(Tonino, self).__init__(arguments)
         self.aw = None
         
         # constants
@@ -143,7 +118,7 @@ class Tonino(QApplication):
         self.included_tinyTonino_firmware_version = None # a list of three int indicating major, minor and build versions of the included firmware
         
         # calib constants
-        self.calib_dark_scan = False
+        self.calib_dark_scan = False # dark readings are already taken on scan by the TinyTonino device!
         self.clib_double_scan = False
         
         ### NOTE: the calib target and range values are reset by the function setModel below!!!
@@ -153,7 +128,7 @@ class Tonino(QApplication):
         self.std_calib_high_r = 15000. # red disk red reading
         self.std_calib_high_b = 3600. # red disk blue reading
 
-        # calib targets
+        # calib targets (reset by setModel() based on model and firmwarer version !!)
         self.std_calib_target_low = 1.5
         self.std_calib_target_high = 3.7
         
@@ -176,14 +151,14 @@ class Tonino(QApplication):
         self.maxRecentFiles = 10
         self.recentFiles = []
         
-        self.pre_cal_targets = [] # pre calibration targets
+        self.pre_cal_targets = [] # pre calibration targets for the classic r/b ratio formula usind in firmware v2 and v3 for recognizing the calib disk
         self.pre_cal_cardinality = 4 # number of required source and target readings
         self.pre_cal_degree = 2 # quadratic
         
         self.serialStringMaxLength = 50
         self.paramSeparatorChar = " " # separator char used by the Tonino serial protocol
         self.toninoPort = None # port of the connected Tonino
-        self.toninoFirmwareVersion = None # a list of three int indicating major, minor and build versions of the connected device
+        self.toninoFirmwareVersion = [] # a list of three int indicating major, minor and build versions of the connected device
         self.toninoControllerType = None # the type of the Tonino micro controller (Arduino Nano, Micro,..)
         self.scales = lib.scales.Scales(self,self)
         self.ser = lib.serialport.SerialPort() # the serial connection object
@@ -193,7 +168,7 @@ class Tonino(QApplication):
         self.calib_high_r = None
         self.calib_high_b = None
         self.retrieveIncludedFirmware()
-        
+
     def setModel(self,model):
         self.tonino_model = model
         if self.tonino_model == 0:
@@ -262,15 +237,19 @@ class Tonino(QApplication):
     def getCalibLow(self):
         if self.calib_low_r and self.calib_low_b:
             return (self.calib_low_r,self.calib_low_b)
+        else:
+            return None
             
     def getCalibHigh(self):
         if self.calib_high_r and self.calib_high_b:
             return (self.calib_high_r,self.calib_high_b)
-            
+        else:
+            return None
+
     def updateCalib(self):
         if self.toninoPort:
             calib_low = self.getCalibLow()
-            calib_high = self.getCalibHigh()            
+            calib_high = self.getCalibHigh()
             if calib_low and calib_high:
                 # both calibs have been set, generate and upload the new calibration data to the connected Tonino
                 target_low_rb = self.std_calib_target_low
@@ -281,9 +260,9 @@ class Tonino(QApplication):
                 # transfer result to connected Tonino
                 self.setCal(self.toninoPort,[c[1],c[0]])
                 self.aw.showMessage(_translate("Message","Calibration updated",None))
-        
+
     def getWorkingDirectory(self):
-        if not self.workingDirectory:    
+        if not self.workingDirectory:
             if platform.system() in ['Darwin','Linux']:
                 self.workingDirectory = QDir().homePath() + "/Documents/"
             else:
@@ -301,22 +280,22 @@ class Tonino(QApplication):
         qd = QDir()
         qd.setCurrent(resources.getResourcePath())
         # retrieve included Classic Tonino firmware version
-        fileinfos = qd.entryInfoList(["tonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
+        fileinfos = qd.entryInfoList(["tonino-*.hex"],QDir.Filter.Files | QDir.Filter.Readable,QDir.SortFlag.Name | QDir.SortFlag.Reversed)
         if len(fileinfos) > 0:
             fn = fileinfos[0].fileName()
             try:
                 self.included_firmware_version = [int(s) for s in fn.split("-")[1].rsplit(".")[:3]]
                 self.included_firmware_name = fn
-            except:
+            except Exception: # pylint: disable=broad-except
                 pass
         # retrieve included Classic Tonino firmware version
-        fileinfos = qd.entryInfoList(["tinyTonino-*.hex"],QDir.Files | QDir.Readable,QDir.SortFlags(QDir.Name | QDir.Reversed))
+        fileinfos = qd.entryInfoList(["tinyTonino-*.hex"],QDir.Filter.Files | QDir.Filter.Readable,QDir.SortFlag.Name | QDir.SortFlag.Reversed)
         if len(fileinfos) > 0:
             fn = fileinfos[0].fileName()
             try:
                 self.included_tinyTonino_firmware_version = [int(s) for s in fn.split("-")[1].rsplit(".")[:3]]
                 self.included_tinyTonino_firmware_name = fn
-            except:
+            except Exception: # pylint: disable=broad-except
                 pass
         
     # returns True if version v1 is greater than v2 and False otherwise and if the arguments are malformed
@@ -333,10 +312,10 @@ class Tonino(QApplication):
     
     # load Tonino configuration on double click a *.toni file in the Finder while Tonino.app is already running
     def event(self, event):
-        if event.type() == QEvent.FileOpen:
+        if event.type() == QEvent.Type.FileOpen:
             try:
                 self.aw.loadFile(event.file())
-            except Exception:
+            except Exception: # pylint: disable=broad-except
                 pass
             return 1
         return super(Tonino, self).event(event) 
@@ -351,15 +330,15 @@ class Tonino(QApplication):
 #
 # Application Settings
 #
-                
+
     # loads the application settings at application start. See the oppposite saveSettings()
     def loadSettings(self):
         try: 
             settings = QSettings()
             if settings.contains("resetsettings"):
-                self.resetsettings = settings.value("resetsettings",self.resetsettings).toInt()[0]
-                if self.resetsettings:
-                    self.resetsettings = 0
+                self.app.resetsettings = settings.value("resetsettings",self.app.resetsettings).toInt()[0]
+                if self.app.resetsettings:
+                    self.app.resetsettings = 0
                     return  #don't load any more settings. They could be corrupted. Stop here.
             # restore geometry
             if self.aw and settings.contains("geometry"):
@@ -374,7 +353,7 @@ class Tonino(QApplication):
                 self.recentFiles = settings.value("recentFiles")
             if settings.contains("preCalTargets"):
                 self.pre_cal_targets = [float(f) for f in settings.value("preCalTargets",self.pre_cal_targets)]
-        except Exception:
+        except Exception: # pylint: disable=broad-except
             if self.aw:
                 QMessageBox.information(self.aw,_translate("Message", "Error",None),_translate("Message", "Loading settings failed",None))
 
@@ -391,8 +370,8 @@ class Tonino(QApplication):
             settings.setValue("recentFiles",self.recentFiles)
             # pre calib targets
             settings.setValue("preCalTargets",self.pre_cal_targets)
-        except:
-            self.resetsettings = 0 # ensure that the corrupt settings are not loaded on next start and thus overwritten
+        except Exception: # pylint: disable=broad-except
+            self.app.resetsettings = 0 # ensure that the corrupt settings are not loaded on next start and thus overwritten
             if self.aw:
                 QMessageBox.information(self.aw,_translate("Message", "Error",None),_translate("Message", "Saving settings failed",None))
         
@@ -460,7 +439,7 @@ class Tonino(QApplication):
         else:
             # ClassicTonino firmware
             toninoSketch = resourcePath + self.included_firmware_name
-        args = ["-C",avrdudeconf,"-q","-q","-patmega328p","-carduino","-P",self.toninoPort,"-b57600","-D","-Uflash:w:" + u(toninoSketch) + ":i"]
+        ags = ["-C",avrdudeconf,"-q","-q","-patmega328p","-carduino","-P",self.toninoPort,"-b57600","-D","-Uflash:w:" + u(toninoSketch) + ":i"]
         # -s : Disable safemode prompting
         # -V : Disable automatic verify check when uploading data
         # -v : Enable verbose output. More -v options increase verbosity level.
@@ -470,11 +449,11 @@ class Tonino(QApplication):
         
         process = QProcess(self)
         process.finished.connect(self.uploadFirmwareDone)
-        process.start(avrdude,args)
+        process.start(avrdude,ags)
         self.aw.showprogress.emit()
     
     @pyqtSlot(int,"QProcess::ExitStatus")
-    def uploadFirmwareDone(self,exitCode,exitStatus):
+    def uploadFirmwareDone(self,exitCode,_exitStatus):
         if exitCode:
             # update failed
             self.aw.showMessage(_translate("Message","Firmware update failed",None),msecs=10000)
@@ -498,7 +477,7 @@ class Tonino(QApplication):
                 time.sleep(.8) # wait a moment until the Arduino allows to open the port and finished its serial device init
             try:
                 self.ser.openPort(port) # on Mac OS X this will trigger an Arduino reset
-            except:
+            except Exception: # pylint: disable=broad-except
                 pass
             if onStartup:
                 time.sleep(2.5)  # wait a second until the Arduino Nano did a reset
@@ -535,9 +514,9 @@ class Tonino(QApplication):
         return res
     
     # cmd: SETTARGET (value: 0-200 / range: 0-10)
-    def setTarget(self,port,value,range):
+    def setTarget(self,port,value,range_):
         if port:
-            self.ser.sendCommand(port,self.formatCommand("SETTARGET",[value,range]))
+            self.ser.sendCommand(port,self.formatCommand("SETTARGET",[value,range_]))
             
     # cmd: GETSCALE
     def getScaleName(self,port):
@@ -611,7 +590,7 @@ class Tonino(QApplication):
         if response:
             res = self.response2values(response,float,1)
         return res
-        
+
     # cmd: II_SCAN (pre-calibrated readings)
     def getRawReadings(self,port):
         res = None
@@ -652,7 +631,7 @@ class Tonino(QApplication):
                 return True
             else:
                 return False
-        except:
+        except Exception: # pylint: disable=broad-except
             if self.aw:
                 QMessageBox.critical(self.aw,_translate("Message", "Error",None),_translate("Message", "Scale could not be loaded",None))
             return False
@@ -663,7 +642,7 @@ class Tonino(QApplication):
         try:
             cs = self.scales.getScale()
             if cs:
-                outfile = open(filename, 'w')
+                outfile = open(filename, 'w', encoding='utf-8')
                 json.dump(cs, outfile, ensure_ascii=True)
                 outfile.write('\n')
                 outfile.close()
@@ -671,7 +650,7 @@ class Tonino(QApplication):
                 return True
             else:
                 return False
-        except:
+        except Exception: # pylint: disable=broad-except
             if self.aw:
                 QMessageBox.critical(self.aw,_translate("Message", "Error",None),_translate("Message", "Scale could not be saved",None))
             return False
@@ -685,7 +664,7 @@ class Tonino(QApplication):
             self.scales.applyScale(obj)
             self.aw.updateLCDS()
             return True
-        except:
+        except Exception: # pylint: disable=broad-except
             if self.aw:
                 QMessageBox.critical(self.aw,_translate("Message", "Error",None),_translate("Message", "Scale could not be applied",None))
             return False
@@ -716,8 +695,6 @@ class Tonino(QApplication):
 #
 
 class ToninoDialog(QDialog):
-    def __init__(self, parent=None):
-        super(ToninoDialog,self).__init__(parent)
 
     def keyPressEvent(self,event):
         key = int(event.key())
@@ -725,9 +702,9 @@ class ToninoDialog(QDialog):
             self.close()
             
 class PreferencesDialog(ToninoDialog):
-    def __init__(self, parent = None, app=None):
+    def __init__(self, parent = None, application=None):
         super(PreferencesDialog,self).__init__(parent)        
-        self.app = app
+        self.app = application
         self.ui = PreferencesDialogUI.Ui_Preferences()
         self.ui.setupUi(self)
         self.displayBrightness = None
@@ -739,7 +716,7 @@ class PreferencesDialog(ToninoDialog):
             try:
                 self.displayBrightness = self.app.getDisplayBrightness(self.app.toninoPort)
                 self.ui.displaySlider.setValue(self.displayBrightness)
-            except:
+            except Exception: # pylint: disable=broad-except
                 pass
             if self.app.getModel() == 1: # TinyTonino
                 try:
@@ -750,13 +727,13 @@ class PreferencesDialog(ToninoDialog):
                     self.ui.rangeSlider.setValue(self.targetRange)
                     self.userName = self.app.getUserName(self.app.toninoPort)
                     self.ui.lineEditName.setText(self.userName)
-                    self.displayFlip = self.app.getDisplayFlip(self.app.toninoPort)                    
+                    self.displayFlip = self.app.getDisplayFlip(self.app.toninoPort)
                     if self.displayFlip:
                         self.ui.checkBoxFlip.setChecked(True)
                     else:
                         self.ui.checkBoxFlip.setChecked(False)
                         
-                except:
+                except Exception: # pylint: disable=broad-except
                     pass
                 
             else: # Classic Tonino
@@ -788,14 +765,14 @@ class PreferencesDialog(ToninoDialog):
             if not (self.targetValue and self.targetRange and self.targetValue == v and self.targetRange == r):
                 # target values have been changed, we write them back to the device
                 self.app.setTarget(self.app.toninoPort,v,r)
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
         try:
             n = self.ui.lineEditName.text()
             if not (self.userName and self.userName == n):
                 # user name has been changed, we write it back to the device
                 self.app.setUserName(self.app.toninoPort,n)
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
         try:
             if self.ui.checkBoxFlip.isChecked():
@@ -804,7 +781,7 @@ class PreferencesDialog(ToninoDialog):
                 f = 0
             if not (self.displayFlip and self.displayFlip == f):
                 self.app.setSetDisplayFlip(self.app.toninoPort,f)
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
         self.done(0)
     
@@ -817,10 +794,10 @@ class PreferencesDialog(ToninoDialog):
         self.reject()
 
 class CalibDialog(ToninoDialog):
-    def __init__(self, parent = None, app=None):
+    def __init__(self, parent = None, application=None):
         super(CalibDialog,self).__init__(parent)
         self.setModal(True)
-        self.app = app
+        self.app = application
         if app.tonino_model == 0: # Classic Tonino
             self.ui = CalibDialogUI.Ui_Dialog()
         else: # Tiny Tonino
@@ -830,8 +807,10 @@ class CalibDialog(ToninoDialog):
             else:
                 self.ui = TinyCalibDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
+        
         # disable elements
-        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint()
         self.ui.calibLowLabel.setEnabled(False)
         self.ui.calibHighLabel.setEnabled(False)
         # connect actions
@@ -842,7 +821,7 @@ class CalibDialog(ToninoDialog):
     @pyqtSlot(bool)
     def scan(self,_=False):
         try:
-            raw_readings1 = self.app.getRawReadings(self.app.toninoPort)            
+            raw_readings1 = self.app.getRawReadings(self.app.toninoPort)
             if self.app.calib_dark_scan:
                 time.sleep(.75)
                 dark_readings = self.app.getBlackReadings(self.app.toninoPort)
@@ -874,8 +853,9 @@ class CalibDialog(ToninoDialog):
                     self.ui.calibHighLabel.repaint()
                 # if both, low and high readings are set, enable the OK button  
                 if calib_low and calib_high:
-                    self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-        except:
+                    self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
+                    self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint() # on some Qt/PyQt 5.x versions the button is not automatically repainted!
+        except Exception: # pylint: disable=broad-except
             pass
         
     def accept(self):
@@ -891,10 +871,10 @@ class CalibDialog(ToninoDialog):
 ###########################################################################################################################################
 
 class DebugDialog(ToninoDialog):
-    def __init__(self, parent = None, app=None):
+    def __init__(self, parent = None, application=None):
         super(DebugDialog,self).__init__(parent)
         self.setModal(True)
-        self.app = app
+        self.app = application
         self.ui = DebugDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
         # connect actions
@@ -902,8 +882,10 @@ class DebugDialog(ToninoDialog):
         # prepare log
         #self.ui.logOutput.setReadOnly(True)
         # disable elements
-        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint()
         self.ui.pushButtonScan.setEnabled(False)
+        self.ui.pushButtonScan.repaint()
         QTimer.singleShot(0, self.insertSettings)
         
     def insertSettings(self):
@@ -927,15 +909,17 @@ class DebugDialog(ToninoDialog):
             self.app.processEvents()
             self.insertRequestResponse("GETCALINIT")
             self.app.processEvents()
-        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
+        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint()
         self.ui.pushButtonScan.setEnabled(True)
+        self.ui.pushButtonScan.repaint()
 
     def insertRequestResponse(self,cmd):
         try:
             res = self.app.ser.sendCommand(self.app.toninoPort,cmd)
             self.ui.logOutput.appendPlainText(cmd + ":" + res)
             self.ui.logOutput.repaint()
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText(cmd + ": failed")
             self.ui.logOutput.appendPlainText("  " + str(e))     
             self.ui.logOutput.repaint()
@@ -947,7 +931,7 @@ class DebugDialog(ToninoDialog):
             self.insertRequestResponse("II_SCAN")
             self.insertRequestResponse("D_SCAN")
             self.ui.logOutput.repaint()
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText("  " + str(e))
             self.ui.logOutput.repaint()
         
@@ -963,10 +947,10 @@ class DebugDialog(ToninoDialog):
 ###########################################################################################################################################
 
 class PreCalibDialog(ToninoDialog):
-    def __init__(self, parent = None, app=None):
+    def __init__(self, parent = None, application=None):
         super(PreCalibDialog,self).__init__(parent)
         self.setModal(True)
-        self.app = app
+        self.app = application
         self.ui = PreCalibDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
         # connect actions
@@ -980,8 +964,10 @@ class PreCalibDialog(ToninoDialog):
         # disable elements
         if len(self.app.pre_cal_targets) != self.app.pre_cal_cardinality:
             self.ui.pushButtonScan.setEnabled(False)
+            self.ui.pushButtonScan.repaint()
         self.ui.pushButtonPreCal.setEnabled(False)
-        self.sources = []
+        self.ui.pushButtonPreCal.repaint()
+        self.sources = [] # r/b source ratios for the pre-calibration
         self.ui.logOutput.appendPlainText("targets: ")
         targets_str = ""
         for t in self.app.pre_cal_targets:
@@ -995,7 +981,7 @@ class PreCalibDialog(ToninoDialog):
             self.ui.logOutput.appendPlainText(cmd + ":" + res)
             self.ui.logOutput.repaint()
             return res
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText(cmd + ": failed")
             self.ui.logOutput.appendPlainText("  " + str(e))
             self.ui.logOutput.repaint()
@@ -1003,22 +989,24 @@ class PreCalibDialog(ToninoDialog):
     @pyqtSlot(bool)
     def master(self,_=False):
         try:
-            if len(self.app.pre_cal_targets) == self.app.pre_cal_cardinality:
+            if len(self.app.pre_cal_targets) >= self.app.pre_cal_cardinality:
                 self.app.pre_cal_targets = [] # we start over
                 self.ui.pushButtonScan.setEnabled(False)
+                self.ui.pushButtonScan.repaint()
             self.ui.logOutput.appendPlainText("<Master>")
             res = self.insertRequestResponse("RSCAN") # RSCAN
             if res:
                 res = self.app.response2values(res,float,5)
                 if len(res) == 5:
-                    self.app.pre_cal_targets.append(res[1]/res[3])
-                self.ui.logOutput.appendPlainText("targets: " + str(["{0:.3f}".format(t) for t in self.app.pre_cal_targets]))
+                    self.app.pre_cal_targets.append(res[1]/res[3]) # append classic r/b ratio
+                self.ui.logOutput.appendPlainText("targets r/b: " + str(["{0:.3f}".format(t) for t in self.app.pre_cal_targets]))
             if len(self.app.pre_cal_targets) == self.app.pre_cal_cardinality:
                 self.ui.pushButtonScan.setEnabled(True)
+                self.ui.pushButtonScan.repaint()
             self.ui.logOutput.repaint()
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText("  " + str(e)) 
-            self.ui.logOutput.repaint()    
+            self.ui.logOutput.repaint()
 
     @pyqtSlot(bool)
     def scan(self,_=False):
@@ -1026,6 +1014,7 @@ class PreCalibDialog(ToninoDialog):
             if len(self.sources) == self.app.pre_cal_cardinality:
                 self.sources = [] # we start over
                 self.ui.pushButtonPreCal.setEnabled(False)
+                self.ui.pushButtonPreCal.repaint()
             self.ui.logOutput.appendPlainText("<Scan>")
             res = self.insertRequestResponse("RSCAN") # RSCAN
             if res:
@@ -1035,31 +1024,33 @@ class PreCalibDialog(ToninoDialog):
                 self.ui.logOutput.appendPlainText("sources: " + str(["{0:.3f}".format(t) for t in self.sources]))
             if len(self.sources) == self.app.pre_cal_cardinality:
                 self.ui.pushButtonPreCal.setEnabled(True)
+                self.ui.pushButtonPreCal.repaint()
             self.ui.logOutput.repaint()
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText("  " + str(e)) 
-            self.ui.logOutput.repaint()   
+            self.ui.logOutput.repaint()
             
     @pyqtSlot(bool)
-    def preCal(self,_=False):            
+    def preCal(self,_=False):
         try:
             self.ui.logOutput.appendPlainText("<PreCal>")
             c,_ = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True)
             coefficients = list(c)
             coefficients.reverse()
             coefs = ""
-            for c in coefficients:
+            coefficients = [0]*(max(0,3-len(coefficients))) + coefficients
+            for c in coefficients[-3:]:
                 coefs = coefs + str(c).replace(".",",") + " "
             self.ui.logOutput.appendPlainText("coefficients:")
             self.ui.logOutput.appendPlainText(coefs[:-1])
             self.ui.logOutput.repaint()
             self.app.ser.sendCommand(self.app.toninoPort,self.app.formatCommand("SETPRE",coefficients,fitStringMaxLength=True))
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText("  " + str(e))
             self.ui.logOutput.repaint()
 
     @pyqtSlot(bool)
-    def set(self,_=False):            
+    def set(self,_=False):
         try:
             self.ui.logOutput.appendPlainText("<Set>")
             text, ok = QInputDialog.getText(self, 'Set Pre-Calibration', 'Enter pre-calibration triple:')
@@ -1072,19 +1063,19 @@ class PreCalibDialog(ToninoDialog):
                 values = line.split(" ")
                 values = [float(v) for v in values]
                 self.app.ser.sendCommand(self.app.toninoPort,self.app.formatCommand("SETPRE",values,fitStringMaxLength=True))
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText("  " + str(e))
             self.ui.logOutput.repaint()
     
     @pyqtSlot(bool)
-    def reset(self,_=False):            
+    def reset(self,_=False):
         try:
             self.ui.logOutput.appendPlainText("<Reset>")
             self.ui.logOutput.appendPlainText("coefficients:")
             self.ui.logOutput.appendPlainText("0 1 0")
             self.ui.logOutput.repaint()
-            res = self.app.ser.sendCommand(self.app.toninoPort,self.app.formatCommand("SETPRE",[0,1,0]))
-        except Exception as e:
+            self.app.ser.sendCommand(self.app.toninoPort,self.app.formatCommand("SETPRE",[0,1,0]))
+        except Exception as e: # pylint: disable=broad-except
             self.ui.logOutput.appendPlainText("  " + str(e))
             self.ui.logOutput.repaint()
         
@@ -1107,12 +1098,16 @@ class ApplicationWindow(QMainWindow):
     showprogress = pyqtSignal()
     endprogress = pyqtSignal()
     
-    def __init__(self, parent=None,app=None):
+    def __init__(self, parent=None,application=None):
         super(QMainWindow, self).__init__(parent)
-        self.app = app
+        self.app = application
         self.ui = MainWindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
         self.app.aw = self
+        
+        self.calibs = None
+        self.debugDialog = None
+        self.preCalibDialog = None
         
         self.closing = False # set to True if app is closing down
         
@@ -1187,9 +1182,12 @@ class ApplicationWindow(QMainWindow):
         self.ui.actionPaste.triggered.connect(self.actionPaste)
         self.ui.actionQuit.triggered.connect(self.close)
         self.ui.pushButtonUpload.setEnabled(False)
+        self.ui.pushButtonUpload.repaint()
         
         # enable buttons
         self.ui.pushButtonDelete.setEnabled(False)
+        self.ui.pushButtonDelete.repaint()
+
         
         # initalize dirty state
         self.app.contentCleared()
@@ -1202,7 +1200,7 @@ class ApplicationWindow(QMainWindow):
         self.ui.tableView.setColumnWidth(0,50)
         self.ui.tableView.setItemDelegate(lib.scales.ValidatedItemDelegate(self.ui.tableView))
         
-#        self.ui.tableView.setSizePolicy(QSizePolicy.MinimumExpanding,QSizePolicy.MinimumExpanding)
+#        self.ui.tableView.setSizePolicy(QSizePolicy.Policy.MinimumExpanding,QSizePolicy.Policy.MinimumExpanding)
         
         # connect the table selection
         self.ui.tableView.selectionModel().selectionChanged.connect(self.selectionChanged)
@@ -1243,18 +1241,17 @@ class ApplicationWindow(QMainWindow):
 
     @pyqtSlot(bool)
     def actionPaste(self,_=False):
-        coordinates = None
         try:
             clipboard = QApplication.clipboard()
             self.app.scales.addCoordinates(self.app.scales.text2coordinates(clipboard.text()))
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
     
     @pyqtSlot()
     def showProgress(self):
         self.progress = QProgressDialog(_translate("Message","Updating firmware...",None), None, 0, 20, self)
         self.progress.setCancelButton(None)
-        self.progress.setWindowModality(Qt.WindowModal)
+        self.progress.setWindowModality(Qt.WindowModality.WindowModal)
         self.progress.setAutoClose(False)
         self.progress.show()
         # this try-except is needed as after the "if self.progress" and before the access, 
@@ -1268,7 +1265,7 @@ class ApplicationWindow(QMainWindow):
                 self.progress.setRange(0,0)
                 self.progress.setValue(0)
                 self.progress.show()
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
         
     @pyqtSlot()
@@ -1309,12 +1306,12 @@ class ApplicationWindow(QMainWindow):
             else:
                 res = QFileDialog.getSaveFileName(self,msg,path,ffilter)
 
-            if res is not None and res is not "":
+            if res is not None and res != "":
                 if isinstance(res,list) or isinstance(res,tuple):
                     res = res[0]
                 self.app.setWorkingDirectory(res)
             return res
-        except:
+        except Exception: # pylint: disable=broad-except
             return None
 
     def updateRecentFileActions(self):
@@ -1349,7 +1346,7 @@ class ApplicationWindow(QMainWindow):
                 self.app.recentFiles = []
             try:
                 self.app.recentFiles = list(filter((filename).__ne__, self.app.recentFiles))
-            except Error:
+            except Exception: # pylint: disable=broad-except
                 pass
             self.app.recentFiles.insert(0, filename)
             del self.app.recentFiles[self.app.maxRecentFiles:]
@@ -1433,7 +1430,7 @@ class ApplicationWindow(QMainWindow):
         action = self.sender()
         if action:
             self.applyScale(action.data())
-            
+
 #
 # Buttons
 #
@@ -1447,7 +1444,7 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(bool)
     def uploadScale(self,_=False):
         if self.app.toninoPort and self.app.scales.getCoefficients():
-            scale = self.app.scales.getCoefficients()        
+            scale = self.app.scales.getCoefficients()
             scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
             self.app.setScale(self.app.toninoPort,scale)
             self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
@@ -1468,27 +1465,32 @@ class ApplicationWindow(QMainWindow):
                     self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
                 else:
                     self.app.scales.addCoordinate(raw_x[0],None)
+                    self.ui.widget.canvas.repaint()
                     QTimer.singleShot(0, self.ui.tableView.scrollToBottom)
             else:
                 if retry:
                     self.addCoordinate(retry=False)
+                    self.ui.widget.canvas.repaint()
                 else:
                     self.showMessage(_translate("Message","Coordinate out of range",None),msecs=10000)
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
 
     @pyqtSlot(bool)
     def deleteCoordinates(self,_=False):
         self.app.scales.deleteCoordinates([s.row() for s in self.ui.tableView.selectionModel().selectedRows()])
+        self.ui.widget.canvas.repaint()
         
     @pyqtSlot(bool)
     def clearCoordinates(self,_=False):
         self.app.scales.clearCoordinates()
+        self.ui.widget.canvas.repaint()
         self.updateLCDS()
         
     @pyqtSlot(bool)
     def sortCoordinates(self,_=False):
         self.app.scales.sortCoordinates()
+        self.ui.widget.canvas.repaint()
         
 #
 # Slider
@@ -1497,6 +1499,8 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(int)
     def sliderChanged(self,_=0):
         self.app.scales.setPolyfitDegree(self.ui.degreeSlider.value())
+        self.ui.widget.canvas.repaint()
+        self.updateLCDS()
 
     
 #
@@ -1507,8 +1511,9 @@ class ApplicationWindow(QMainWindow):
     def mean_confidence_interval(self,data, confidence=0.95):
         a = 1.0*np.array(data)
         n = len(a)
-        m, se = np.mean(a), scipy.stats.sem(a)
-        h = se * sp.stats.t._ppf((1+confidence)/2., n-1)
+        _, se = np.mean(a), scipy.stats.sem(a)
+#        h = se * scipy.stats.t._ppf((1+confidence)/2., n-1)
+        h = se * scipy.stats.t.ppf((1+confidence)/2., n-1)
         return h
     
     def updateLCDS(self):
@@ -1521,10 +1526,8 @@ class ApplicationWindow(QMainWindow):
             self.updateAVG(values)
             self.updateSTDEV(values)
             self.updateCONF(values)
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
-#            import traceback
-#            traceback.print_exc(file=sys.stdout)
 
     def updateAVG(self, values):
         if values and len(values) > 0:
@@ -1550,12 +1553,14 @@ class ApplicationWindow(QMainWindow):
         self.ui.LCDconf.repaint()
         
     @pyqtSlot("QItemSelection","QItemSelection")
-    def selectionChanged(self, newSelection, oldSelection):
+    def selectionChanged(self, _newSelection, _oldSelection):
         self.updateLCDS()
         if self.ui.tableView.selectionModel().selectedRows():
             self.ui.pushButtonDelete.setEnabled(True)
+            self.ui.pushButtonDelete.repaint()
         else:
             self.ui.pushButtonDelete.setEnabled(False)
+            self.ui.pushButtonDelete.repaint()
         self.ui.widget.canvas.redraw()
             
     def getSelectedRows(self):
@@ -1568,7 +1573,7 @@ class ApplicationWindow(QMainWindow):
     def toggleSelection(self,row):
         self.ui.tableView.setFocus()
         self.ui.tableView.selectionModel().select(QItemSelection(self.app.scales.createIndex(row,0),self.app.scales.createIndex(row,1)), 
-            QItemSelectionModel.Toggle)     
+            QItemSelectionModel.SelectionFlag.Toggle)
         
         
 #
@@ -1584,7 +1589,7 @@ class ApplicationWindow(QMainWindow):
         ui = AboutDialogUI.Ui_Dialog()
         ui.setupUi(Dialog)
         version = _translate("Dialog", "Version", None) + " " + __version__
-        if self.app.included_firmware_version or self.app.included_tinyTonino_firmware_version:  
+        if self.app.included_firmware_version or self.app.included_tinyTonino_firmware_version:
             version += " (firmware "
             if self.app.included_firmware_version:
                 version += self.version2str(self.app.included_firmware_version,prefix="")
@@ -1594,8 +1599,8 @@ class ApplicationWindow(QMainWindow):
                 version += self.version2str(self.app.included_tinyTonino_firmware_version,prefix="")
             version += ")"
         ui.versionLabel.setText(version)
-        ui.pushButton.clicked.connect(Dialog.accept)        
-        Dialog.setContextMenuPolicy(Qt.CustomContextMenu)
+        ui.pushButton.clicked.connect(Dialog.accept)
+        Dialog.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         Dialog.customContextMenuRequested.connect(lambda _: self.toggleDebug(ui))
         if self.debug == 1:
             ui.nameLabel.setText(_translate("Dialog", "Tonino*", None))
@@ -1620,7 +1625,7 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(bool)
     def showDebugOrCalib(self,_=False):
         modifiers = QApplication.keyboardModifiers()
-        if modifiers == Qt.ControlModifier:
+        if modifiers == Qt.KeyboardModifier.ControlModifier:
             self.showPreCalib()
             #self.app.preCalibration(self.app.toninoPort)
         else:
@@ -1681,6 +1686,7 @@ class ApplicationWindow(QMainWindow):
 
     def showMessage(self,s,msecs=0):
         self.ui.status.showMessage(s,msecs)
+        self.ui.status.repaint()
         
     def toninoConnected(self):
         return self.app.toninoPort
@@ -1690,14 +1696,15 @@ class ApplicationWindow(QMainWindow):
             firmware_version = self.app.included_tinyTonino_firmware_version
         else:
             firmware_version = self.app.included_firmware_version
-        if self.debug or self.app.versionGT(firmware_version,self.app.toninoFirmwareVersion):
+        if self.debug or (self.app.versionGT(firmware_version,self.app.toninoFirmwareVersion) and firmware_version[0] == self.app.toninoFirmwareVersion[0]):
+            # ask to update if the installed firmware version has the same major version as the latest firmware version included in the app and is older
             msgBox = QMessageBox(self)
             msgBox.setText(_translate("Dialog","The Tonino firmware is outdated!",None))
             msgBox.setInformativeText(_translate("Dialog","Do you want to update to %s?",None)%self.version2str(firmware_version))
-            msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-            msgBox.setDefaultButton(QMessageBox.Ok)
-            ret = msgBox.exec_()
-            if ret == QMessageBox.Ok:
+            msgBox.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+            msgBox.setDefaultButton(QMessageBox.StandardButton.Ok)
+            ret = msgBox.exec()
+            if ret == QMessageBox.StandardButton.Ok:
                 if self.debug == 2:
                     self.debug = 0
                 self.updateFirmware()
@@ -1726,7 +1733,7 @@ class ApplicationWindow(QMainWindow):
             self.showMessage(_translate("Message","Connected to TinyTonino",None) + " " + self.version2str(version))
         try:
             self.app.scales.setDeviceCoefficients(self.app.getScale(port))
-        except:
+        except Exception: # pylint: disable=broad-except
             self.showMessage(_translate("Message","Scale could not be retrieved",None) + " " + self.version2str(version))
         self.deviceCheckInterval = self.slowCheck
         self.checkFirmwareVersion()
@@ -1738,8 +1745,8 @@ class ApplicationWindow(QMainWindow):
         res = None
         if self.ports is None:
             # we just started up, check if there is already a Tonino connected we can attach too
-                if newports:
-                    res = self.checkPorts(newports,True)
+            if newports:
+                res = self.checkPorts(newports,True)
         else:
             # in case ports were detected before
             self.app.setModel(self.app.ser.getModel())
@@ -1766,7 +1773,7 @@ class ApplicationWindow(QMainWindow):
         # increment decay counter
         self.deviceCheckCounter = self.deviceCheckCounter + 1
 
-        # register next shot        
+        # register next shot
         if self.deviceCheckCounter > self.checkDecay:
             # turn to slowCheck
             self.deviceCheckInterval = self.slowCheck
@@ -1774,12 +1781,16 @@ class ApplicationWindow(QMainWindow):
         
     def setEnabledUI(self,state):
         self.ui.pushButtonDefaults.setEnabled(state)
+        self.ui.pushButtonDefaults.repaint()
         self.ui.pushButtonAdd.setEnabled(state)
+        self.ui.pushButtonAdd.repaint()
         self.ui.pushButtonCalib.setEnabled(state)
+        self.ui.pushButtonCalib.repaint()
         self.setEnabledUploadButton()
         
     def setEnabledUploadButton(self):
         self.ui.pushButtonUpload.setEnabled(bool(self.app.toninoPort and self.app.scales.getCoefficients()))
+        self.ui.pushButtonUpload.repaint()
 
     # returns True if action should be continued else False
     def verifyDirty(self):
@@ -1787,12 +1798,12 @@ class ApplicationWindow(QMainWindow):
             msgBox = QMessageBox(self)
             msgBox.setText(_translate("Dialog","The scale has been modified.",None))
             msgBox.setInformativeText(_translate("Dialog","Do you want to save your changes?",None))
-            msgBox.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
-            msgBox.setDefaultButton(QMessageBox.Save)
-            ret = msgBox.exec_()
-            if ret == QMessageBox.Save:
+            msgBox.setStandardButtons(QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel)
+            msgBox.setDefaultButton(QMessageBox.StandardButton.Save)
+            ret = msgBox.exec()
+            if ret == QMessageBox.StandardButton.Save:
                 return self.saveFile()
-            elif ret == QMessageBox.Cancel:
+            elif ret == QMessageBox.StandardButton.Cancel:
                 return False
             else:
                 self.app.currentFileDirty = False
@@ -1827,16 +1838,14 @@ class ApplicationWindow(QMainWindow):
 # suppress all warnings
 warnings.filterwarnings('ignore')
 
-global aw
 aw = None # this is to ensure that the variable aw is already defined during application initialization
 
 
 try:
-    v, _, _ = platform.mac_ver()
-    #v = float('.'.join(v.split('.')[:2]))
-    v = v.split('.')[:2]
-    major = int(v[0])
-    minor = int(v[1])
+    vv, _, _ = platform.mac_ver()
+    vv = vv.split('.')[:2]
+    major = int(vv[0])
+    minor = int(vv[1])
     if major >= 10 and minor >= 10: #v >= 10.10:
         # fix Mac OS X 10.10 (Yosemite) font issue
         # https://bugreports.qt-project.org/browse/QTBUG-40833
@@ -1845,7 +1854,7 @@ try:
         # fix Mac OS X 10.9 (mavericks) font issue
         # https://bugreports.qt-project.org/browse/QTBUG-32789
         QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
-except:
+except Exception: # pylint: disable=broad-except
     pass
 
 # define app
@@ -1859,23 +1868,16 @@ app.setOrganizationName("BottledSense")           #needed by QSettings() to stor
 app.setOrganizationDomain("my-tonino.com")        #needed by QSettings() to store windows geometry in operating system 
 if platform.system() == 'Windows':
     app.setWindowIcon(QIcon("tonino.png"))
-    try:
-        # activate scaling for hiDPI screen support on Windows
-        app.setAttribute(Qt.AA_EnableHighDpiScaling)
-        if hasattr(QStyleFactory, 'AA_UseHighDpiPixmaps'):
-            app.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    except Exception as e:
-        pass
     if resources.main_is_frozen():
         try:
             sys.stderr = sys.stdout
-        except:
+        except Exception: # pylint: disable=broad-except
             pass
             
     
 if platform.system() == 'Darwin':
-    import objc
-    from Cocoa import NSUserDefaults
+    import objc  # @UnusedImport
+    from Cocoa import NSUserDefaults  # @UnresolvedImport
     defs = NSUserDefaults.standardUserDefaults() 
     langs = defs.objectForKey_("AppleLanguages")
     if langs.objectAtIndex_(0)[:3] == "zh_" or langs.objectAtIndex_(0)[:3] == "pt_":
@@ -1893,14 +1895,14 @@ translator = QTranslator(app)
 if translator.load("qt_" + lang + ".qm",resources.getSystemTranslationsPath()):
     app.installTranslator(translator)
 
-aw = ApplicationWindow(app=app)
+aw = ApplicationWindow(application=app)
 aw.show()
 
 # load Tonino scale on double click a *.toni file in the Finder while Tonino.app is not yet running
 try:
     if sys.argv and len(sys.argv) > 1:
         aw.loadFile(sys.argv[1])
-except Exception:
+except Exception: # pylint: disable=broad-except
     pass
 
 # start the Tonino discovery process

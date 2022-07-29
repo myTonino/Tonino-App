@@ -22,31 +22,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from PyQt5.QtCore import QLibraryInfo
-    pyqtversion = 5
-except:
-    pyqtversion = 4
 
-# PyQt4:
-if pyqtversion < 5:    
-    from PyQt4.QtGui import QApplication
-    from PyQt4.QtCore import QLibraryInfo
-# PyQt5:
-else:
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtCore import QLibraryInfo
+# PyQt6:
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QLibraryInfo
     
 import platform
 import os
 import sys
 
-# for py2exe on Windows
 def main_is_frozen():
-    import imp
-    return (hasattr(sys, "frozen") or # new py2exe
-            hasattr(sys, "importers") # old py2exe
-            or imp.is_frozen("__main__")) # tools/freeze
+    ib = False
+    try:
+        platf = str(platform.system())
+        if platf == 'Darwin':
+            # the sys.frozen is set by py2app and pyinstaller and is unset otherwise
+            if getattr( sys, 'frozen', False ):
+                ib = True
+        elif platf == 'Windows':
+            ib = hasattr(sys, 'frozen')
+        elif platf == 'Linux':
+            if getattr(sys, 'frozen', False):
+                # The application is frozen
+                ib = True
+    except Exception: # pylint: disable=broad-except
+        pass
+    return ib
+
    
 # for py2app and pyinstaller on MacOS X
 def inBundle():     
@@ -57,7 +59,7 @@ def inBundle():
             ib = True
 #        if str(sys.frozen) == "macosx_app":
 #            ib = True
-    except:
+    except Exception: # pylint: disable=broad-except
         pass
     return ib
     
@@ -134,16 +136,19 @@ def getSystemTranslationsPath():
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/translations/"
         else:
-            res = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+#            res = QLibraryInfo.location(QLibraryInfo.LibraryLocation.TranslationsPath)
+            res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     elif platform.system() == "Linux":
         if isFrozen():
             res = QApplication.applicationDirPath() + "/translations/"
         else:
-            res = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+#            res = QLibraryInfo.location(QLibraryInfo.LibraryLocation.TranslationsPath)
+            res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     else:
         if main_is_frozen():
             res = os.path.dirname(sys.executable) + "\\translations\\"
         else:
-            res = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+#            res = QLibraryInfo.location(QLibraryInfo.LibraryLocation.TranslationsPath)
+            res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     return res
     

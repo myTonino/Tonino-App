@@ -3,7 +3,7 @@
 #
 # serialport.py
 #
-# Copyright (c) 2016, Paul Holleis, Marko Luther
+# Copyright (c) 2022, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -22,24 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import serial
+import serial  # @UnusedImport
 import serial.tools.list_ports
 import time
 import sys
-import os
 import platform
-
-# on OS X load the Makerbot modified list_ports module patched for P3k
-# we still keep this hack under pyserial 2.7 as it does not work as expected on Python3 (reporting an empty port list always)
-
-#   list_ports module patched for P3k from new pyserial GitHub repository
-if serial.VERSION.split(".")[0].strip() == "2":
-    if sys.platform == 'darwin':
-        from lib.list_ports_osx import comports
-        serial.tools.list_ports.comports = comports
-        from lib.list_ports_vid_pid_osx_posix import *
-    elif os.name == 'posix':
-        from lib.list_ports_vid_pid_osx_posix import *
 
 if sys.version < '3':
     def str2cmd(s):
@@ -54,7 +41,7 @@ else:
             return bytes(s,"ascii")
     def cmd2str(c):
         if type(c) == bytes:
-        	return str(c,"latin1")
+            return str(c,"latin1")
         else:
             return c
         
@@ -121,7 +108,7 @@ class SerialPort(object):
             self.port = None
             self.SP.close()
             time.sleep(0.7) # on OS X opening a serial port too fast after closing the port get's disabled
-        except:
+        except Exception:  # pylint: disable=broad-except
             pass
             
     def writeString(self,port,s):
@@ -136,7 +123,7 @@ class SerialPort(object):
                 return cmd2str(self.SP.readline())
             else:
                 return None
-        except:
+        except Exception:  # pylint: disable=broad-except
             self.closePort()
             return None
         
@@ -171,7 +158,7 @@ class SerialPort(object):
                 return self.sendCommand(port,command,False)
             else:
                 return res
-        except:
+        except Exception:  # pylint: disable=broad-except
             self.closePort()
             if retry:
                 return self.sendCommand(port,command,False)
@@ -184,51 +171,31 @@ class SerialPort(object):
         #      Tiny Tonino: VID 403(hex)/1027(dec) and PID 6015(hex)/24597(dec)
         vid = 1027 # 403 (hex)
         # ClassicTonino model (0)
-        classicToninoProduct = "VID_0403\+PID_6001"
+#        classicToninoProduct = "VID_0403\+PID_6001"
         classicToninoPID = 24577 # 6001 (hex)
         # TinyTonino model (1)
-        tinyToninoProduct = "VID_0403\+PID_6015"
+#        tinyToninoProduct = "VID_0403\+PID_6015" 
         tinyToninoPID = 24597 # 6015 (hex)
         if platform.system() == 'Windows':
-            if serial.VERSION.split(".")[0].strip() == "2":
-                tinyToninos = list(p[0] for p in serial.tools.list_ports.grep(tinyToninoProduct))
-                if tinyToninos and len(tinyToninos) > 0:
-                    self.setModel(1)
-                    return tinyToninos
-                else:
-                    self.setModel(0)
-                    return list(p[0] for p in serial.tools.list_ports.grep(classicToninoProduct))
+            # pyserial >2.7
+            ports = list(serial.tools.list_ports.comports())
+            tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
+            if tinyToninos and len(tinyToninos) > 0:
+                self.setModel(1)
+                return tinyToninos
             else:
-                # pyserial >2.7
-                ports = list(serial.tools.list_ports.comports())
-                tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
-                if tinyToninos and len(tinyToninos) > 0:
-                    self.setModel(1)
-                    return tinyToninos
-                else:
-                    self.setModel(0)
-                    return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
+                self.setModel(0)
+                return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
         else:
-            if serial.VERSION.split(".")[0].strip() == "2":
-                # pyserial v2.7 version
-                ports = list(serial.tools.list_ports.comports())
-                tinyToninos = list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=tinyToninoPID))
-                if tinyToninos and len(tinyToninos) > 0:
-                    self.setModel(1)
-                    return tinyToninos
-                else:
-                    self.setModel(0)
-                    return list(p['port'] for p in filter_ports_by_vid_pid(ports,vid=vid,pid=classicToninoPID))
+            # pyserial >2.7
+            ports = list(serial.tools.list_ports.comports())
+            tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
+            if tinyToninos and len(tinyToninos) > 0:
+                self.setModel(1)
+                return tinyToninos
             else:
-                # pyserial >2.7
-                ports = list(serial.tools.list_ports.comports())
-                tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
-                if tinyToninos and len(tinyToninos) > 0:
-                    self.setModel(1)
-                    return tinyToninos
-                else:
-                    self.setModel(0)
-                    return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
+                self.setModel(0)
+                return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
             
     def filter_ports_by_vid_pid(self,ports,vid=None,pid=None):
         """ Given a VID and PID value, scans for available port, and
@@ -246,5 +213,5 @@ class SerialPort(object):
                 if vid == None or port.vid == vid:
                     if pid == None or  port.pid == pid:
                         yield port.device
-            except:
+            except Exception:  # pylint: disable=broad-except
                 pass

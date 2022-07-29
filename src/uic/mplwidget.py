@@ -22,27 +22,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from PyQt5.QtCore import QLibraryInfo
-    pyqtversion = 5
-except:
-    pyqtversion = 4
 
 import matplotlib as mpl
 
-# PyQt4:
-if pyqtversion < 5:    
-    from PyQt4.QtGui import (QSizePolicy,QMenu,QWidget,QVBoxLayout,QAction,QCursor)
-    from PyQt4.QtCore import (Qt,pyqtSlot)
-    mpl.use('qt4agg')
-    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-# PyQt5:
-else:
-    from PyQt5.QtWidgets import (QSizePolicy,QMenu,QWidget,QVBoxLayout,QAction)
-    from PyQt5.QtGui import (QCursor)
-    from PyQt5.QtCore import (Qt,pyqtSlot)
-    mpl.use('qt5agg')
-    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt6.QtWidgets import (QSizePolicy,QMenu,QWidget,QVBoxLayout)
+from PyQt6.QtGui import (QCursor,QAction)
+from PyQt6.QtCore import (Qt,pyqtSlot)
+mpl.use('QtAgg')
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
     
 from matplotlib.figure import Figure
 from matplotlib import rcParams
@@ -126,16 +113,17 @@ class MplCanvas(FigureCanvas):
             labelright=False) 
         self.ax.set_ylim([0, 205])
         self.ax.set_xlim([self.x_min, self.x_max])
-        [t.set_color(self.toninoBlue) for t in self.ax.yaxis.get_ticklabels()]
+        for t in self.ax.yaxis.get_ticklabels():
+            t.set_color(self.toninoBlue)
 
         # compute the yvalues of the default Tonino scale
         self.yvalues_default = np.poly1d(self.app.scales.getDefaultCoefficents())(self.xvalues)
                 
         FigureCanvas.__init__(self, self.fig)
-        FigureCanvas.setSizePolicy(self,
-                                QSizePolicy.Expanding,
-                                QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+        FigureCanvas.setSizePolicy(self,  #@UndefinedVariable
+                                QSizePolicy.Policy.Expanding,
+                                QSizePolicy.Policy.Expanding)
+        FigureCanvas.updateGeometry(self)  #@UndefinedVariable
         
         # connect signals
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
@@ -173,7 +161,7 @@ class MplCanvas(FigureCanvas):
         else:
             self.yvalues_device = np.poly1d(np.array(c))(self.xvalues)
         # we do a full redraw to ensure that the default/device curve is redrawn
-        self.redraw(full=True)
+        self.redraw()
         
         
     def rightLowerOffset(self,x,y):
@@ -218,24 +206,27 @@ class MplCanvas(FigureCanvas):
         return x,y
         
         
-    def redraw(self,full=False):
+    def redraw(self):
         # remove all annotations
         for a in self.annotations:
             a.remove()
         self.annotations = []
-        if full or (not self.ax.lines):
-            self.ax.lines = []
-            # add Tonino curve or device curve
-            if self.yvalues_device is not None:
-                self.ax.plot(self.xvalues, self.yvalues_device,color=self.toninoBlue)
-            else:
-                self.ax.plot(self.xvalues, self.yvalues_default,color=self.toninoBlue)
-        else:
-            # remove all but first curve
-            self.ax.lines = self.ax.lines[:1]
-        # add polyfit curve        
+        
+        while len(self.ax.lines) > 0:
+            self.ax.lines[0].remove()
+        
+        # add default Tonino curve
+        if self.yvalues_device is None:
+            self.ax.plot(self.xvalues, self.yvalues_default,color=self.toninoGray,linewidth=1)
+        
+        # add device curve if available
+        if self.yvalues_device is not None:
+            self.ax.plot(self.xvalues, self.yvalues_device,color=self.toninoBlue)
+                
+        # add polyfit curve
         if self.yvalues is not None:
             self.ax.plot(self.xvalues,self.yvalues,color=self.toninoRed)
+        
         # draw annotations at selected coordinates
         if self.app.aw:
             selectedCoordinates = self.app.scales.getSelectedCoordinates()
@@ -270,29 +261,29 @@ class MplCanvas(FigureCanvas):
                 self.lastMotionX = None
                 self.lastMotionY = None
                 self.redraw()
-                self.setCursor(Qt.ArrowCursor)
+                self.setCursor(Qt.CursorShape.ArrowCursor)
             if self.mousepress:
-                self.setCursor(Qt.ClosedHandCursor)
+                self.setCursor(Qt.CursorShape.ClosedHandCursor)
                 self.mousedragged = True
                 self.app.scales.updateCoordinate(self.indexpoint,event.xdata,event.ydata)              
             elif not self.lastMotionX and not self.lastMotionY and self.closeToCoordinate(event):
                 self.lastMotionX = event.xdata
                 self.lastMotionY = event.ydata
-                self.setCursor(Qt.OpenHandCursor)              
-        except:
+                self.setCursor(Qt.CursorShape.OpenHandCursor)              
+        except Exception: # pylint: disable=broad-except
             pass
 
     def on_pick(self,event):
-        self.setCursor(Qt.ClosedHandCursor)
+        self.setCursor(Qt.CursorShape.ClosedHandCursor)
         try:
             self.indexpoint = event.ind[-1]
-        except:
+        except Exception: # pylint: disable=broad-except
             self.indexpoint = event.ind
         self.mousepress = True
 
     def on_release(self,event):    
         if self.mousepress:
-            self.setCursor(Qt.OpenHandCursor)     
+            self.setCursor(Qt.CursorShape.OpenHandCursor)     
             if self.mousedragged:
                 self.mousedragged = False
             else:
@@ -303,7 +294,7 @@ class MplCanvas(FigureCanvas):
         if  self.closeToCoordinate(event):
             self.lastMotionX = event.xdata
             self.lastMotionY = event.ydata
-            self.setCursor(Qt.OpenHandCursor)
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
                 
     def onclick(self,event):
         if event.inaxes and event.button==3:

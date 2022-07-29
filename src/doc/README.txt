@@ -81,27 +81,33 @@ LIBRARIES
 
 The Tonino app uses the following libraries in unmodified forms:
 
-- Python 3.5.x released under the PSF licence http://www.python.org/psf/
+- Python 3.10.x released under the PSF licence http://www.python.org/psf/
   http://www.python.org/
-- QT 5.9.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
+- QT 6.3.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
   http://qt-project.org/products/licensing
-- Numpy 1.x and Scipy 0.19.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
+- Numpy 1.x and Scipy 1.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
   http://www.scipy.org/
-- PyQt 5.x and SIP 4.x under the Qt GNU GPL v. 3.0 licence; Copyright (c) 2010 Riverbank Computing Limited
+- PyQt 6.x and SIP 6.x under the Qt GNU GPL v. 3.0 licence; Copyright (c) 2010 Riverbank Computing Limited
   http://www.riverbankcomputing.co.uk/software/pyqt/
 - matplotlib 2.x, Copyright (c) 2002-2013 John D. Hunter; All Rights Reserved. Distributed under a licence based on PSF.
   http://matplotlib.sourceforge.net
-- py2app 0.9.x under the PSF open source licence; Copyright (c) 2004-2006 Bob Ippolito <bob at redivi.com>
-  Copyright (c) 2010-2012 Ronald Oussoren <ronaldoussoren at mac.com>.
+- py2app 0.28.x under the PSF open source licence; Copyright (c) 2004-2006 Bob Ippolito <bob at redivi.com>
+  Copyright (c) 2010-2022 Ronald Oussoren <ronaldoussoren at mac.com>.
   http://packages.python.org/py2app/
-- pyinstaller, Copyright (c) 2000-2005 Thomas Heller, Mark Hammond, Jimmy Retzlaff
+- pyinstaller, Copyright (c) 2000-2022 Thomas Heller, Mark Hammond, Jimmy Retzlaff
   http://www.py2exe.org/
 
 
 VERSION HISTORY
 
-v1.0.20 (30.9.2017)
+v1.0.23 (8/2022)
+ - Updated libs
+
+v1.0.22 (17.6.2018)
  - Adds PRECAL support
+
+v1.0.21 (6.6.2017)
+ - Minor fixes
 
 v1.0.20 (2.4.2017)
  - Minor fixes

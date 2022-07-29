@@ -3,7 +3,7 @@
 #
 # scales.py
 #
-# Copyright (c) 2016, Paul Holleis, Marko Luther
+# Copyright (c) 2022, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -22,21 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from PyQt5.QtCore import QLibraryInfo
-    pyqtversion = 5
-except:
-    pyqtversion = 4
 
-# PyQt4:
-if pyqtversion < 5:
-    from PyQt4.QtCore import (QAbstractTableModel,Qt,QSize,QRegExp,QTimer)
-    from PyQt4.QtGui import (QBrush,QColor,QStyledItemDelegate,QLineEdit,QRegExpValidator,QItemSelection,QItemSelectionModel)
-else:
-# PyQt5:
-    from PyQt5.QtCore import (QAbstractTableModel,Qt,QSize,QRegExp,QTimer,QItemSelection,QItemSelectionModel)
-    from PyQt5.QtWidgets import (QStyledItemDelegate,QLineEdit)
-    from PyQt5.QtGui import (QBrush,QColor,QRegExpValidator)
+
+from PyQt6.QtCore import (QAbstractTableModel,Qt,QRegularExpression,QTimer,QItemSelection,QItemSelectionModel)
+from PyQt6.QtWidgets import (QStyledItemDelegate,QLineEdit)
+from PyQt6.QtGui import (QBrush,QColor,QRegularExpressionValidator)
 
 import numpy as np
 import numpy.polynomial.polynomial as poly
@@ -46,7 +36,7 @@ import random
 from lib import __version__
 
 class Scales(QAbstractTableModel):
-    def __init__(self, app=None, parent=None, *args):
+    def __init__(self, app, parent, *args):
         QAbstractTableModel.__init__(self,parent,*args)
         self.app = app
         self.defaultCoefficients = [.0, .0, 102.2727273, -128.4090909] # x3, x2, x, c
@@ -60,7 +50,7 @@ class Scales(QAbstractTableModel):
         random.seed()
         
     def computeT(self,x):
-        return np.poly1d(self.deviceCoefficients or self.defaultCoefficients)([x])[0]
+        return np.poly1d(self.deviceCoefficients or self.coefficients or self.defaultCoefficients)([x])[0]
         
     # accessors and selectors
     
@@ -143,8 +133,8 @@ class Scales(QAbstractTableModel):
         selection = QItemSelection()
         for i,c in enumerate(self.coordinates):
             if c in selectedCoordinates:
-                selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.Select)
-        self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.Select)
+                selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
+        self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
         
     # deletes the coordinates at the given positions
     def deleteCoordinates(self,positions):  
@@ -216,7 +206,7 @@ class Scales(QAbstractTableModel):
         return self.coefficients
         
     def setCoefficients(self,coefficients):
-        self.coefficients = self.coefficients
+        self.coefficients = coefficients
             
     def getDeviceCoefficients(self):
         return self.deviceCoefficients
@@ -258,7 +248,7 @@ class Scales(QAbstractTableModel):
         if len(l) == 2:
             return [locale.atof(l[0]),int(l[1]),"",random.random()]
         else:
-            return [locale.atof(l[0]),int(l[1]),str(eval(l[2])),random.random()]
+            return [locale.atof(l[0]),int(l[1]),str(eval(l[2])),random.random()] # pylint: disable=eval-used
         
     def text2coordinates(self,txt):
         return [self.line2coordinate(l) for l in txt.replace("\r","\n").split("\n")]
@@ -268,10 +258,10 @@ class Scales(QAbstractTableModel):
 # QAbstractTableModel interface
 #        
     
-    def rowCount(self,parent):
+    def rowCount(self,_parent):
         return len(self.coordinates)
         
-    def columnCount(self,parent):
+    def columnCount(self,_parent):
         return len(self.app.aw.tableheaders)
     
     # updates the element at row with values c0 and c1 for the first two column values        
@@ -290,33 +280,34 @@ class Scales(QAbstractTableModel):
             selection = QItemSelection()
             for i,c in enumerate(self.coordinates):
                 if c in selectedCoordinates:
-                    selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.Select)
-            self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.Select)
+                    selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
+            self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
             self.app.contentModified()
 
         
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
         if not index.isValid():
             return None
-        if role == Qt.DisplayRole or role ==  Qt.EditRole:
+        if role == Qt.ItemDataRole.DisplayRole or role ==  Qt.ItemDataRole.EditRole:
             return self.getVisibleCoordinates()[index.row()][index.column()]
         # set cell color base on value
-        elif role == Qt.BackgroundColorRole:
+        elif role == Qt.ItemDataRole.BackgroundRole:
             raw_tonino_value = self.coordinates[index.row()][0]
             tonino_value = self.coordinates[index.row()][1]
             if raw_tonino_value < self.app.aw.ui.widget.canvas.x_min or raw_tonino_value > self.app.aw.ui.widget.canvas.x_max or tonino_value > 250 or tonino_value < 0:
                 return None
             else:
                 return QBrush(QColor(234,229,216))
-        elif role == Qt.TextAlignmentRole:
+        elif role == Qt.ItemDataRole.TextAlignmentRole:
             if index.column() == 0:
-                return Qt.AlignRight | Qt.AlignVCenter
+                return int(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             else:
-                return Qt.AlignLeft | Qt.AlignVCenter
+                return int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         else:
             return None
+#            return super().data(index, role)
     
-    def setData(self, index, value, role=Qt.EditRole):
+    def setData(self, index, value, _role=Qt.ItemDataRole.EditRole):
         if value and value != "" and index.isValid() and 0 <= index.row() < len(self.coordinates) and index.column() >= 0 and index.column() < 2:
             if index.column() == 0:
                 # convert to int
@@ -327,7 +318,7 @@ class Scales(QAbstractTableModel):
                     # trigger the redraw of the matplotlib graph canvas
                     self.computePolyfit()
                     self.app.contentModified()
-                except:
+                except Exception: # pylint: disable=broad-except
                     pass
             elif index.column() == 1:
                 self.setVisibleCoordinate(index.row(),index.column(),value)
@@ -339,17 +330,17 @@ class Scales(QAbstractTableModel):
             return True
         return False    
     
-    def setHeaderData(self,section, orientation, value, role):
+    def setHeaderData(self,_section,_orientation,_value,_role):
         return True
         
     def headerData(self, col, orientation, role):
-        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+        if orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
             return self.app.aw.tableheaders[col]
         else:
             return None
         
-    def flags(self, index):
-        return Qt.ItemIsEnabled | Qt.ItemIsEditable | Qt.ItemIsSelectable
+    def flags(self, _index):
+        return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsSelectable
         
         
     def sort(self, col, order):
@@ -370,7 +361,7 @@ class ValidatedItemDelegate(QStyledItemDelegate):
         if index.column() == 0: #only on the cells in the first column
             editor = QLineEdit(widget)
             # accept only numbers from 0-200
-            validator = QRegExpValidator(QRegExp("2\d\d|1\d\d|\d\d|\d"), editor)
+            validator = QRegularExpressionValidator(QRegularExpression("2\d\d|1\d\d|\d\d|\d"), editor) # pylint: disable=anomalous-backslash-in-string
             editor.setValidator(validator)
             return editor
         return super(ValidatedItemDelegate, self).createEditor(widget, option, index)
