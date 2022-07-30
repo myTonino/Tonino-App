@@ -34,7 +34,12 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib import rcParams
 from matplotlib import patheffects
-import numpy as np        
+import numpy as np
+
+import logging
+from typing import Final
+
+_log: Final = logging.getLogger(__name__)      
 
 class MplCanvas(FigureCanvas):
     def __init__(self,app):
@@ -270,8 +275,8 @@ class MplCanvas(FigureCanvas):
                 self.lastMotionX = event.xdata
                 self.lastMotionY = event.ydata
                 self.setCursor(Qt.CursorShape.OpenHandCursor)              
-        except Exception: # pylint: disable=broad-except
-            pass
+        except Exception as e: # pylint: disable=broad-except
+            _log.exception(e)
 
     def on_pick(self,event):
         self.setCursor(Qt.CursorShape.ClosedHandCursor)

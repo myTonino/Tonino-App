@@ -25,11 +25,16 @@
 
 # PyQt6:
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QLibraryInfo
+from PyQt6.QtCore import QLibraryInfo, QCoreApplication, QStandardPaths
     
 import platform
 import os
 import sys
+import functools
+import logging
+from typing import Final
+
+_log: Final = logging.getLogger(__name__)
 
 def main_is_frozen():
     ib = False
@@ -45,8 +50,8 @@ def main_is_frozen():
             if getattr(sys, 'frozen', False):
                 # The application is frozen
                 ib = True
-    except Exception: # pylint: disable=broad-except
-        pass
+    except Exception as e: # pylint: disable=broad-except
+        _log.exception(e)
     return ib
 
    
@@ -59,8 +64,8 @@ def inBundle():
             ib = True
 #        if str(sys.frozen) == "macosx_app":
 #            ib = True
-    except Exception: # pylint: disable=broad-except
-        pass
+    except Exception as e: # pylint: disable=broad-except
+        _log.exception(e)
     return ib
     
 # for bbfreeze or pyinstaller on Linux
@@ -151,4 +156,37 @@ def getSystemTranslationsPath():
 #            res = QLibraryInfo.location(QLibraryInfo.LibraryLocation.TranslationsPath)
             res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     return res
-    
+
+
+# we store data (log files) in the user- and app-specific local default data directory
+# for the platform
+# note that the path is based on the ApplicationName and OrganizationName
+# setting of the app
+# eg. ~/Library/Application Support/myTonino/Tonino (macOS)
+#     C:/Users/<USER>/AppData/Local/myTonino/Tonino" (Windows)
+#     ~/.local/shared/myTonino/Tonino" (Linux)
+
+# getDataDirectory() returns the Tonino data directory
+# if app is not yet initialized None is returned
+# otherwise the path is computed on first call and then memorized
+# if the computed path does not exists it is created
+# if creation or access of the path fails None is returned and memorized
+def getDataDirectory():
+    app = QCoreApplication.instance()
+    if app is not None:
+        return _getAppDataDirectory()
+    return None
+
+# internal function to return
+@functools.lru_cache(maxsize=None)  #for Python >= 3.9 can use @functools.cache
+def _getAppDataDirectory():
+    data_dir = QStandardPaths.standardLocations(
+        QStandardPaths.StandardLocation.AppLocalDataLocation
+    )[0]
+    try:
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+        return data_dir
+    except Exception as e:  # pylint: disable=broad-except
+        _log.exception(e)
+        return None

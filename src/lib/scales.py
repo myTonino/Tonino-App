@@ -35,6 +35,11 @@ import random
 
 from lib import __version__
 
+import logging
+from typing import Final
+
+_log: Final = logging.getLogger(__name__)
+
 class Scales(QAbstractTableModel):
     def __init__(self, app, parent, *args):
         QAbstractTableModel.__init__(self,parent,*args)
@@ -165,6 +170,7 @@ class Scales(QAbstractTableModel):
         self.autoScroll()
 
     def addCoordinate(self,x,y,name=""):
+        _log.debug("addCoordinate(%s,%s,%s)",x,y,name)
         selectedCoordinates = self.getSelectedCoordinates()
         if y is None:
             # y from I_SCAN, we compute the T value
@@ -185,6 +191,7 @@ class Scales(QAbstractTableModel):
             
     def computePolyfit(self):
         if self.polyfit_degree and len(self.coordinates) > self.polyfit_degree:
+            _log.debug("computePolyfit: %s",self.polyfit_degree)
             xv = np.array([e[0] for e in self.coordinates])
             yv = np.array([e[1] for e in self.coordinates])
             c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True)

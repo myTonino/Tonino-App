@@ -25,25 +25,22 @@
 import serial  # @UnusedImport
 import serial.tools.list_ports
 import time
-import sys
 import platform
+import logging
+from typing import Final
 
-if sys.version < '3':
-    def str2cmd(s):
+_log: Final = logging.getLogger(__name__)
+
+def str2cmd(s):
+    if type(s) == bytes:
         return s
-    def cmd2str(c):
+    else:
+        return bytes(s,"ascii")
+def cmd2str(c):
+    if type(c) == bytes:
+        return str(c,"latin1")
+    else:
         return c
-else:
-    def str2cmd(s):
-        if type(s) == bytes:
-            return s
-        else:
-            return bytes(s,"ascii")
-    def cmd2str(c):
-        if type(c) == bytes:
-            return str(c,"latin1")
-        else:
-            return c
         
 class SerialPort(object):
     def __init__(self,model=0):
@@ -73,43 +70,45 @@ class SerialPort(object):
         
     #loads configuration to ports
     def configurePort(self,port):
+        _log.debug("configurePort: %s",port)
         self.port = port
         if platform.system() == 'Windows':
             self.SP.setDTR(False)
-        if serial.VERSION.split(".")[0].strip() == "2":
-            self.SP.setPort(self.port)
-            self.SP.setBaudrate(self.baudrate)
-            self.SP.setByteSize(self.bytesize)
-            self.SP.setParity(self.parity)
-            self.SP.setStopbits(self.stopbits)
-            self.SP.setTimeout(self.timeout)
-        else:
-            self.SP.port = self.port
-            self.SP.baudrate = self.baudrate
-            self.SP.bytesize = self.bytesize
-            self.SP.parity = self.parity
-            self.SP.stopbits = self.stopbits
-            self.SP.timeout = self.timeout
+            _log.debug("setDTR(False)")
+        self.SP.port = self.port
+        self.SP.baudrate = self.baudrate
+        self.SP.bytesize = self.bytesize
+        self.SP.parity = self.parity
+        self.SP.stopbits = self.stopbits
+        self.SP.timeout = self.timeout
+        _log.debug("baudrate: %s",self.baudrate)
+        _log.debug("bytesize: %s",self.bytesize)
+        _log.debug("parity: %s",self.parity)
+        _log.debug("stopbits: %s",self.stopbits)
+        _log.debug("timeout: %s",self.timeout) 
 
     def openPort(self,port):
+        _log.debug("openPort(%s)",port)
         try:
-            if port != self.port:
+            if self.port != None and port != self.port:
                 self.closePort()
             if not self.SP.isOpen():
                 # open port if not yet open
                 self.configurePort(port)
                 self.SP.open()
                 time.sleep(.1) # avoid possible hickups on startup
-        except serial.SerialException:
+        except serial.SerialException as e:
+            _log.exception(e)
             self.closePort()
     
     def closePort(self):
+        _log.debug("closePort")
         try:
             self.port = None
             self.SP.close()
             time.sleep(0.7) # on OS X opening a serial port too fast after closing the port get's disabled
-        except Exception:  # pylint: disable=broad-except
-            pass
+        except Exception as e:  # pylint: disable=broad-except
+            _log.exception(e)
             
     def writeString(self,port,s):
         if not self.SP.isOpen():
@@ -123,12 +122,13 @@ class SerialPort(object):
                 return cmd2str(self.SP.readline())
             else:
                 return None
-        except Exception:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
+            _log.exception(e)
             self.closePort()
             return None
         
     def sendCommand(self,port,command,retry=True):
-#        print("sendCommand",port,command,retry,self.baudrate)
+        _log.debug("sendCommand(%s,%s,%s)",port,command,retry)
         res = None
         if not self.SP.isOpen():
             self.openPort(port)
@@ -141,12 +141,12 @@ class SerialPort(object):
                 time.sleep(0.3)
                 r = self.SP.readline()
                 response = cmd2str(r)
-#                print("response",len(response),response)
+                _log.debug("response(%s): %s",len(response),response.strip())
                 if not (response and len(response) > 0):
                     # we got an empty line, maybe the next line contains the response
                     r = self.SP.readline()
                     response = cmd2str(r)
-#                    print("second response",len(response),response)
+                    _log.debug("second response(%s):%s",len(response),response.strip())
                 if response and len(response) > 0:
                     # each <command> is answered by the Tonino by returning "<command>:<result>\n"
                     parts = response.split(command + self.cmdSeparatorChar)
@@ -157,8 +157,10 @@ class SerialPort(object):
             if retry and res == None:
                 return self.sendCommand(port,command,False)
             else:
+                _log.debug("result: %s",res)
                 return res
-        except Exception:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
+            _log.exception(e)
             self.closePort()
             if retry:
                 return self.sendCommand(port,command,False)
@@ -213,5 +215,5 @@ class SerialPort(object):
                 if vid == None or port.vid == vid:
                     if pid == None or  port.pid == pid:
                         yield port.device
-            except Exception:  # pylint: disable=broad-except
-                pass
+            except Exception as e:  # pylint: disable=broad-except
+                _log.exception(e)

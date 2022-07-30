@@ -3,7 +3,7 @@ The Tonino app allows to configure your Tonino roast color meter <http://my-toni
 
 HOME
 
-The project home of this app is on GitHub were all source and binary files are available.
+The project home of this app is on GitHub where all source and binary files are available.
 
 
 <https://github.com/myTonino/Tonino-App>
@@ -11,8 +11,7 @@ The project home of this app is on GitHub were all source and binary files are a
 
 FEATURES
 
-o runs on Mac OS X >10.9 on Intel, Windows, and Linux
-(on OS X >=10.8 Mountain Lion you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app)
+o runs on macOS 10.15 and newer, Windows 8
 o allows to connect to a Tonino device and trigger the measurements
 o designer for custom scales
 o save/load of custom scales
@@ -26,38 +25,16 @@ INSTALLATION
 
 o Windows
 
-- Install USB/serial driver from FTDI
-   http://www.ftdichip.com/Drivers/VCP.htm
 - Download and run the Tonino App Windows installer
 
 o Mac OS X (>=10.9.x)
 
-- Install USB/serial driver from FTDI
-   http://www.ftdichip.com/Drivers/VCP.htm
-   NOTE: OS X 10.9 and later contain already support for the FTDI hardware and therefore no additional driver needs to be installed on those systems
 - Download and run the Tonino App OS X installer
 - Double click on the dmg file you just downloaded
 - Double click the disk image which appears on your desktop
 - Drag the Tonino application icon to your Applications directory
-- On OS X 10.8 Mountain Lion and higher you need to tick "Allow applications downloaded from Anywhere" in the Security & Privacy Preference Panel to start the app
 
 
-o Linux
-
-The Linux package is compatible with Ubuntu/Debian and CentOS/Redhat (glibc 2.12). For now, we simply offer a .deb Debian package as well as an .rpm Redhat package that you have to install manually. This can be done by either double clicking the package icon from your file viewer or by entering the following commands in a shell.
-
-Installation on Ubuntu/Debian
-# sudo dpkg -i tonino_<version>.deb
-
-Uninstall on Ubuntu/Debian
-# sudo dpkg -r tonino
-
-
-Installation on CentOS/Redhat
-# sudo rpm -i tonino_<version>.rpm
-
-Uninstall on CentOS/Redhat
-# sudo rpm -e tonino
 
 
 LICENCE
