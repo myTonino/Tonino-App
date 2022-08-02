@@ -1,8 +1,8 @@
 #!/bin/sh
 #
-# build-mac35.sh
+# build-mac3.sh
 #
-# Copyright (c) 2016, Paul Holleis, Marko Luther
+# Copyright (c) 202022, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -21,46 +21,52 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-export MACOSX_DEPLOYMENT_TARGET=10.10
-export PYTHON=/Library/Frameworks/Python.framework/Versions/3.5
+export MACOSX_DEPLOYMENT_TARGET=10.15
+export PYTHON=/Library/Frameworks/Python.framework/Versions/3.10
 
-export PYTHONPATH=$PYTHON/lib/python3.5/site-packages
+export PYTHONPATH=$PYTHON/lib/python3.10/site-packages
 
 export PATH=$PYTHON/bin:$PYTHON:/lib:$PATH
 
-export QT_PATH=~/Qt5.9.3/5.9.3/clang_64
-export PATH=$QT_PATH/bin:$QT_PATH/lib:$PATH
-export DYLD_FRAMEWORK_PATH=$QT_PATH/lib
+export QT_PATH=~/Qt/6.2.3/macos
+export PATH=$PATH:$QT_PATH/bin:$QT_PATH/lib
+#export DYLD_FRAMEWORK_PATH=$QT_PATH/lib # this works only if Qt version of PyQt is the same as in QT_PATH
 
 # ui
 find ui -iname "*.ui" | while read f
 do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
+# PyQt6
+    pyuic6 -o uic/${fn}.py -x ui/${fn}.ui
 # PyQt5
-    pyuic5 -o uic/${fn}.py --from-imports ui/${fn}.ui
+#    pyuic5 -o uic/${fn}.py --from-imports ui/${fn}.ui
 # PyQt4
 #    pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui 
 done
 
 # qrc
-find qrc -iname "*.qrc" | while read f
-do
-    fullfilename=$(basename $f)
-    fn=${fullfilename%.*}
+# NOT AVAILABLE ON PyQt6
+#find qrc -iname "*.qrc" | while read f
+#do
+#    fullfilename=$(basename $f)
+#    fn=${fullfilename%.*}
 # PyQt5
-    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
-# PyQt4
-#    pyrcc4 -py3 -o uic/${fn}_rc.py qrc/${fn}.qrc
-done
+#    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
+## PyQt4
+##    pyrcc4 -py3 -o uic/${fn}_rc.py qrc/${fn}.qrc
+#done
 
 # translations
+# PyQt6
+
 # PyQt5
-$PYTHON/bin/pylupdate5 conf/tonino.pro
+#$PYTHON/bin/pylupdate5 conf/tonino.pro
 # PyQt4
 #pylupdate4 conf/tonino.pro
+
 $QT_PATH/bin/lrelease -verbose conf/tonino.pro
 
 # distribution
 rm -rf build dist
-$PYTHON/bin/python3.5 setup-mac35.py py2app
+$PYTHON/bin/python3 setup-mac3.py py2app
