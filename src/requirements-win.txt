@@ -1,0 +1,6 @@
+pyinstaller==5.3
+pyserial==5.3
+numpy==1.23.1
+scipy==1.8.1
+matplotlib==3.5.2
+PyQt6==6.3.1
