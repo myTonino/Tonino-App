@@ -1937,22 +1937,6 @@ warnings.filterwarnings('ignore')
 aw = None # this is to ensure that the variable aw is already defined during application initialization
 
 
-try:
-    vv, _, _ = platform.mac_ver()
-    vv = vv.split('.')[:2]
-    major = int(vv[0])
-    minor = int(vv[1])
-    if major >= 10 and minor >= 10: #v >= 10.10:
-        # fix Mac OS X 10.10 (Yosemite) font issue
-        # https://bugreports.qt-project.org/browse/QTBUG-40833
-        QFont.insertSubstitution(".Helvetica Neue DeskInterface", "Helvetica Neue")
-    if major >= 10 and minor >= 9: #v >= 10.9:
-        # fix Mac OS X 10.9 (mavericks) font issue
-        # https://bugreports.qt-project.org/browse/QTBUG-32789
-        QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
-except Exception as es: # pylint: disable=broad-except
-    _log.exception(es)
-
 # define app
 args = sys.argv
 if sys.platform == 'linux' :

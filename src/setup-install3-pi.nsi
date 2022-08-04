@@ -285,6 +285,17 @@ Section Uninstall
   RMDir /r "$INSTDIR\tcl"
   RMDir /r "$INSTDIR\tk"
 
+  RMDir /r "$INSTDIR\altgraph-0.17.2.dist-info"
+  RMDir /r "$INSTDIR\kiwisolver"
+  RMDir /r "$INSTDIR\matplotlib"
+  RMDir /r "$INSTDIR\numpy"
+  RMDir /r "$INSTDIR\PIL"
+  RMDir /r "$INSTDIR\pyinstaller-5.3.dist-info"
+  RMDir /r "$INSTDIR\PyQt6"
+  RMDir /r "$INSTDIR\scipy"
+  RMDir /r "$INSTDIR\setuptools-63.2.0.dist-info"
+  RMDir /r "$INSTDIR\yaml"
+
   RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
   RMDir "$INSTDIR"
   
