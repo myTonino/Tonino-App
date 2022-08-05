@@ -22,8 +22,9 @@ Tonino Resources
 
 Version History
 ---------------
-- v1.0.22 Adds PRECAL support
-- v1.0.21 Bug fixes (last version supporting OS X 10.9, Windows XP/7 and 32bit OS versions)
+- v1.0.23 Adds support for M1 Macs and logging
+- v1.0.22 Adds PRECAL support<br>(last version supporting macOS 10.13 and Windows 8)</br>
+- v1.0.21 Bug fixes<br>(last version supporting macoS 10.9, Windows XP/7 and 32bit OS versions)</br>
 - v1.0.20 Bug fixes
 - v1.0.19 Adds Raspbian build
 - v1.0.18 Updated calibration recognition
