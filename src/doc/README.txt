@@ -23,11 +23,11 @@ o update the firmware of a connected Tonino device
 INSTALLATION
 
 
-o Windows
+o Windows 8 and newer
 
 - Download and run the Tonino App Windows installer
 
-o Mac OS X (>=10.9.x)
+o Mac OS X 10.15 and newer
 
 - Download and run the Tonino App OS X installer
 - Double click on the dmg file you just downloaded
@@ -77,8 +77,11 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.24 (1/2023)
+ - Adds Agtron default scale support
+
 v1.0.23 (8/2022)
- - Updated libs
+ - Adds support for M1 Macs and logging
 
 v1.0.22 (17.6.2018)
  - Adds PRECAL support

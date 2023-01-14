@@ -32,14 +32,14 @@ import os
 import sys
 import functools
 import logging
-from typing import Final
+from typing import Final, Optional
 
 _log: Final = logging.getLogger(__name__)
 
-def main_is_frozen():
-    ib = False
+def main_is_frozen() -> bool:
+    ib:bool = False
     try:
-        platf = str(platform.system())
+        platf:str = str(platform.system())
         if platf == 'Darwin':
             # the sys.frozen is set by py2app and pyinstaller and is unset otherwise
             if getattr( sys, 'frozen', False ):
@@ -56,8 +56,8 @@ def main_is_frozen():
 
    
 # for py2app and pyinstaller on MacOS X
-def inBundle():     
-    ib = False
+def inBundle() -> bool:     
+    ib:bool = False
     try:
         # the sys.frozen is set by py2app and pyinstaller and is unset otherwise
         if getattr( sys, 'frozen', False ):      
@@ -69,13 +69,13 @@ def inBundle():
     return ib
     
 # for bbfreeze or pyinstaller on Linux
-def isFrozen():
+def isFrozen() -> bool:
     return sys.executable.endswith("tonino") or getattr(sys, 'frozen', False)
     
             
 # returns the path to the platform independent resources
-def getResourcePath():
-    res = ""
+def getResourcePath() -> str:
+    res:str = ""
     if platform.system() == 'Darwin':
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/"
@@ -94,8 +94,8 @@ def getResourcePath():
     return res
 
 # returns the path to the platform dependent binaries
-def getResourceBinaryPath():
-    res = ""
+def getResourceBinaryPath() -> str:
+    res:str = ""
     if platform.system() == 'Darwin':
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/"
@@ -114,8 +114,8 @@ def getResourceBinaryPath():
     return res
     
 # returns the path to the translations
-def getTranslationsPath():
-    res = ""
+def getTranslationsPath() -> str:
+    res:str = ""
     if platform.system() == 'Darwin':
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/translations/"
@@ -135,25 +135,22 @@ def getTranslationsPath():
     
     
 # returns the path to the qt system translations
-def getSystemTranslationsPath():
-    res = ""
+def getSystemTranslationsPath() -> str:
+    res:str = ""
     if platform.system() == 'Darwin':
         if inBundle():
             res = QApplication.applicationDirPath() + "/../Resources/translations/"
         else:
-#            res = QLibraryInfo.location(QLibraryInfo.LibraryLocation.TranslationsPath)
             res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     elif platform.system() == "Linux":
         if isFrozen():
             res = QApplication.applicationDirPath() + "/translations/"
         else:
-#            res = QLibraryInfo.location(QLibraryInfo.LibraryLocation.TranslationsPath)
             res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     else:
         if main_is_frozen():
             res = os.path.dirname(sys.executable) + "\\translations\\"
         else:
-#            res = QLibraryInfo.location(QLibraryInfo.LibraryLocation.TranslationsPath)
             res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     return res
 
@@ -171,15 +168,15 @@ def getSystemTranslationsPath():
 # otherwise the path is computed on first call and then memorized
 # if the computed path does not exists it is created
 # if creation or access of the path fails None is returned and memorized
-def getDataDirectory():
-    app = QCoreApplication.instance()
+def getDataDirectory() -> Optional[str]:
+    app:QCoreApplication = QCoreApplication.instance()
     if app is not None:
         return _getAppDataDirectory()
     return None
 
 # internal function to return
 @functools.lru_cache(maxsize=None)  #for Python >= 3.9 can use @functools.cache
-def _getAppDataDirectory():
+def _getAppDataDirectory() -> Optional[str]:
     data_dir = QStandardPaths.standardLocations(
         QStandardPaths.StandardLocation.AppLocalDataLocation
     )[0]

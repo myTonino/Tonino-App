@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>316</height>
+    <height>385</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="maximumSize">
    <size>
     <width>420</width>
-    <height>316</height>
+    <height>400</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,89 @@
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBoxDefaultScale">
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
+     <property name="accessibleDescription">
+      <string notr="true"/>
+     </property>
+     <property name="title">
+      <string notr="true">Default Scale</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonTonino">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string notr="true">Tonino</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonAgtron">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string notr="true">Agtron</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <widget class="QGroupBox" name="groupBoxToninoDisplay">
      <property name="title">

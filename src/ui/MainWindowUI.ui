@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>809</width>
+    <width>857</width>
     <height>455</height>
    </rect>
   </property>
@@ -15,24 +15,12 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_4">
-    <property name="spacing">
-     <number>-1</number>
-    </property>
-    <property name="leftMargin">
-     <number>12</number>
-    </property>
-    <property name="topMargin">
-     <number>5</number>
-    </property>
-    <property name="bottomMargin">
-     <number>0</number>
-    </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <property name="topMargin">
-       <number>0</number>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-      <item>
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
         <property name="spacing">
          <number>0</number>
@@ -388,7 +376,7 @@
         <item>
          <widget class="QTableView" name="tableView">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -401,7 +389,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>300</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
@@ -450,24 +438,22 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="mplwidget" name="widget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>3</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>150</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
+      </widget>
+      <widget class="mplwidget" name="widget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>600</width>
+         <height>300</height>
+        </size>
+       </property>
+      </widget>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0">
@@ -684,8 +670,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>809</width>
-     <height>22</height>
+     <width>857</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

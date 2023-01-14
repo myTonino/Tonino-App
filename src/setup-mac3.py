@@ -80,6 +80,7 @@ DATA_FILES = [
 #    ("../Resources", [r"conf/qt.conf"]),
     ("../Resources", [r"includes/mac/avrdude.conf"]),
     ("../Resources", [r"includes/mac/avrdude"]),
+    ('../Resources', [r"includes/logging.yaml"]),
     ("../Resources", [r"icons/tonino_doc.icns"]),
   ]
   
@@ -206,7 +207,7 @@ except:
     pass
 
 
-for python_version in ['python3.8', 'python3.9', 'python3.10']:
+for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
     rootdir = f'./Tonino.app/Contents/Resources/lib/{python_version}'
 
     if os.path.isdir(f'{rootdir}/PyQt6'):
@@ -235,7 +236,7 @@ for python_version in ['python3.8', 'python3.9', 'python3.10']:
         ]:
         try:
             subprocess.check_call(f'rm -rf {rootdir}/{qt_dir}',shell = True)
-        except Exception as e:
+        except Exception:
             pass
     for pyqt_dir in ['PyQt5', 'PyQt6']:
         # remove unused PyQt libs (not in Qt_modules)
@@ -286,6 +287,10 @@ except:
     pass
 try:
     subprocess.check_call('rm -rf ./Tonino.app/Contents/Resources/lib/python3.10/matplotlib/mpl-data/sample_data',shell = True)
+except:
+    pass
+try:
+    subprocess.check_call('rm -rf ./Tonino.app/Contents/Resources/lib/python3.11/matplotlib/mpl-data/sample_data',shell = True)
 except:
     pass
 

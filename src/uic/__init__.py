@@ -3,7 +3,7 @@
 #
 # __init__.py
 #
-# Copyright (c) 2016, Paul Holleis, Marko Luther
+# Copyright (c) 2023, Paul Holleis, Marko Luther
 # All rights reserved.
 # 
 # 
@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from uic.MainWindowUI import *
-from uic.AboutDialogUI import *
+from uic.AboutDialogUI import * # type: ignore
 from uic.icons_rc import *
 from uic.calib_high_rc import *
 from uic.calib_low_rc import *

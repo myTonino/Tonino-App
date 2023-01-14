@@ -70,11 +70,18 @@
          <property name="font">
           <font>
            <pointsize>20</pointsize>
+           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Tonino</string>
+          <string notr="true">Tonino</string>
          </property>
          <property name="textFormat">
           <enum>Qt::RichText</enum>
@@ -98,7 +105,20 @@
        <item>
         <widget class="QLabel" name="copyrightLabel">
          <property name="text">
-          <string>Copyright © 2022 Marko Luther, Paul Holleis</string>
+          <string>Copyright © 2023 Marko Luther, Paul Holleis</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="serialLabel">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string notr="true">Serial</string>
          </property>
         </widget>
        </item>

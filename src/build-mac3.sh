@@ -22,13 +22,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export MACOSX_DEPLOYMENT_TARGET=10.15
-export PYTHON=/Library/Frameworks/Python.framework/Versions/3.10
+export PYTHON=/Library/Frameworks/Python.framework/Versions/3.11
 
-export PYTHONPATH=$PYTHON/lib/python3.10/site-packages
+export PYTHONPATH=$PYTHON/lib/python3.11/site-packages
 
 export PATH=$PYTHON/bin:$PYTHON:/lib:$PATH
 
-export QT_PATH=~/Qt/6.2.3/macos
+export QT_PATH=~/Qt/6.4.1/macos
 export PATH=$PATH:$QT_PATH/bin:$QT_PATH/lib
 #export DYLD_FRAMEWORK_PATH=$QT_PATH/lib # this works only if Qt version of PyQt is the same as in QT_PATH
 
