@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>PreCalibration</string>
+   <string notr="true">PreCalibration</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -29,7 +29,14 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPlainTextEdit" name="logOutput"/>
+      <widget class="QPlainTextEdit" name="logOutput">
+       <property name="toolTip">
+        <string notr="true"/>
+       </property>
+       <property name="accessibleDescription">
+        <string notr="true"/>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -38,15 +45,27 @@
        </property>
        <item>
         <widget class="QPushButton" name="pushButtonClear">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Clear</string>
+          <string notr="true">Clear</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonMaster">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Master</string>
+          <string notr="true">Master</string>
          </property>
         </widget>
        </item>
@@ -65,15 +84,27 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonScan">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Scan</string>
+          <string notr="true">Scan</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonPreCal">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>PreCal</string>
+          <string notr="true">PreCal</string>
          </property>
         </widget>
        </item>
@@ -92,15 +123,27 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonSet">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Set</string>
+          <string notr="true">Set</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonReset">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Reset</string>
+          <string notr="true">Reset</string>
          </property>
         </widget>
        </item>
@@ -110,6 +153,12 @@
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
+     <property name="accessibleDescription">
+      <string notr="true"/>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>

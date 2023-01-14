@@ -61,14 +61,6 @@ from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI,
 import uic.resources as resources
 
 
-try:
-    _encoding = QApplication.UnicodeUTF8  # type: ignore
-    def _translate(context, text, disambig):
-        return QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QApplication.translate(context, text, disambig)
-
 def u(x:Any) -> str: # convert to unicode string
     return str(x)
 
@@ -275,7 +267,7 @@ class Tonino(QApplication):
                 # transfer result to connected Tonino
                 self.setCal(self.toninoPort,[c[1],c[0]])
                 if self.aw is not None:
-                    self.aw.showMessage(_translate('Message','Calibration updated',None))
+                    self.aw.showMessage(QApplication.translate('Message','Calibration updated',None))
 
     def getWorkingDirectory(self) -> str:
         if self.workingDirectory is None:
@@ -374,7 +366,7 @@ class Tonino(QApplication):
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             if self.aw:
-                QMessageBox.information(self.aw,_translate('Message', 'Error',None),_translate('Message', 'Loading settings failed',None))
+                QMessageBox.information(self.aw,QApplication.translate('Message', 'Error',None),QApplication.translate('Message', 'Loading settings failed',None))
 
     # saves the application settings when closing the application. See the oppposite loadSettings()
     def saveSettings(self) -> None:
@@ -393,7 +385,7 @@ class Tonino(QApplication):
             _log.exception(e)
             self.resetsettings = 0 # ensure that the corrupt settings are not loaded on next start and thus overwritten
             if self.aw:
-                QMessageBox.information(self.aw,_translate('Message', 'Error',None),_translate('Message', 'Saving settings failed',None))
+                QMessageBox.information(self.aw,QApplication.translate('Message', 'Error',None),QApplication.translate('Message', 'Saving settings failed',None))
 
 #
 # Tonino Serial Protocol
@@ -488,9 +480,9 @@ class Tonino(QApplication):
         if self.aw is not None:
             if exitCode:
                 # update failed
-                self.aw.showMessage(_translate('Message','Firmware update failed',None),msecs=10000)
+                self.aw.showMessage(QApplication.translate('Message','Firmware update failed',None),msecs=10000)
             else:
-                self.aw.showMessage(_translate('Message','Firmware successfully updated',None),msecs=10000)
+                self.aw.showMessage(QApplication.translate('Message','Firmware successfully updated',None),msecs=10000)
             self.aw.endprogress.emit()
         time.sleep(2)
 
@@ -686,7 +678,7 @@ class Tonino(QApplication):
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             if self.aw:
-                QMessageBox.critical(self.aw,_translate('Message', 'Error',None),_translate('Message', 'Scale could not be loaded',None))
+                QMessageBox.critical(self.aw,QApplication.translate('Message', 'Error',None),QApplication.translate('Message', 'Scale could not be loaded',None))
             return False
 
     # write current scale to file
@@ -707,7 +699,7 @@ class Tonino(QApplication):
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             if self.aw:
-                QMessageBox.critical(self.aw,_translate('Message', 'Error',None),_translate('Message', 'Scale could not be saved',None))
+                QMessageBox.critical(self.aw,QApplication.translate('Message', 'Error',None),QApplication.translate('Message', 'Scale could not be saved',None))
             return False
 
     def applyScale(self, filename:str) -> bool:
@@ -724,7 +716,7 @@ class Tonino(QApplication):
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             if self.aw:
-                QMessageBox.critical(self.aw,_translate('Message', 'Error',None),_translate('Message', 'Scale could not be applied',None))
+                QMessageBox.critical(self.aw,QApplication.translate('Message', 'Error',None),QApplication.translate('Message', 'Scale could not be applied',None))
             return False
 
     def contentModified(self) -> None:
@@ -767,6 +759,22 @@ class PreferencesDialog(ToninoDialog):
         self.app:Tonino = application
         self.ui:PreferencesDialogUI.Ui_Preferences = PreferencesDialogUI.Ui_Preferences()
         self.ui.setupUi(self)
+
+        # translations
+        self.setWindowTitle(QApplication.translate('Preferences', 'Preferences'))
+        self.ui.groupBoxToninoDisplay.setTitle(QApplication.translate('Preferences', 'Display'))
+        self.ui.dim_label.setText(QApplication.translate('Preferences', 'dim'))
+        self.ui.bright_label.setText(QApplication.translate('Preferences', 'bright'))
+        self.ui.checkBoxFlip.setText(QApplication.translate('Preferences', 'Flip'))
+        self.ui.groupBoxToninoTarget.setTitle(QApplication.translate('Preferences', 'Target'))
+        self.ui.groupBoxTargetValue.setTitle(QApplication.translate('Preferences', 'Value'))
+        self.ui.groupBoxTargetRange.setTitle(QApplication.translate('Preferences', 'Range'))
+        self.ui.range_min_label.setText(QApplication.translate('Preferences', '0'))
+        self.ui.range_max_label.setText(QApplication.translate('Preferences', '5'))
+        self.ui.groupBoxToninoName.setTitle(QApplication.translate('Preferences', 'Name'))
+        self.ui.radioButtonAgtron.setText(QApplication.translate('Preferences', 'Agtron'))
+        self.ui.radioButtonTonino.setText(QApplication.translate('Preferences', 'Tonino'))
+
         self.displayBrightness:Optional[int] = None
         self.targetValue:Optional[int] = None
         self.targetRange:Optional[int] = None
@@ -897,6 +905,10 @@ class CalibDialog(ToninoDialog):
                 self.ui = TinyCalibDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
 
+        # translations
+        self.setWindowTitle(QApplication.translate('Dialog', 'Calibration'))
+        self.ui.pushButtonScan.setText(QApplication.translate('Dialog', 'Scan'))
+
         # disable elements
         self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
         self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint()
@@ -971,6 +983,9 @@ class DebugDialog(ToninoDialog):
         self.app:Tonino = application
         self.ui:DebugDialogUI.Ui_Dialog = DebugDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
+        # translations
+        self.setWindowTitle(QApplication.translate('Dialog', 'Debug'))
+        self.ui.pushButtonScan.setText(QApplication.translate('Dialog', 'Scan'))
         # connect actions
         self.ui.pushButtonScan.clicked.connect(self.scan)
         # prepare log
@@ -1051,6 +1066,14 @@ class PreCalibDialog(ToninoDialog):
         self.app:Tonino = application
         self.ui:PreCalibDialogUI.Ui_Dialog = PreCalibDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
+        # translations
+        self.setWindowTitle(QApplication.translate('Dialog', 'PreCalibration'))
+        self.ui.pushButtonClear.setText(QApplication.translate('Dialog', 'Clear'))
+        self.ui.pushButtonMaster.setText(QApplication.translate('Dialog', 'Master'))
+        self.ui.pushButtonScan.setText(QApplication.translate('Dialog', 'Scan'))
+        self.ui.pushButtonPreCal.setText(QApplication.translate('Dialog', 'PreCal'))
+        self.ui.pushButtonSet.setText(QApplication.translate('Dialog', 'Set'))
+        self.ui.pushButtonReset.setText(QApplication.translate('Dialog', 'Reset'))
         # connect actions
         self.ui.pushButtonClear.clicked.connect(self.clear)
         self.ui.pushButtonMaster.clicked.connect(self.master)
@@ -1223,6 +1246,46 @@ class ApplicationWindow(QMainWindow):
         self.ui.setupUi(self)
         self.app.aw = self
 
+        # translations
+        self.setWindowTitle(QApplication.translate('MainWindow', 'Tonino'))
+        self.ui.label_2.setText(QApplication.translate('MainWindow', 'AVG'))
+        self.ui.label_4.setText(QApplication.translate('MainWindow', 'STDEV'))
+        self.ui.label_5.setText(QApplication.translate('MainWindow', 'CONF95%'))
+        self.ui.pushButtonAdd.setText(QApplication.translate('MainWindow', 'Add'))
+        self.ui.pushButtonDelete.setText(QApplication.translate('MainWindow', 'Delete'))
+        self.ui.pushButtonSort.setText(QApplication.translate('MainWindow', 'Sort'))
+        self.ui.pushButtonClear.setText(QApplication.translate('MainWindow', 'Clear'))
+        self.ui.pushButtonCalib.setText(QApplication.translate('MainWindow', 'Calibrate'))
+        self.ui.label_3.setText(QApplication.translate('MainWindow', '0'))
+        self.ui.label.setText(QApplication.translate('MainWindow', '3 '))
+        self.ui.pushButtonDefaults.setText(QApplication.translate('MainWindow', 'Defaults'))
+        self.ui.pushButtonUpload.setText(QApplication.translate('MainWindow', 'Upload'))
+        self.ui.menuFile.setTitle(QApplication.translate('MainWindow', 'File'))
+        self.ui.menuOpen_Recent.setTitle(QApplication.translate('MainWindow', 'Open Recent'))
+        self.ui.menuOpen_ApplyRecent.setTitle(QApplication.translate('MainWindow', 'Apply Recent'))
+        self.ui.actionQuit.setText(QApplication.translate('MainWindow', 'Quit'))
+        self.ui.actionQuit.setShortcut(QApplication.translate('MainWindow', 'Ctrl+Q'))
+        self.ui.menuHelp.setTitle(QApplication.translate('MainWindow', 'Help'))
+        self.ui.menuEdit.setTitle(QApplication.translate('MainWindow', ' Edit'))
+        self.ui.actionOpen.setText(QApplication.translate('MainWindow', 'Open...'))
+        self.ui.actionOpen.setShortcut(QApplication.translate('MainWindow', 'Ctrl+O'))
+        self.ui.actionSave.setText(QApplication.translate('MainWindow', 'Save'))
+        self.ui.actionSave.setShortcut(QApplication.translate('MainWindow', 'Ctrl+S'))
+        self.ui.actionSave_As.setText(QApplication.translate('MainWindow', 'Save As...'))
+        self.ui.actionSave_As.setShortcut(QApplication.translate('MainWindow', 'Ctrl+Shift+S'))
+        self.ui.actionHelp.setText(QApplication.translate('MainWindow', 'Help'))
+        self.ui.actionHelp.setShortcut(QApplication.translate('MainWindow', 'Ctrl+?'))
+        self.ui.actionAbout.setText(QApplication.translate('MainWindow', 'About'))
+        self.ui.actionAboutQt.setText(QApplication.translate('MainWindow', 'About Qt'))
+        self.ui.actionSettings.setText(QApplication.translate('MainWindow', 'Settings'))
+        self.ui.actionCut.setText(QApplication.translate('MainWindow', 'Cut'))
+        self.ui.actionCut.setShortcut(QApplication.translate('MainWindow', 'Ctrl+X'))
+        self.ui.actionCopy.setText(QApplication.translate('MainWindow', 'Copy'))
+        self.ui.actionCopy.setShortcut(QApplication.translate('MainWindow', 'Ctrl+C'))
+        self.ui.actionPaste.setText(QApplication.translate('MainWindow', 'Paste'))
+        self.ui.actionPaste.setShortcut(QApplication.translate('MainWindow', 'Ctrl+V'))
+        self.ui.actionApply.setText(QApplication.translate('MainWindow', 'Apply...'))
+
         self.calibs:Optional[CalibDialog] = None
         self.debugDialog:Optional[DebugDialog] = None
         self.preCalibDialog:Optional[PreCalibDialog] = None
@@ -1235,14 +1298,14 @@ class ApplicationWindow(QMainWindow):
         # constants
         self.toninoFileExtension:str = 'toni'
         self.toninoFileFilter:str = 'Text files (*.toni)'
-        self.windowTitleName = _translate('MainWindow','Tonino',None)
+        self.windowTitleName = QApplication.translate('MainWindow','Tonino',None)
         self.fastCheck:int = 1000
         self.slowCheck:int = 2000
         self.checkDecay:int = 5*60 # after 5min turn to slowCheck
         self.currentFileDirtyPrefix:str = '*'
-        self.tableheaders:list[str] = ['T',_translate('MainWindow','Name',None)]
-        self.popupadd = _translate('MainWindow','add',None)
-        self.popupdelete = _translate('MainWindow','delete',None)
+        self.tableheaders:list[str] = ['T',QApplication.translate('MainWindow','Name',None)]
+        self.popupadd = QApplication.translate('MainWindow','add',None)
+        self.popupdelete = QApplication.translate('MainWindow','delete',None)
 
         # variables
         self.debug:int = 0 # toggled via a right-click / Control-click (macOS) on the About dialog
@@ -1327,21 +1390,21 @@ class ApplicationWindow(QMainWindow):
         self.endprogress.connect(self.endProgress)
 
         #Fake entries to get translations for the Mac Application Menu
-        _mac_services = _translate('MAC_APPLICATION_MENU', 'Services', None)
-        _mac_hide = _translate('MAC_APPLICATION_MENU', 'Hide %1', None)
-        _mac_hideothers = _translate('MAC_APPLICATION_MENU', 'Hide Others', None)
-        _mac_showall = _translate('MAC_APPLICATION_MENU', 'Show All', None)
-        _mac_preferences = _translate('MAC_APPLICATION_MENU', 'Preferences...', None)
-        _mac_quit = _translate('MAC_APPLICATION_MENU', 'Quit %1', None)
-        _mac_about = _translate('MAC_APPLICATION_MENU', 'About %1', None)
+        _mac_services = QApplication.translate('MAC_APPLICATION_MENU', 'Services', None)
+        _mac_hide = QApplication.translate('MAC_APPLICATION_MENU', 'Hide %1', None)
+        _mac_hideothers = QApplication.translate('MAC_APPLICATION_MENU', 'Hide Others', None)
+        _mac_showall = QApplication.translate('MAC_APPLICATION_MENU', 'Show All', None)
+        _mac_preferences = QApplication.translate('MAC_APPLICATION_MENU', 'Preferences...', None)
+        _mac_quit = QApplication.translate('MAC_APPLICATION_MENU', 'Quit %1', None)
+        _mac_about = QApplication.translate('MAC_APPLICATION_MENU', 'About %1', None)
 
-        _dialog_ok = _translate('QDialogButtonBox', 'OK', None)
-        _dialog_save = _translate('QDialogButtonBox', 'Save', None)
-        _dialog_dont_save = _translate('QDialogButtonBox', "Don't Save", None)
-        _dialog_open = _translate('QDialogButtonBox', 'Open', None)
-        _dialog_cancel = _translate('QDialogButtonBox', 'Cancel', None)
-        _dialog_close = _translate('QDialogButtonBox', 'Close', None)
-        _dialog_abort = _translate('QDialogButtonBox', 'Abort', None)
+        _dialog_ok = QApplication.translate('QDialogButtonBox', 'OK', None)
+        _dialog_save = QApplication.translate('QDialogButtonBox', 'Save', None)
+        _dialog_dont_save = QApplication.translate('QDialogButtonBox', "Don't Save", None)
+        _dialog_open = QApplication.translate('QDialogButtonBox', 'Open', None)
+        _dialog_cancel = QApplication.translate('QDialogButtonBox', 'Cancel', None)
+        _dialog_close = QApplication.translate('QDialogButtonBox', 'Close', None)
+        _dialog_abort = QApplication.translate('QDialogButtonBox', 'Abort', None)
 
         self.updateLCDS()
 
@@ -1375,7 +1438,7 @@ class ApplicationWindow(QMainWindow):
 
     @pyqtSlot()
     def showProgress(self) -> None:
-        self.progress = QProgressDialog(_translate('Message','Updating firmware...',None), '', 0, 20, self)
+        self.progress = QProgressDialog(QApplication.translate('Message','Updating firmware...',None), '', 0, 20, self)
 #        self.progress.setCancelButton(None)
         self.progress.setWindowModality(Qt.WindowModality.WindowModal)
         self.progress.setAutoClose(False)
@@ -1511,7 +1574,7 @@ class ApplicationWindow(QMainWindow):
 
     @pyqtSlot(bool)
     def openFile(self,_:bool=False) -> None:
-        filename = self.fileDialog(_translate('Dialog','Open Scale',None),ffilter=self.toninoFileFilter)
+        filename = self.fileDialog(QApplication.translate('Dialog','Open Scale',None),ffilter=self.toninoFileFilter)
         if filename is not None:
             self.loadFile(filename)
 
@@ -1535,7 +1598,7 @@ class ApplicationWindow(QMainWindow):
 
     # returns True if saving suceeded and was not canceled
     def saveAsFile(self) -> bool:
-        filename:Optional[str] = self.fileDialog(_translate('Dialog','Save As',None),ffilter=self.toninoFileFilter,openFile=False)
+        filename:Optional[str] = self.fileDialog(QApplication.translate('Dialog','Save As',None),ffilter=self.toninoFileFilter,openFile=False)
         if filename is not None:
             if not filename.endswith('.' + self.toninoFileExtension):
                 filename = filename + '.' + self.toninoFileExtension
@@ -1550,7 +1613,7 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(bool)
     def applyFile(self,_:bool=False) -> None:
         _log.debug('applyFile')
-        filename = self.fileDialog(_translate('Dialog','Apply Scale',None),ffilter=self.toninoFileFilter)
+        filename = self.fileDialog(QApplication.translate('Dialog','Apply Scale',None),ffilter=self.toninoFileFilter)
         if filename is not None:
             self.applyScale(filename)
 
@@ -1571,7 +1634,7 @@ class ApplicationWindow(QMainWindow):
         if self.app.toninoPort:
             self.app.reset2Defaults(self.app.toninoPort)
             self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
-            self.showMessage(_translate('Message','Tonino reset to defaults',None))
+            self.showMessage(QApplication.translate('Message','Tonino reset to defaults',None))
 
     @pyqtSlot(bool)
     def uploadScale(self,_:bool=False) -> None:
@@ -1584,7 +1647,7 @@ class ApplicationWindow(QMainWindow):
                 if self.app.currentFile and self.app.getModel() == 1:
                     scaleName:str = self.app.strippedName(self.app.currentFile).split('.')[0]
                     self.app.setScaleName(self.app.toninoPort, scaleName)
-                self.showMessage(_translate('Message','Scale uploaded',None))
+                self.showMessage(QApplication.translate('Message','Scale uploaded',None))
 
     @pyqtSlot(bool)
     def addCoordinateSlot(self,_:bool=False) -> None:
@@ -1596,7 +1659,7 @@ class ApplicationWindow(QMainWindow):
                 raw_x:Optional[list[Any]] = self.app.getRawCalibratedReading(self.app.toninoPort)
                 if raw_x is not None:
                     if np.isnan(raw_x[0]) or raw_x[0] == float('inf'):
-                        self.showMessage(_translate('Message','Coordinate out of range',None),msecs=10000)
+                        self.showMessage(QApplication.translate('Message','Coordinate out of range',None),msecs=10000)
                     else:
                         self.app.scales.addCoordinate(raw_x[0],0)
                         self.ui.widget.canvas.repaint()
@@ -1606,7 +1669,7 @@ class ApplicationWindow(QMainWindow):
                         self.addCoordinate(retry=False)
                         self.ui.widget.canvas.repaint()
                     else:
-                        self.showMessage(_translate('Message','Coordinate out of range',None),msecs=10000)
+                        self.showMessage(QApplication.translate('Message','Coordinate out of range',None),msecs=10000)
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
 
@@ -1728,7 +1791,7 @@ class ApplicationWindow(QMainWindow):
         Dialog = QDialog(self)
         ui:AboutDialogUI.Ui_Dialog = AboutDialogUI.Ui_Dialog()
         ui.setupUi(Dialog)
-        version:str = _translate('Dialog', 'Version', None) + ' ' + __version__
+        version:str = QApplication.translate('Dialog', 'Version', None) + ' ' + __version__
         if self.app.included_firmware_version or self.app.included_tinyTonino_firmware_version:
             version += ' (firmware '
             if self.app.included_firmware_version:
@@ -1739,17 +1802,19 @@ class ApplicationWindow(QMainWindow):
                 version += self.version2str(self.app.included_tinyTonino_firmware_version,prefix='')
             version += ')'
         ui.versionLabel.setText(version)
+        ui.copyrightLabel.setText(QApplication.translate('Dialog', 'Copyright © 2023 Marko Luther, Paul Holleis'))
+        ui.pushButton.setText(QApplication.translate('Dialog', 'OK'))
         ui.pushButton.clicked.connect(Dialog.accept)
         Dialog.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         Dialog.customContextMenuRequested.connect(lambda _: self.toggleDebug(ui)) # type: ignore
         if self.debug == 1:
-            ui.nameLabel.setText(f'<b>{_translate("Dialog", "Tonino*", None)}</b>')
+            ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino*", None)}</b>')
         elif self.debug == 2:
-            ui.nameLabel.setText(f'<b>{_translate("Dialog", "Tonino**", None)}</b>')
+            ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino**", None)}</b>')
         else:
-            ui.nameLabel.setText(f'<b>{_translate("Dialog", "Tonino", None)}</b>')
+            ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino", None)}</b>')
         if self.app.toninoSerial is not None:
-            ui.serialLabel.setText(f'{_translate("Dialog", "Serial:", None)} {self.app.toninoSerial}')
+            ui.serialLabel.setText(f'{QApplication.translate("Dialog", "Serial:", None)} {self.app.toninoSerial}')
         else:
             ui.serialLabel.setText('')
         Dialog.show()
@@ -1761,13 +1826,13 @@ class ApplicationWindow(QMainWindow):
         else:
             self.debug = (self.debug + 1) % 3
             if self.debug == 1:
-                ui.nameLabel.setText(f'<b>{_translate("Dialog", "Tonino*", None)}</b>')
+                ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino*", None)}</b>')
                 _log.info('debug: Tonino*')
             elif self.debug == 2:
-                ui.nameLabel.setText(f'<b>{_translate("Dialog", "Tonino**", None)}</b>')
+                ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino**", None)}</b>')
                 _log.info('debug: Tonino**')
             else:
-                ui.nameLabel.setText(f'<b>{_translate("Dialog", "Tonino", None)}</b>')
+                ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino", None)}</b>')
                 _log.info('debug: Tonino')
 
     def toggleDebugLogging(self) -> None:
@@ -1775,10 +1840,10 @@ class ApplicationWindow(QMainWindow):
         level:int
         if self.debug_logging:
             level = logging.DEBUG
-            self.showMessage(_translate('Message','debug logging ON',None),msecs=3000)
+            self.showMessage(QApplication.translate('Message','debug logging ON',None),msecs=3000)
         else:
             level = logging.INFO
-            self.showMessage(_translate('Message','debug logging OFF',None),msecs=3000)
+            self.showMessage(QApplication.translate('Message','debug logging OFF',None),msecs=3000)
         loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict if ('.' not in name)]  # @UndefinedVariable pylint: disable=no-member
         for logger in loggers:
             logger.setLevel(level)
@@ -1852,7 +1917,7 @@ class ApplicationWindow(QMainWindow):
         res:Optional[Tuple[str,Optional[list[int]],str]] = None
         if ports and len(ports):
             for p in ports:
-                self.showMessage(_translate('Message','Connecting...',None),msecs=3000)
+                self.showMessage(QApplication.translate('Message','Connecting...',None),msecs=3000)
                 self.app.processEvents()
                 version:Optional[list[int]] = self.app.getToninoFirmwareVersion(p.device,onStartup)
                 if version:
@@ -1883,8 +1948,8 @@ class ApplicationWindow(QMainWindow):
         if firmware_version is not None and (self.debug or (self.app.versionGT(firmware_version,self.app.toninoFirmwareVersion) and firmware_version[0] == self.app.toninoFirmwareVersion[0])):
             # ask to update if the installed firmware version has the same major version as the latest firmware version included in the app and is older
             msgBox:QMessageBox = QMessageBox(self)
-            msgBox.setText(_translate('Dialog','The Tonino firmware is outdated!',None))
-            msgBox.setInformativeText(_translate('Dialog','Do you want to update to %s?',None)%self.version2str(firmware_version))
+            msgBox.setText(QApplication.translate('Dialog','The Tonino firmware is outdated!',None))
+            msgBox.setInformativeText(QApplication.translate('Dialog','Do you want to update to %s?',None)%self.version2str(firmware_version))
             msgBox.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
             msgBox.setDefaultButton(QMessageBox.StandardButton.Ok)
             ret:int = msgBox.exec()
@@ -1900,7 +1965,7 @@ class ApplicationWindow(QMainWindow):
         self.app.toninoSerial = None
         self.app.toninoFirmwareVersion = []
         self.setEnabledUI(False)
-        self.showMessage(_translate('Message','Not connected',None))
+        self.showMessage(QApplication.translate('Message','Not connected',None))
         if not onStartup:
             self.app.scales.setDeviceCoefficients(None)
         self.deviceCheckInterval = self.fastCheck
@@ -1917,14 +1982,14 @@ class ApplicationWindow(QMainWindow):
             self.app.setModel(model)
             self.setEnabledUI(True)
             if self.app.getModel() == 0:
-                self.showMessage(_translate('Message','Connected to Tonino',None) + ' ' + self.version2str(version))
+                self.showMessage(QApplication.translate('Message','Connected to Tonino',None) + ' ' + self.version2str(version))
             else:
-                self.showMessage(_translate('Message','Connected to TinyTonino',None) + ' ' + self.version2str(version))
+                self.showMessage(QApplication.translate('Message','Connected to TinyTonino',None) + ' ' + self.version2str(version))
             try:
                 self.app.scales.setDeviceCoefficients(self.app.getScale(port))
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
-                self.showMessage(_translate('Message','Scale could not be retrieved',None) + ' ' + self.version2str(version))
+                self.showMessage(QApplication.translate('Message','Scale could not be retrieved',None) + ' ' + self.version2str(version))
             self.deviceCheckInterval = self.slowCheck
             time.sleep(0.5)
             self.checkFirmwareVersion()
@@ -2012,8 +2077,8 @@ class ApplicationWindow(QMainWindow):
     def verifyDirty(self) -> bool:
         if self.app.currentFileDirty:
             msgBox = QMessageBox(self)
-            msgBox.setText(_translate('Dialog','The scale has been modified.',None))
-            msgBox.setInformativeText(_translate('Dialog','Do you want to save your changes?',None))
+            msgBox.setText(QApplication.translate('Dialog','The scale has been modified.',None))
+            msgBox.setInformativeText(QApplication.translate('Dialog','Do you want to save your changes?',None))
             msgBox.setStandardButtons(QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel)
             msgBox.setDefaultButton(QMessageBox.StandardButton.Save)
             ret:int = msgBox.exec()
@@ -2115,7 +2180,7 @@ translator:QTranslator = QTranslator(app)
 if translator.load('tonino_' + lang + '.qm',resources.getTranslationsPath()):
     app.installTranslator(translator)
 translator = QTranslator(app)
-if translator.load('qt_' + lang + '.qm',resources.getSystemTranslationsPath()):
+if translator.load('qtbase_' + lang + '.qm',resources.getSystemTranslationsPath()):
     app.installTranslator(translator)
 
 aw = ApplicationWindow(app)

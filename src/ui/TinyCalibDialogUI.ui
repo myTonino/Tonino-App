@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
+    <width>520</width>
     <height>266</height>
    </rect>
   </property>
@@ -17,7 +17,13 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Calibration</string>
+   <string notr="true">Calibration</string>
+  </property>
+  <property name="toolTip">
+   <string notr="true"/>
+  </property>
+  <property name="accessibleDescription">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -84,8 +90,11 @@
          </property>
          <item>
           <widget class="QPushButton" name="pushButtonScan">
+           <property name="accessibleDescription">
+            <string notr="true"/>
+           </property>
            <property name="text">
-            <string>Scan</string>
+            <string notr="true">Scan</string>
            </property>
           </widget>
          </item>

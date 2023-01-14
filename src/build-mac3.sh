@@ -59,6 +59,7 @@ done
 
 # translations
 # PyQt6
+./pylupdate6pro conf/tonino.pro
 
 # PyQt5
 #$PYTHON/bin/pylupdate5 conf/tonino.pro

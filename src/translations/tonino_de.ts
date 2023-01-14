@@ -1,516 +1,588 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="de_DE" sourcelanguage="">
-<context>
+<!DOCTYPE TS>
+<TS version="2.1" language="de_DE">
+  <context>
     <name>Dialog</name>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="77"/>
-        <source>Tonino</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="909" />
+      <source>Calibration</source>
+      <translation>Kalibrierung</translation>
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="80"/>
-        <source>OK</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1073" />
+      <location filename="../lib/main.py" line="988" />
+      <location filename="../lib/main.py" line="910" />
+      <source>Scan</source>
+      <translation>Messen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1413"/>
-        <source>Save As</source>
-        <translation>Speichern unter</translation>
+      <location filename="../lib/main.py" line="987" />
+      <source>Debug</source>
+      <translation />
     </message>
     <message>
-        <location filename="../lib/main.py" line="1802"/>
-        <source>Do you want to save your changes?</source>
-        <translation>Wollen Sie die Änderungen speichern?</translation>
+      <location filename="../lib/main.py" line="1070" />
+      <source>PreCalibration</source>
+      <translation />
     </message>
     <message>
-        <location filename="../lib/main.py" line="1801"/>
-        <source>The scale has been modified.</source>
-        <translation>Die Skala wurde geändert.</translation>
+      <location filename="../lib/main.py" line="1071" />
+      <source>Clear</source>
+      <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1705"/>
-        <source>Do you want to update to %s?</source>
-        <translation>Wollen Sie auf Version %s aktualisieren?</translation>
+      <location filename="../lib/main.py" line="1072" />
+      <source>Master</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/AboutDialogUI.py" line="78"/>
-        <source>Version</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1074" />
+      <source>PreCal</source>
+      <translation />
     </message>
     <message>
-        <location filename="../lib/main.py" line="1393"/>
-        <source>Open Scale</source>
-        <translation>Skala öffnen</translation>
+      <location filename="../lib/main.py" line="1075" />
+      <source>Set</source>
+      <translation />
     </message>
     <message>
-        <location filename="../lib/main.py" line="1429"/>
-        <source>Apply Scale</source>
-        <translation>Skala anwenden</translation>
+      <location filename="../lib/main.py" line="1076" />
+      <source>Reset</source>
+      <translation />
     </message>
     <message>
-        <location filename="../lib/main.py" line="1704"/>
-        <source>The Tonino firmware is outdated!</source>
-        <translation>Die Tonino Firmware ist veraltet!</translation>
+      <location filename="../lib/main.py" line="1577" />
+      <source>Open Scale</source>
+      <translation>Skala öffnen</translation>
     </message>
     <message>
-        <location filename="../uic/TinyCalibDialogUI2.py" line="81"/>
-        <source>Scan</source>
-        <translation>Messen</translation>
+      <location filename="../lib/main.py" line="1601" />
+      <source>Save As</source>
+      <translation>Speichern unter</translation>
     </message>
     <message>
-        <location filename="../uic/TinyCalibDialogUI2.py" line="80"/>
-        <source>Calibration</source>
-        <translation>Kalibrierung</translation>
+      <location filename="../lib/main.py" line="1616" />
+      <source>Apply Scale</source>
+      <translation>Skala anwenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1616"/>
-        <source>Tonino*</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1794" />
+      <source>Version</source>
+      <translation />
     </message>
     <message>
-        <location filename="../lib/main.py" line="1618"/>
-        <source>Tonino**</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1805" />
+      <source>Copyright © 2023 Marko Luther, Paul Holleis</source>
+      <translation />
     </message>
-    <message encoding="UTF-8">
-        <location filename="../uic/AboutDialogUI.py" line="79"/>
-        <source>Copyright © 2020 Marko Luther, Paul Holleis</source>
-        <translation type="unfinished"></translation>
+    <message>
+      <location filename="../lib/main.py" line="1806" />
+      <source>OK</source>
+      <translation />
     </message>
-</context>
-<context>
+    <message>
+      <location filename="../lib/main.py" line="1829" />
+      <location filename="../lib/main.py" line="1811" />
+      <source>Tonino*</source>
+      <translation />
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="1832" />
+      <location filename="../lib/main.py" line="1813" />
+      <source>Tonino**</source>
+      <translation />
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="1835" />
+      <location filename="../lib/main.py" line="1815" />
+      <source>Tonino</source>
+      <translation />
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="1817" />
+      <source>Serial:</source>
+      <translation />
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="1951" />
+      <source>The Tonino firmware is outdated!</source>
+      <translation>Die Tonino Firmware ist veraltet!</translation>
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="1952" />
+      <source>Do you want to update to %s?</source>
+      <translation>Wollen Sie auf Version %s aktualisieren?</translation>
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="2080" />
+      <source>The scale has been modified.</source>
+      <translation>Die Skala wurde geändert.</translation>
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="2081" />
+      <source>Do you want to save your changes?</source>
+      <translation>Wollen Sie die Änderungen speichern?</translation>
+    </message>
+  </context>
+  <context>
     <name>MAC_APPLICATION_MENU</name>
     <message>
-        <location filename="../lib/main.py" line="1214"/>
-        <source>Services</source>
-        <translation>Dienste</translation>
+      <location filename="../lib/main.py" line="1393" />
+      <source>Services</source>
+      <translation>Dienste</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1215"/>
-        <source>Hide %1</source>
-        <translation>%1 ausblenden</translation>
+      <location filename="../lib/main.py" line="1394" />
+      <source>Hide %1</source>
+      <translation>%1 ausblenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1216"/>
-        <source>Hide Others</source>
-        <translation>Andere ausblenden</translation>
+      <location filename="../lib/main.py" line="1395" />
+      <source>Hide Others</source>
+      <translation>Andere ausblenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1217"/>
-        <source>Show All</source>
-        <translation>Alle anzeigen</translation>
+      <location filename="../lib/main.py" line="1396" />
+      <source>Show All</source>
+      <translation>Alle anzeigen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1218"/>
-        <source>Preferences...</source>
-        <translation>Einstellungen...</translation>
+      <location filename="../lib/main.py" line="1397" />
+      <source>Preferences...</source>
+      <translation>Einstellungen...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1219"/>
-        <source>Quit %1</source>
-        <translation>%1 beenden</translation>
+      <location filename="../lib/main.py" line="1398" />
+      <source>Quit %1</source>
+      <translation>%1 beenden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1220"/>
-        <source>About %1</source>
-        <translation>Über %1</translation>
+      <location filename="../lib/main.py" line="1399" />
+      <source>About %1</source>
+      <translation>Über %1</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="333"/>
-        <source>Tonino</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1301" />
+      <location filename="../lib/main.py" line="1250" />
+      <source>Tonino</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="340"/>
-        <source>Clear</source>
-        <translation>Zurücksetzen</translation>
+      <location filename="../lib/main.py" line="1251" />
+      <source>AVG</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="338"/>
-        <source>Delete</source>
-        <translation>Löschen</translation>
+      <location filename="../lib/main.py" line="1252" />
+      <source>STDEV</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="337"/>
-        <source>Add</source>
-        <translation>Hinzufügen</translation>
+      <location filename="../lib/main.py" line="1253" />
+      <source>CONF95%</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="343"/>
-        <source>3 </source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1254" />
+      <source>Add</source>
+      <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="345"/>
-        <source>Upload</source>
-        <translation>Übertragen</translation>
+      <location filename="../lib/main.py" line="1255" />
+      <source>Delete</source>
+      <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="346"/>
-        <source>File</source>
-        <translation>Ablage</translation>
+      <location filename="../lib/main.py" line="1256" />
+      <source>Sort</source>
+      <translation>Sortieren</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="347"/>
-        <source>Open Recent</source>
-        <translation>Benutzte Skalen</translation>
+      <location filename="../lib/main.py" line="1257" />
+      <source>Clear</source>
+      <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="359"/>
-        <source>Help</source>
-        <translation>Hilfe</translation>
+      <location filename="../lib/main.py" line="1258" />
+      <source>Calibrate</source>
+      <translation>Kalibrieren</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="353"/>
-        <source>Open...</source>
-        <translation>Öffnen...</translation>
+      <location filename="../lib/main.py" line="1259" />
+      <source>0</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="354"/>
-        <source>Ctrl+O</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1260" />
+      <source>3 </source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="355"/>
-        <source>Save</source>
-        <translation>Speichern</translation>
+      <location filename="../lib/main.py" line="1261" />
+      <source>Defaults</source>
+      <translation>Werkseinstellung</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="356"/>
-        <source>Ctrl+S</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1262" />
+      <source>Upload</source>
+      <translation>Übertragen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="357"/>
-        <source>Save As...</source>
-        <translation>Speichern unter...</translation>
+      <location filename="../lib/main.py" line="1263" />
+      <source>File</source>
+      <translation>Ablage</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="358"/>
-        <source>Ctrl+Shift+S</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1264" />
+      <source>Open Recent</source>
+      <translation>Benutzte Skalen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="360"/>
-        <source>Ctrl+?</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1265" />
+      <source>Apply Recent</source>
+      <translation>Benutzte Skalen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="361"/>
-        <source>About</source>
-        <translation>Über</translation>
+      <location filename="../lib/main.py" line="1266" />
+      <source>Quit</source>
+      <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="362"/>
-        <source>About Qt</source>
-        <translation>Über Qt</translation>
+      <location filename="../lib/main.py" line="1267" />
+      <source>Ctrl+Q</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="363"/>
-        <source>Settings</source>
-        <translation>Einstellungen</translation>
+      <location filename="../lib/main.py" line="1276" />
+      <location filename="../lib/main.py" line="1268" />
+      <source>Help</source>
+      <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1127"/>
-        <source>Name</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1269" />
+      <source> Edit</source>
+      <translation> Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1128"/>
-        <source>add</source>
-        <translation>hinzufügen</translation>
+      <location filename="../lib/main.py" line="1270" />
+      <source>Open...</source>
+      <translation>Öffnen...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1129"/>
-        <source>delete</source>
-        <translation>löschen</translation>
+      <location filename="../lib/main.py" line="1271" />
+      <source>Ctrl+O</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="344"/>
-        <source>Defaults</source>
-        <translation>Werkseinstellung</translation>
+      <location filename="../lib/main.py" line="1272" />
+      <source>Save</source>
+      <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="364"/>
-        <source>Cut</source>
-        <translation>Ausschneiden</translation>
+      <location filename="../lib/main.py" line="1273" />
+      <source>Ctrl+S</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="365"/>
-        <source>Ctrl+X</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1274" />
+      <source>Save As...</source>
+      <translation>Speichern unter...</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="366"/>
-        <source>Copy</source>
-        <translation>Kopieren</translation>
+      <location filename="../lib/main.py" line="1275" />
+      <source>Ctrl+Shift+S</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="367"/>
-        <source>Ctrl+C</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1277" />
+      <source>Ctrl+?</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="368"/>
-        <source>Paste</source>
-        <translation>Einfügen</translation>
+      <location filename="../lib/main.py" line="1278" />
+      <source>About</source>
+      <translation>Über</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="369"/>
-        <source>Ctrl+V</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1279" />
+      <source>About Qt</source>
+      <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="352"/>
-        <source> Edit</source>
-        <translation> Bearbeiten</translation>
+      <location filename="../lib/main.py" line="1280" />
+      <source>Settings</source>
+      <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="348"/>
-        <source>Apply Recent</source>
-        <translation>Benutzte Skalen</translation>
+      <location filename="../lib/main.py" line="1281" />
+      <source>Cut</source>
+      <translation>Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="370"/>
-        <source>Apply...</source>
-        <translation>Anwenden...</translation>
+      <location filename="../lib/main.py" line="1282" />
+      <source>Ctrl+X</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="341"/>
-        <source>Calibrate</source>
-        <translation>Kalibrieren</translation>
+      <location filename="../lib/main.py" line="1283" />
+      <source>Copy</source>
+      <translation>Kopieren</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="339"/>
-        <source>Sort</source>
-        <translation>Sortieren</translation>
+      <location filename="../lib/main.py" line="1284" />
+      <source>Ctrl+C</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="342"/>
-        <source>0</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1285" />
+      <source>Paste</source>
+      <translation>Einfügen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="334"/>
-        <source>AVG</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1286" />
+      <source>Ctrl+V</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="335"/>
-        <source>STDEV</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1287" />
+      <source>Apply...</source>
+      <translation>Anwenden...</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="336"/>
-        <source>CONF95%</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1306" />
+      <source>Name</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="349"/>
-        <source>Quit</source>
-        <translation type="unfinished"></translation>
+      <location filename="../lib/main.py" line="1307" />
+      <source>add</source>
+      <translation>hinzufügen</translation>
     </message>
     <message>
-        <location filename="../uic/MainWindowUI.py" line="350"/>
-        <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+      <location filename="../lib/main.py" line="1308" />
+      <source>delete</source>
+      <translation>löschen</translation>
     </message>
-</context>
-<context>
+  </context>
+  <context>
     <name>Message</name>
     <message>
-        <location filename="../lib/main.py" line="675"/>
-        <source>Error</source>
-        <translation>Fehler</translation>
+      <location filename="../lib/main.py" line="270" />
+      <source>Calibration updated</source>
+      <translation>Kalibrierung aktualisiert</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="642"/>
-        <source>Scale could not be loaded</source>
-        <translation>Skala konnte nicht geöffnet werden</translation>
+      <location filename="../lib/main.py" line="719" />
+      <location filename="../lib/main.py" line="702" />
+      <location filename="../lib/main.py" line="681" />
+      <location filename="../lib/main.py" line="388" />
+      <location filename="../lib/main.py" line="369" />
+      <source>Error</source>
+      <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="661"/>
-        <source>Scale could not be saved</source>
-        <translation>Skala konnte nicht gespeichert werden</translation>
+      <location filename="../lib/main.py" line="369" />
+      <source>Loading settings failed</source>
+      <translation>Das Laden der Programmeinstellungen ist fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="465"/>
-        <source>Firmware update failed</source>
-        <translation>Firmware-Aktualisierung fehlgeschlagen</translation>
+      <location filename="../lib/main.py" line="388" />
+      <source>Saving settings failed</source>
+      <translation>Das Speichern der Programmeinstellungen ist fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="467"/>
-        <source>Firmware successfully updated</source>
-        <translation>Die Firmware wurde aktualisiert</translation>
+      <location filename="../lib/main.py" line="483" />
+      <source>Firmware update failed</source>
+      <translation>Firmware-Aktualisierung fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1680"/>
-        <source>Connecting...</source>
-        <translation>Verbinden...</translation>
+      <location filename="../lib/main.py" line="485" />
+      <source>Firmware successfully updated</source>
+      <translation>Die Firmware wurde aktualisiert</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1733"/>
-        <source>Connected to Tonino</source>
-        <translation>Verbunden mit Tonino</translation>
+      <location filename="../lib/main.py" line="681" />
+      <source>Scale could not be loaded</source>
+      <translation>Skala konnte nicht geöffnet werden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1254"/>
-        <source>Updating firmware...</source>
-        <translation>Die Firmware wird aktualisiert...</translation>
+      <location filename="../lib/main.py" line="702" />
+      <source>Scale could not be saved</source>
+      <translation>Skala konnte nicht gespeichert werden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1444"/>
-        <source>Tonino reset to defaults</source>
-        <translation>Werkseinstellung wiederhergestellt</translation>
+      <location filename="../lib/main.py" line="719" />
+      <source>Scale could not be applied</source>
+      <translation>Skala konnte nicht angewendet werden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1477"/>
-        <source>Coordinate out of range</source>
-        <translation>Koordinate außerhalb des erlaubten Bereichs</translation>
+      <location filename="../lib/main.py" line="1441" />
+      <source>Updating firmware...</source>
+      <translation>Die Firmware wird aktualisiert...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1456"/>
-        <source>Scale uploaded</source>
-        <translation>Skala übertragen</translation>
+      <location filename="../lib/main.py" line="1637" />
+      <source>Tonino reset to defaults</source>
+      <translation>Werkseinstellung wiederhergestellt</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="675"/>
-        <source>Scale could not be applied</source>
-        <translation>Skala konnte nicht angewendet werden</translation>
+      <location filename="../lib/main.py" line="1650" />
+      <source>Scale uploaded</source>
+      <translation>Skala übertragen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="364"/>
-        <source>Loading settings failed</source>
-        <translation>Das Laden der Programmeinstellungen ist fehlgeschlagen</translation>
+      <location filename="../lib/main.py" line="1672" />
+      <location filename="../lib/main.py" line="1662" />
+      <source>Coordinate out of range</source>
+      <translation>Koordinate außerhalb des erlaubten Bereichs</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="382"/>
-        <source>Saving settings failed</source>
-        <translation>Das Speichern der Programmeinstellungen ist fehlgeschlagen</translation>
+      <location filename="../lib/main.py" line="1843" />
+      <source>debug logging ON</source>
+      <translation>debug logging AN</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="268"/>
-        <source>Calibration updated</source>
-        <translation>Kalibrierung aktualisiert</translation>
+      <location filename="../lib/main.py" line="1846" />
+      <source>debug logging OFF</source>
+      <translation>debug logging AUS</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1720"/>
-        <source>Not connected</source>
-        <translation>Nicht Verbunden</translation>
+      <location filename="../lib/main.py" line="1920" />
+      <source>Connecting...</source>
+      <translation>Verbinden...</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1739"/>
-        <source>Scale could not be retrieved</source>
-        <translation>Skala konnte nicht empfangen werden</translation>
+      <location filename="../lib/main.py" line="1968" />
+      <source>Not connected</source>
+      <translation>Nicht Verbunden</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1735"/>
-        <source>Connected to TinyTonino</source>
-        <translation>Verbunden mit TinyTonino</translation>
+      <location filename="../lib/main.py" line="1985" />
+      <source>Connected to Tonino</source>
+      <translation>Verbunden mit Tonino</translation>
     </message>
-</context>
-<context>
+    <message>
+      <location filename="../lib/main.py" line="1987" />
+      <source>Connected to TinyTonino</source>
+      <translation>Verbunden mit TinyTonino</translation>
+    </message>
+    <message>
+      <location filename="../lib/main.py" line="1992" />
+      <source>Scale could not be retrieved</source>
+      <translation>Skala konnte nicht empfangen werden</translation>
+    </message>
+  </context>
+  <context>
     <name>Preferences</name>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="173"/>
-        <source>Preferences</source>
-        <translation>Einstellungen</translation>
+      <location filename="../lib/main.py" line="764" />
+      <source>Preferences</source>
+      <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="174"/>
-        <source>Tonino Display</source>
-        <translation type="obsolete">Tonino Anzeige</translation>
+      <location filename="../lib/main.py" line="765" />
+      <source>Display</source>
+      <translation>Anzeige</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="175"/>
-        <source>dim</source>
-        <translation>dunkel</translation>
+      <location filename="../lib/main.py" line="766" />
+      <source>dim</source>
+      <translation>dunkel</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="176"/>
-        <source>bright</source>
-        <translation>hell</translation>
+      <location filename="../lib/main.py" line="767" />
+      <source>bright</source>
+      <translation>hell</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="178"/>
-        <source>Target</source>
-        <translation>Ziel</translation>
+      <location filename="../lib/main.py" line="768" />
+      <source>Flip</source>
+      <translation>Drehen</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="179"/>
-        <source>Value</source>
-        <translation>Wert</translation>
+      <location filename="../lib/main.py" line="769" />
+      <source>Target</source>
+      <translation>Ziel</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="180"/>
-        <source>Range</source>
-        <translation>Spanne</translation>
+      <location filename="../lib/main.py" line="770" />
+      <source>Value</source>
+      <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="181"/>
-        <source>0</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="771" />
+      <source>Range</source>
+      <translation>Spanne</translation>
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="182"/>
-        <source>5</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="772" />
+      <source>0</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="183"/>
-        <source>Name</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="773" />
+      <source>5</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="174"/>
-        <source>Display</source>
-        <translation>Anzeige</translation>
+      <location filename="../lib/main.py" line="774" />
+      <source>Name</source>
+      <translation />
     </message>
     <message>
-        <location filename="../uic/PreferencesDialogUI.py" line="177"/>
-        <source>Flip</source>
-        <translation>Drehen</translation>
+      <location filename="../lib/main.py" line="775" />
+      <source>Agtron</source>
+      <translation />
     </message>
-</context>
-<context>
+    <message>
+      <location filename="../lib/main.py" line="776" />
+      <source>Tonino</source>
+      <translation />
+    </message>
+    <message>
+      <source>Tonino Display</source>
+      <translation type="vanished">Tonino Anzeige</translation>
+    </message>
+  </context>
+  <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../lib/main.py" line="1222"/>
-        <source>OK</source>
-        <translation></translation>
+      <location filename="../lib/main.py" line="1401" />
+      <source>OK</source>
+      <translation />
     </message>
     <message>
-        <location filename="../lib/main.py" line="1223"/>
-        <source>Save</source>
-        <translation>Speichern</translation>
+      <location filename="../lib/main.py" line="1402" />
+      <source>Save</source>
+      <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1225"/>
-        <source>Open</source>
-        <translation>Öffnen</translation>
+      <location filename="../lib/main.py" line="1403" />
+      <source>Don't Save</source>
+      <translation>Nicht speichern</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1226"/>
-        <source>Cancel</source>
-        <translation>Abbrechen</translation>
+      <location filename="../lib/main.py" line="1404" />
+      <source>Open</source>
+      <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1227"/>
-        <source>Close</source>
-        <translation>Schließen</translation>
+      <location filename="../lib/main.py" line="1405" />
+      <source>Cancel</source>
+      <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1228"/>
-        <source>Abort</source>
-        <translation>Abort</translation>
+      <location filename="../lib/main.py" line="1406" />
+      <source>Close</source>
+      <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../lib/main.py" line="1224"/>
-        <source>Don&apos;t Save</source>
-        <translation>Nicht speichern</translation>
+      <location filename="../lib/main.py" line="1407" />
+      <source>Abort</source>
+      <translation>Abort</translation>
     </message>
-</context>
+  </context>
 </TS>

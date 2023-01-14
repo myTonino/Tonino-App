@@ -17,7 +17,13 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Calibration</string>
+   <string notr="true">Debug</string>
+  </property>
+  <property name="toolTip">
+   <string notr="true"/>
+  </property>
+  <property name="accessibleDescription">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -56,8 +62,14 @@
          </property>
          <item>
           <widget class="QPushButton" name="pushButtonScan">
+           <property name="toolTip">
+            <string notr="true"/>
+           </property>
+           <property name="accessibleDescription">
+            <string notr="true"/>
+           </property>
            <property name="text">
-            <string>Scan</string>
+            <string notr="true">Scan</string>
            </property>
           </widget>
          </item>
@@ -79,6 +91,7 @@
    </item>
   </layout>
  </widget>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

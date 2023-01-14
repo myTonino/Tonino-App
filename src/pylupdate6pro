@@ -1,8 +1,9 @@
 #!/bin/sh
 
-pylupdate6 lib help \
+pylupdate6 lib uic \
       -ts translations/tonino_de.ts \
       -ts translations/tonino_es.ts \
       -ts translations/tonino_fr.ts \
       -ts translations/tonino_it.ts \
+      -ts translations/tonino_nl.ts \
       -ts translations/tonino_nl.ts

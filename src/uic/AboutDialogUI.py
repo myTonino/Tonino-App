@@ -53,9 +53,15 @@ class Ui_Dialog(object):
         self.debugLabel.setObjectName("debugLabel")
         self.verticalLayout.addWidget(self.debugLabel)
         self.versionLabel = QtWidgets.QLabel(Dialog)
+        self.versionLabel.setToolTip("")
+        self.versionLabel.setAccessibleDescription("")
+        self.versionLabel.setText("Version")
         self.versionLabel.setObjectName("versionLabel")
         self.verticalLayout.addWidget(self.versionLabel)
         self.copyrightLabel = QtWidgets.QLabel(Dialog)
+        self.copyrightLabel.setToolTip("")
+        self.copyrightLabel.setAccessibleDescription("")
+        self.copyrightLabel.setText("Copyright © 2023 Marko Luther, Paul Holleis")
         self.copyrightLabel.setObjectName("copyrightLabel")
         self.verticalLayout.addWidget(self.copyrightLabel)
         self.serialLabel = QtWidgets.QLabel(Dialog)
@@ -71,6 +77,9 @@ class Ui_Dialog(object):
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalButtonLayout.addItem(spacerItem2)
         self.pushButton = QtWidgets.QPushButton(Dialog)
+        self.pushButton.setToolTip("")
+        self.pushButton.setAccessibleDescription("")
+        self.pushButton.setText("OK")
         self.pushButton.setObjectName("pushButton")
         self.horizontalButtonLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalButtonLayout)
@@ -81,10 +90,7 @@ class Ui_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        self.versionLabel.setText(_translate("Dialog", "Version"))
-        self.copyrightLabel.setText(_translate("Dialog", "Copyright © 2023 Marko Luther, Paul Holleis"))
-        self.pushButton.setText(_translate("Dialog", "OK"))
+        pass
 
 
 if __name__ == "__main__":

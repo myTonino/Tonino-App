@@ -11,7 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Tonino</string>
+   <string notr="true">Tonino</string>
+  </property>
+  <property name="toolTip">
+   <string notr="true"/>
+  </property>
+  <property name="accessibleDescription">
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -88,6 +94,12 @@
                 <pointsize>9</pointsize>
                </font>
               </property>
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
+              </property>
               <property name="autoFillBackground">
                <bool>false</bool>
               </property>
@@ -95,7 +107,7 @@
                <enum>QFrame::NoFrame</enum>
               </property>
               <property name="text">
-               <string>AVG</string>
+               <string notr="true">AVG</string>
               </property>
              </widget>
             </item>
@@ -150,6 +162,12 @@
                 </disabled>
                </palette>
               </property>
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -187,8 +205,14 @@
                 <pointsize>9</pointsize>
                </font>
               </property>
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>STDEV</string>
+               <string notr="true">STDEV</string>
               </property>
              </widget>
             </item>
@@ -243,6 +267,12 @@
                 </disabled>
                </palette>
               </property>
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -280,8 +310,14 @@
                 <pointsize>9</pointsize>
                </font>
               </property>
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>CONF95%</string>
+               <string notr="true">CONF95%</string>
               </property>
              </widget>
             </item>
@@ -335,6 +371,12 @@
                  </colorrole>
                 </disabled>
                </palette>
+              </property>
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
               </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
@@ -393,8 +435,14 @@
             <height>16777215</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string notr="true"/>
+          </property>
+          <property name="accessibleDescription">
+           <string notr="true"/>
+          </property>
           <property name="autoFillBackground">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
@@ -474,15 +522,27 @@
       </property>
       <item>
        <widget class="QPushButton" name="pushButtonAdd">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Add</string>
+         <string notr="true">Add</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonDelete">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Delete</string>
+         <string notr="true">Delete</string>
         </property>
        </widget>
       </item>
@@ -501,15 +561,27 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonSort">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Sort</string>
+         <string notr="true">Sort</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonClear">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Clear</string>
+         <string notr="true">Clear</string>
         </property>
        </widget>
       </item>
@@ -541,8 +613,14 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonCalib">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Calibrate</string>
+         <string notr="true">Calibrate</string>
         </property>
        </widget>
       </item>
@@ -566,8 +644,14 @@
         </property>
         <item>
          <widget class="QLabel" name="label_3">
+          <property name="toolTip">
+           <string notr="true"/>
+          </property>
+          <property name="accessibleDescription">
+           <string notr="true"/>
+          </property>
           <property name="text">
-           <string>0</string>
+           <string notr="true">0</string>
           </property>
          </widget>
         </item>
@@ -590,6 +674,12 @@
             <width>150</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string notr="true"/>
+          </property>
+          <property name="accessibleDescription">
+           <string notr="true"/>
           </property>
           <property name="minimum">
            <number>0</number>
@@ -622,8 +712,14 @@
             <height>0</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string notr="true"/>
+          </property>
+          <property name="accessibleDescription">
+           <string notr="true"/>
+          </property>
           <property name="text">
-           <string>3 </string>
+           <string notr="true">3 </string>
           </property>
          </widget>
         </item>
@@ -644,15 +740,27 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonDefaults">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Defaults</string>
+         <string notr="true">Defaults</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonUpload">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Upload</string>
+         <string notr="true">Upload</string>
         </property>
        </widget>
       </item>
@@ -661,6 +769,12 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="status">
+   <property name="toolTip">
+    <string notr="true"/>
+   </property>
+   <property name="accessibleDescription">
+    <string notr="true"/>
+   </property>
    <property name="sizeGripEnabled">
     <bool>false</bool>
    </property>
@@ -679,21 +793,33 @@
      <string>File</string>
     </property>
     <widget class="QMenu" name="menuOpen_Recent">
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
+     <property name="accessibleDescription">
+      <string notr="true"/>
+     </property>
      <property name="title">
       <string>Open Recent</string>
      </property>
     </widget>
     <widget class="QMenu" name="menuOpen_ApplyRecent">
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
+     <property name="accessibleDescription">
+      <string notr="true"/>
+     </property>
      <property name="title">
       <string>Apply Recent</string>
      </property>
     </widget>
     <action name="actionQuit">
      <property name="text">
-      <string>Quit</string>
+      <string notr="true">Quit</string>
      </property>
      <property name="shortcut">
-      <string>Ctrl+Q</string>
+      <string notr="true">Ctrl+Q</string>
      </property>
     </action>
     <addaction name="actionOpen"/>
@@ -730,39 +856,42 @@
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>Open...</string>
+    <string notr="true">Open...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string notr="true">Ctrl+O</string>
    </property>
   </action>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string notr="true">Save</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string notr="true">Ctrl+S</string>
    </property>
   </action>
   <action name="actionSave_As">
    <property name="text">
-    <string>Save As...</string>
+    <string notr="true">Save As...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
+    <string notr="true">Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionHelp">
    <property name="text">
-    <string>Help</string>
+    <string notr="true">Help</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+?</string>
+    <string notr="true">Ctrl+?</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string notr="true">About</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
@@ -770,7 +899,10 @@
   </action>
   <action name="actionAboutQt">
    <property name="text">
-    <string>About Qt</string>
+    <string notr="true">About Qt</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutQtRole</enum>
@@ -778,7 +910,10 @@
   </action>
   <action name="actionSettings">
    <property name="text">
-    <string>Settings</string>
+    <string notr="true">Settings</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
@@ -786,31 +921,34 @@
   </action>
   <action name="actionCut">
    <property name="text">
-    <string>Cut</string>
+    <string notr="true">Cut</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+X</string>
+    <string notr="true">Ctrl+X</string>
    </property>
   </action>
   <action name="actionCopy">
    <property name="text">
-    <string>Copy</string>
+    <string notr="true">Copy</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+C</string>
+    <string notr="true">Ctrl+C</string>
    </property>
   </action>
   <action name="actionPaste">
    <property name="text">
-    <string>Paste</string>
+    <string notr="true">Paste</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+V</string>
+    <string notr="true">Ctrl+V</string>
    </property>
   </action>
   <action name="actionApply">
    <property name="text">
-    <string>Apply...</string>
+    <string notr="true">Apply...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
   </action>
  </widget>

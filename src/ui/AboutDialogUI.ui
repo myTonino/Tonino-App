@@ -97,15 +97,27 @@
        </item>
        <item>
         <widget class="QLabel" name="versionLabel">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Version</string>
+          <string notr="true">Version</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="copyrightLabel">
+         <property name="toolTip">
+          <string notr="true"/>
+         </property>
+         <property name="accessibleDescription">
+          <string notr="true"/>
+         </property>
          <property name="text">
-          <string>Copyright © 2023 Marko Luther, Paul Holleis</string>
+          <string notr="true">Copyright © 2023 Marko Luther, Paul Holleis</string>
          </property>
         </widget>
        </item>
@@ -152,8 +164,14 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButton">
+           <property name="toolTip">
+            <string notr="true"/>
+           </property>
+           <property name="accessibleDescription">
+            <string notr="true"/>
+           </property>
            <property name="text">
-            <string>OK</string>
+            <string notr="true">OK</string>
            </property>
           </widget>
          </item>

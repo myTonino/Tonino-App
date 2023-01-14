@@ -23,7 +23,13 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Preferences</string>
+   <string notr="true">Preferences</string>
+  </property>
+  <property name="toolTip">
+   <string notr="true"/>
+  </property>
+  <property name="accessibleDescription">
+   <string notr="true"/>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -141,8 +147,14 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>dim</string>
+         <string notr="true">dim</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -168,6 +180,12 @@
           <width>150</width>
           <height>22</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
         </property>
         <property name="minimum">
          <number>0</number>
@@ -209,15 +227,27 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>bright</string>
+         <string notr="true">bright</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="checkBoxFlip">
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleDescription">
+         <string notr="true"/>
+        </property>
         <property name="text">
-         <string>Flip</string>
+         <string notr="true">Flip</string>
         </property>
        </widget>
       </item>
@@ -299,8 +329,20 @@
               <height>22</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
+            <property name="accessibleDescription">
+             <string notr="true"/>
+            </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="suffix">
+             <string notr="true"/>
+            </property>
+            <property name="prefix">
+             <string notr="true"/>
             </property>
             <property name="maximum">
              <number>200</number>
@@ -338,8 +380,14 @@
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="QLabel" name="range_min_label">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>0</string>
+               <string notr="true">0</string>
               </property>
              </widget>
             </item>
@@ -350,6 +398,12 @@
                 <width>0</width>
                 <height>22</height>
                </size>
+              </property>
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
               </property>
               <property name="maximum">
                <number>5</number>
@@ -376,8 +430,14 @@
             </item>
             <item>
              <widget class="QLabel" name="range_max_label">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="accessibleDescription">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>5</string>
+               <string notr="true">5</string>
               </property>
              </widget>
             </item>
@@ -431,8 +491,23 @@
         </property>
         <item>
          <widget class="QLineEdit" name="lineEditName">
+          <property name="toolTip">
+           <string notr="true"/>
+          </property>
+          <property name="accessibleDescription">
+           <string notr="true"/>
+          </property>
+          <property name="inputMask">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
           <property name="maxLength">
            <number>8</number>
+          </property>
+          <property name="placeholderText">
+           <string notr="true"/>
           </property>
          </widget>
         </item>

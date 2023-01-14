@@ -12,12 +12,15 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(519, 266)
+        Dialog.resize(520, 266)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
+        Dialog.setWindowTitle("Calibration")
+        Dialog.setToolTip("")
+        Dialog.setAccessibleDescription("")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
@@ -45,6 +48,9 @@ class Ui_Dialog(object):
         self.horizontalLayout.setContentsMargins(-1, -1, 0, -1)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.pushButtonScan = QtWidgets.QPushButton(Dialog)
+        self.pushButtonScan.setToolTip("")
+        self.pushButtonScan.setAccessibleDescription("")
+        self.pushButtonScan.setText("Scan")
         self.pushButtonScan.setObjectName("pushButtonScan")
         self.horizontalLayout.addWidget(self.pushButtonScan)
         self.verticalLayout_3.addLayout(self.horizontalLayout)
@@ -75,9 +81,7 @@ class Ui_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Calibration"))
-        self.pushButtonScan.setText(_translate("Dialog", "Scan"))
+        pass
 
 
 if __name__ == "__main__":

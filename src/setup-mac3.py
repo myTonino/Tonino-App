@@ -67,15 +67,16 @@ DATA_FILES = [
 #    ("../Resources/qt_plugins/printsupport", [QTDIR + r'/plugins/printsupport/libcocoaprintersupport.dylib']), # qt5/
 #    ("../Resources/qt_plugins/styles", [QTDIR + r'/plugins/styles/libqmacstyle.dylib']), # QT 5.10 and later requires this (not available on 5.8)
 # standard
-    ('../Resources/translations', [QTDIR + r'/translations/qt_de.qm']),
-    ('../Resources/translations', [QTDIR + r'/translations/qt_es.qm']),
-    ('../Resources/translations', [QTDIR + r'/translations/qt_fr.qm']),
-    ('../Resources/translations', [QTDIR + r'/translations/qt_it.qm']),
+    ('../Resources/translations', [QTDIR + r'/translations/qtbase_de.qm']),
+    ('../Resources/translations', [QTDIR + r'/translations/qtbase_es.qm']),
+    ('../Resources/translations', [QTDIR + r'/translations/qtbase_fr.qm']),
+    ('../Resources/translations', [QTDIR + r'/translations/qtbase_it.qm']),
     ('../Resources/translations', [r'translations/tonino_de.qm']),
     ('../Resources/translations', [r'translations/tonino_es.qm']),
     ('../Resources/translations', [r'translations/tonino_fr.qm']),
     ('../Resources/translations', [r'translations/tonino_it.qm']),
     ('../Resources/translations', [r'translations/tonino_nl.qm']),
+    ('../Resources/translations', [r'translations/qtbase_nl.qm']),
 #    ("../Resources", [r"conf/qt.conf"]),
     ('../Resources', [r'includes/mac/avrdude.conf']),
     ('../Resources', [r'includes/mac/avrdude']),

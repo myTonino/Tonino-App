@@ -4,7 +4,7 @@ block_cipher = None
 
 
 TONINO_SRC = r'C:\Users\luther\Desktop\tonino-src'
-PYTHON3 = r'C:\Program Files\Python310'
+PYTHON3 = r'C:\Program Files\Python311'
 NAME = 'tonino'
 
 ##
@@ -58,10 +58,10 @@ os.system(r'copy doc\LICENSE.txt ' + TARGET)
 os.system('mkdir ' + TARGET + 'translations')
 os.system(r'copy translations\*.qm ' + TARGET + 'translations')
 for tr in [
-    'qt_de.qm',
-    'qt_es.qm',
-    'qt_fr.qm',
-    'qt_it.qm',
+    'qtbase_de.qm',
+    'qtbase_es.qm',
+    'qtbase_fr.qm',
+    'qtbase_it.qm',
     ]:
   os.system(r'copy "' + PYQT_QT_TRANSLATIONS + '\\' + tr + '" ' + TARGET + 'translations')
 
@@ -77,6 +77,7 @@ for fn in [
     r'includes\windows\libusb0.sys',
     r'includes\windows\libusb0_x64.dll',
     r'includes\windows\libusb0_x64.sys',
+    r'includes\logging.yaml',
     r'includes\*.hex',
 ]:
   os.system('copy ' + fn + ' ' + TARGET)
