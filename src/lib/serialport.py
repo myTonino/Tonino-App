@@ -1,12 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # serialport.py
 #
 # Copyright (c) 2023, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -34,14 +33,14 @@ _log: Final = logging.getLogger(__name__)
 def str2cmd(s:Union[str,bytes]) -> bytes:
     if type(s) == bytes:
         return s
-    return bytes(cast(str,s),"ascii")
-        
+    return bytes(cast(str,s),'ascii')
+
 def cmd2str(c:Union[str,bytes]) -> str:
     if type(c) == bytes:
-        return str(c,"latin1")
+        return str(c,'latin1')
     return cast(str,c)
-        
-class SerialPort(object):
+
+class SerialPort:
     def __init__(self,model:int=0) -> None:
         self.port:Optional[str] = None
         self.model:Optional[int] = None # 1: TinyTonino, 0: Classic Tonino, None otherwise
@@ -52,41 +51,41 @@ class SerialPort(object):
         self.stopbits:int = serial.STOPBITS_ONE
         self.timeout:float = 1.7
         self.SP:serial.Serial = serial.Serial()
-        self.cmdSeparatorChar:str = ":"
-        
+        self.cmdSeparatorChar:str = ':'
+
     def setModel(self,model:Optional[int]=0) -> None:
         self.model = model
         if self.model == 1:
             # Tiny Tonino
             self.baudrate = 57600
-        else: 
+        else:
             # Classic Tonino
             self.baudrate = 115200
-            
+
     def getModel(self) -> Optional[int]:
         return self.model
-        
+
     #loads configuration to ports
     def configurePort(self,port:str) -> None:
-        _log.debug("configurePort: %s",port)
+        _log.debug('configurePort: %s',port)
         self.port = port
         if platform.system() == 'Windows':
             self.SP.setDTR(False) # type: ignore
-            _log.debug("setDTR(False)")
+            _log.debug('setDTR(False)')
         self.SP.port = self.port
         self.SP.baudrate = self.baudrate
         self.SP.bytesize = self.bytesize
         self.SP.parity = self.parity
         self.SP.stopbits = self.stopbits
         self.SP.timeout = self.timeout
-        _log.debug("baudrate: %s",self.baudrate)
-        _log.debug("bytesize: %s",self.bytesize)
-        _log.debug("parity: %s",self.parity)
-        _log.debug("stopbits: %s",self.stopbits)
-        _log.debug("timeout: %s",self.timeout) 
+        _log.debug('baudrate: %s',self.baudrate)
+        _log.debug('bytesize: %s',self.bytesize)
+        _log.debug('parity: %s',self.parity)
+        _log.debug('stopbits: %s',self.stopbits)
+        _log.debug('timeout: %s',self.timeout)
 
     def openPort(self,port:str) -> None:
-        _log.debug("openPort(%s)",port)
+        _log.debug('openPort(%s)',port)
         try:
             if self.port != None and port != self.port:
                 self.closePort()
@@ -98,16 +97,16 @@ class SerialPort(object):
         except serial.SerialException as e:
             _log.exception(e)
             self.closePort()
-    
+
     def closePort(self) -> None:
-        _log.debug("closePort")
+        _log.debug('closePort')
         try:
             self.port = None
             self.SP.close()
             time.sleep(0.7) # on OS X opening a serial port too fast after closing the port get's disabled
         except Exception as e:  # pylint: disable=broad-except
             _log.exception(e)
-            
+
     def writeString(self,port:str, s:str) -> Optional[str]:
         if not self.SP.is_open:
             self.openPort(port)
@@ -115,7 +114,7 @@ class SerialPort(object):
             if self.SP.is_open:
                 self.SP.reset_input_buffer()
                 self.SP.reset_output_buffer()
-                self.SP.write(str2cmd(s + "\n"))
+                self.SP.write(str2cmd(s + '\n'))
                 self.SP.flush()
                 return cmd2str(self.SP.readline())
             else:
@@ -124,9 +123,9 @@ class SerialPort(object):
             _log.exception(e)
             self.closePort()
             return None
-        
+
     def sendCommand(self,port:str, command:str, retry:bool=True) -> Optional[str]:
-        _log.debug("sendCommand(%s,%s,%s)",port,command,retry)
+        _log.debug('sendCommand(%s,%s,%s)',port,command,retry)
         res:Optional[str] = None
         if not self.SP.is_open:
             self.openPort(port)
@@ -134,28 +133,28 @@ class SerialPort(object):
             if self.SP.is_open:
                 self.SP.reset_input_buffer() # needed to avoid to interpret leftovers from the buffer
                 self.SP.reset_output_buffer()
-                self.SP.write(str2cmd("\n" + command + "\n"))
+                self.SP.write(str2cmd('\n' + command + '\n'))
                 self.SP.flush()
                 time.sleep(0.3)
                 r:bytes = self.SP.readline()
                 response:str = cmd2str(r)
-                _log.debug("response(%s): %s",len(response),response.strip())
+                _log.debug('response(%s): %s',len(response),response.strip())
                 if not (response and len(response) > 0):
                     # we got an empty line, maybe the next line contains the response
                     r = self.SP.readline()
                     response = cmd2str(r)
-                    _log.debug("second response(%s):%s",len(response),response.strip())
+                    _log.debug('second response(%s):%s',len(response),response.strip())
                 if response and len(response) > 0:
                     # each <command> is answered by the Tonino by returning "<command>:<result>\n"
                     parts:list[str] = response.split(command + self.cmdSeparatorChar)
                     if parts and len(parts) == 2:
                         res = parts[1].strip()
                     elif parts and len(parts) == 1:
-                        res = ""
+                        res = ''
             if retry and res == None:
                 return self.sendCommand(port,command,False)
             else:
-                _log.debug("result: %s",res)
+                _log.debug('result: %s',res)
                 return res
         except Exception as e:  # pylint: disable=broad-except
             _log.exception(e)
@@ -164,9 +163,9 @@ class SerialPort(object):
                 return self.sendCommand(port,command,False)
             else:
                 return None
-            
+
     def getSerialPorts(self) -> list[serial.tools.list_ports_common.ListPortInfo]:
-        # we are looking for 
+        # we are looking for
         #   Classic Tonino: VID 403(hex)/1027(dec) and PID 6001(hex)/24577(dec)
         #      Tiny Tonino: VID 403(hex)/1027(dec) and PID 6015(hex)/24597(dec)
         vid:int = 1027 # 403 (hex)
@@ -174,7 +173,7 @@ class SerialPort(object):
 #        classicToninoProduct:str = "VID_0403\+PID_6001"
         classicToninoPID:int = 24577 # 6001 (hex)
         # TinyTonino model (1)
-#        tinyToninoProduct:str = "VID_0403\+PID_6015" 
+#        tinyToninoProduct:str = "VID_0403\+PID_6015"
         tinyToninoPID:int = 24597 # 6015 (hex)
         ports:list[serial.tools.list_ports_common.ListPortInfo]
         tinyToninos:list[serial.tools.list_ports_common.ListPortInfo]
@@ -198,12 +197,12 @@ class SerialPort(object):
             else:
                 self.setModel(0)
                 return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
-            
+
     def filter_ports_by_vid_pid(self,ports:list[serial.tools.list_ports_common.ListPortInfo],vid:Optional[int]=None,pid:Optional[int]=None) -> Iterator[serial.tools.list_ports_common.ListPortInfo]:
         """ Given a VID and PID value, scans for available port, and
     	f matches are found, returns a dict of 'VID/PID/iSerial/Port'
     	that have those values.
-    
+
         @param list ports: Ports object of valid ports
         @param int vid: The VID value for a port
         @param int pid: The PID value for a port
@@ -211,7 +210,7 @@ class SerialPort(object):
         """
         for port in ports:
             #Parse some info out of the identifier string
-            try: 
+            try:
                 if vid == None or port.vid == vid:
                     if pid == None or  port.pid == pid:
                         yield port

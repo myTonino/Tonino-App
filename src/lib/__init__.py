@@ -1,12 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # __init__.py
 #
 # Copyright (c) 2023, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify

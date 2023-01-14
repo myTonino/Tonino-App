@@ -1,12 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # create_dmg.py
 #
 # Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,6 +27,6 @@ import lib
 # current version
 VERSION = lib.__version__
 
-dist_name = r"tonino-mac-" + VERSION + r".dmg"
-os.system(r"rm " + dist_name)
+dist_name = r'tonino-mac-' + VERSION + r'.dmg'
+os.system(r'rm ' + dist_name)
 os.system(r'hdiutil create ' + dist_name + r' -volname "Tonino" -fs HFS+ -srcfolder "dist"')

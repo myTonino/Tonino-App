@@ -45,7 +45,7 @@ tonino (1.0.13-1) precise; urgency=low
   * fixes since 1.0.12:
    - adds quick firmware updater
  --  <dev@my-tonino.com>  Wed, 25 Nov 2015 19:32:14 +0200
- 
+
 tonino (1.0.12-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.11:
@@ -94,7 +94,7 @@ tonino (1.0.6-1) precise; urgency=low
    - font fix for OS X 10.9
    - update firmware version to 1.0.8
  --  <dev@my-tonino.com>  Sun, 23 Mar 2014 19:32:14 +0200
- 
+
 tonino (1.0.5-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.4:
@@ -102,7 +102,7 @@ tonino (1.0.5-1) precise; urgency=low
    - improved serial communication
    - update firmware version to 1.0.7
  --  <dev@my-tonino.com>  Mo, 10 Mar 2014 19:32:14 +0200
- 
+
 tonino (1.0.4-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.3:
@@ -110,20 +110,20 @@ tonino (1.0.4-1) precise; urgency=low
    - updated calibration process
    - update firmware version
  --  <dev@my-tonino.com>  Tue, 4 Mar 2014 19:32:14 +0200
- 
+
 tonino (1.0.3-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.2:
    - updated calibration limits
    - update firmware version
  --  <dev@my-tonino.com>  Wed, 5 Feb 2014 19:32:14 +0200
- 
+
 tonino (1.0.2-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.1:
    - improved calibration
  --  <dev@my-tonino.com>  Fri, 17 Jan 2014 19:32:14 +0200
- 
+
 tonino (1.0.1-1) precise; urgency=low
   * new upstream release
   * fixes since 1.0.0:
@@ -133,6 +133,6 @@ tonino (1.0.1-1) precise; urgency=low
 
 tonino (1.0.0-1) unstable; urgency=low
 
-  * Initial release 
+  * Initial release
 
  -- <dev@my-tonino.com>  Fri, 15 Nov 2013 09:52:51 +0100

@@ -1,12 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # scales.py
 #
 # Copyright (c) 2022, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -52,38 +51,38 @@ class Scales(QAbstractTableModel):
         self.polyfit_degree:int = 0
         # initialize random number generator
         random.seed()
-        
+
     def computeT(self, x:float) -> float:
         return float(np.poly1d(self.deviceCoefficients or self.coefficients or self.defaultCoefficients)([x])[0])
-        
+
     # accessors and selectors
-    
+
     def getVisibleCoordinates(self) -> list[list[Any]]:
         if self.coordinates:
             return [c[1:3] for c in self.coordinates]
         else:
             return []
-            
+
     def setVisibleCoordinate(self, row:int, column:int, value:int) -> None:
         self.coordinates[row][column+1] = value
-        
+
     def getCoordinates(self) -> list[list[Any]]:
         return self.coordinates
-            
+
     def getSelectedCoordinates(self) -> list[list[Any]]:
         selectedRows = self.app.aw.getSelectedRows()
         return [item for i,item in enumerate(self.coordinates) if i in selectedRows]
-        
+
     # compute the coefficients of the given scale and apply to the current coordinates
     def applyScale(self,scale) -> None:
         # extract coordinates
-        if "coordinates" in scale:
-            coordinates = scale["coordinates"]
+        if 'coordinates' in scale:
+            coordinates = scale['coordinates']
         else:
             coordinates = []
         # extract degree
-        if "degree" in scale:
-            polyfit_degree = scale["degree"]
+        if 'degree' in scale:
+            polyfit_degree = scale['degree']
         else:
             polyfit_degree = 1
         # compute polyfit
@@ -93,7 +92,7 @@ class Scales(QAbstractTableModel):
             c,_ = poly.polyfit(xv,yv,polyfit_degree,full=True)
             coefficients = list(c)
             coefficients.reverse()
-            # apply polyfit          
+            # apply polyfit
             self.beginResetModel()
             for i in range(len(self.coordinates)):
                 x = self.coordinates[i][0]
@@ -102,27 +101,27 @@ class Scales(QAbstractTableModel):
             self.endResetModel()
             # update Polyfit and trigger the redraw of the matplotlib graph canvas
             self.computePolyfit()
-        
+
     def setScale(self,scale: dict[str, Any]) -> None:
         self.beginResetModel()
-        if "coordinates" in scale:
-            self.coordinates = scale["coordinates"]
+        if 'coordinates' in scale:
+            self.coordinates = scale['coordinates']
         else:
             self.coordinates = []
-        if "degree" in scale:
-            self.polyfit_degree = scale["degree"]
+        if 'degree' in scale:
+            self.polyfit_degree = scale['degree']
             self.app.aw.ui.degreeSlider.setValue(self.app.scales.getPolyfitDegree())
         self.endResetModel()
         self.computePolyfit()
-    
+
     def getScale(self) -> dict[str, Any]:
         scale:dict[str, Any] = {}
-        scale["appVersion"] = __version__
+        scale['appVersion'] = __version__
         if self.coordinates:
-            scale["coordinates"] = self.coordinates
-        scale["degree"] = self.polyfit_degree
+            scale['coordinates'] = self.coordinates
+        scale['degree'] = self.polyfit_degree
         return scale
-    
+
     def sortCoordinates(self,col:int = 0, order:int = 0) -> None:
         selectedCoordinates = self.getSelectedCoordinates()
         self.beginResetModel()
@@ -131,14 +130,14 @@ class Scales(QAbstractTableModel):
         self.redoSelection(selectedCoordinates)
         self.app.contentModified()
         self.app.aw.ui.tableView.repaint()
-    
+
     def redoSelection(self,selectedCoordinates) -> None:
         selection:QItemSelection = QItemSelection()
         for i,c in enumerate(self.coordinates):
             if c in selectedCoordinates:
                 selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
         self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
-    
+
     # deletes the coordinates at the given positions
     def deleteCoordinates(self,positions) -> None:
         selectedCoordinates = self.getSelectedCoordinates()
@@ -148,10 +147,10 @@ class Scales(QAbstractTableModel):
         self.redoSelection(selectedCoordinates)
         self.app.contentModified()
         self.computePolyfit()
-    
+
     def autoScroll(self) -> None:
         QTimer.singleShot(0, self.app.aw.ui.tableView.scrollToBottom)
-        
+
     def addCoordinates(self,coordinates) -> None:
         selectedCoordinates = self.getSelectedCoordinates()
         self.beginResetModel()
@@ -167,8 +166,8 @@ class Scales(QAbstractTableModel):
         self.computePolyfit()
         self.autoScroll()
 
-    def addCoordinate(self, x:float, y:int, name="") -> None:
-        _log.debug("addCoordinate(%s,%s,%s)",x,y,name)
+    def addCoordinate(self, x:float, y:int, name='') -> None:
+        _log.debug('addCoordinate(%s,%s,%s)',x,y,name)
         selectedCoordinates = self.getSelectedCoordinates()
         y2:int
         if y == 0:
@@ -186,10 +185,10 @@ class Scales(QAbstractTableModel):
         self.app.contentModified()
         self.computePolyfit()
         self.autoScroll()
-            
+
     def computePolyfit(self) -> None:
         if self.polyfit_degree and len(self.coordinates) > self.polyfit_degree:
-            _log.debug("computePolyfit: %s",self.polyfit_degree)
+            _log.debug('computePolyfit: %s',self.polyfit_degree)
             xv = np.array([e[0] for e in self.coordinates])
             yv = np.array([e[1] for e in self.coordinates])
             c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True)
@@ -200,84 +199,84 @@ class Scales(QAbstractTableModel):
                 self.setRR(None)
             self.coefficients = list(c)
             self.coefficients.reverse()
-            _log.info("polyfit(%s)=%s",self.polyfit_degree,self.coefficients)
+            _log.info('polyfit(%s)=%s',self.polyfit_degree,self.coefficients)
             # compute the inverse mapping
             ci, _ = poly.polyfit(yv,xv,self.polyfit_degree,full=True)
-            _log.info("inverse_polyfit(%s)=%s",self.polyfit_degree,list(reversed(list(ci))))
+            _log.info('inverse_polyfit(%s)=%s',self.polyfit_degree,list(reversed(list(ci))))
         else:
             self.coefficients = None
             self.setRR(None)
         self.app.aw.setEnabledUploadButton()
         # trigger the redraw of the matplotlib graph canvas
         self.app.aw.ui.widget.canvas.updatePolyfit()
-            
+
     def getCoefficients(self) -> Optional[list[float]]:
         return self.coefficients
-        
+
     def setCoefficients(self,coefficients:Optional[list[float]]) -> None:
         self.coefficients = coefficients
-            
+
     def getDeviceCoefficients(self) -> Optional[list[float]]:
         return self.deviceCoefficients
-        
+
     def setDeviceCoefficients(self,coefficients:Optional[list[float]]) -> None:
         self.deviceCoefficients = coefficients
         # trigger the computation of the device curve redraw of the matplotlib graph canvas
         self.app.aw.ui.widget.canvas.updateDevicePolyfit()
-        
+
     def getDefaultCoefficents(self) -> list[float]:
         return self.defaultCoefficients
-        
+
     def getRR(self) -> Optional[float]:
         return self.RR
-        
+
     def setRR(self, RR:Optional[float]):
         self.RR = RR
-        
+
     def setPolyfitDegree(self, d:int) -> None:
         self.polyfit_degree = d
         self.computePolyfit()
-        
+
     def getPolyfitDegree(self) -> int:
         return self.polyfit_degree
-        
+
     def clearCoordinates(self) -> None:
         self.beginResetModel()
         self.coordinates = []
         self.endResetModel()
         self.computePolyfit()
         self.app.contentCleared()
-        
+
     def coordinates2text(self, coordinates:list[list[Any]]) -> str:
-        lines = ["%s %d \"%s\""%('{:.7n}'.format(c[0]),c[1],c[2]) for c in coordinates]
-        return "\n".join([str(l) for l in lines])
-        
+        lines = ["%s %d \"%s\""%(f'{c[0]:.7n}',c[1],c[2]) for c in coordinates]
+        return '\n'.join([str(l) for l in lines])
+
     def line2coordinate(self, line:str) -> list[Any]:
-        l = line.replace("\t"," ").split(" ",2)
+        l = line.replace('\t',' ').split(' ',2)
         if len(l) == 2:
-            return [locale.atof(l[0]),int(l[1]),"",random.random()]
+            return [locale.atof(l[0]),int(l[1]),'',random.random()]
         else:
             return [locale.atof(l[0]),int(l[1]),str(eval(l[2])),random.random()] # pylint: disable=eval-used
-        
+
     def text2coordinates(self, txt:str) -> list[list[Any]]:
-        return [self.line2coordinate(l) for l in txt.replace("\r","\n").split("\n")]
-        
+        return [self.line2coordinate(l) for l in txt.replace('\r','\n').split('\n')]
+
 
 #
 # QAbstractTableModel interface
-#        
-    
+#
+
     def rowCount(self, _parent:QModelIndex = QModelIndex()) -> int:
         return len(self.coordinates)
-        
+
     def columnCount(self, _parent:QModelIndex = QModelIndex()) -> int:
         return len(self.app.aw.tableheaders)
-    
+
     # updates the element at row with values c0 and c1 for the first two column values
     def updateCoordinate(self, row:int, c0:float, c1:float) -> None:
         # respect the limits
         # NOSORT
-        if False and ((row > 0 and c0 <= self.coordinates[row-1][0]) or ((row < len(self.coordinates) - 1 and c0 >= self.coordinates[row+1][0]))):
+        if False and ((row > 0 and c0 <= self.coordinates[row-1][0]) or (row < len(self.coordinates) - 1 and c0 >= self.coordinates[row+1][0])):
             return
         else:
             selectedCoordinates = self.getSelectedCoordinates()
@@ -292,7 +291,7 @@ class Scales(QAbstractTableModel):
                     selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
             self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
             self.app.contentModified()
-    
+
     def data(self, index:QModelIndex, role:int = Qt.ItemDataRole.DisplayRole) -> Any:
         if not index.isValid():
             return None
@@ -314,9 +313,9 @@ class Scales(QAbstractTableModel):
         else:
             return None
 #            return super().data(index, role)
-    
+
     def setData(self, index:QModelIndex, value:Any, _role:int=Qt.ItemDataRole.EditRole) -> bool:
-        if value and value != "" and index.isValid() and 0 <= index.row() < len(self.coordinates) and index.column() >= 0 and index.column() < 2:
+        if value and value != '' and index.isValid() and 0 <= index.row() < len(self.coordinates) and index.column() >= 0 and index.column() < 2:
             if index.column() == 0:
                 # convert to int
                 try:
@@ -337,39 +336,39 @@ class Scales(QAbstractTableModel):
                 self.app.contentModified()
             return True
         return False
-    
+
     def setHeaderData(self, _section:int, _orientation:Qt.Orientation, _value:Any, _role:int=Qt.ItemDataRole.EditRole) -> bool:
         return True
-    
+
     def headerData(self, col:int, orientation:Qt.Orientation, role:int=Qt.ItemDataRole.DisplayRole) -> Optional[QVariant]:
         if orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
             return self.app.aw.tableheaders[col]
         else:
             return None
-    
+
     def flags(self, _index:QModelIndex) -> Qt.ItemFlag:
         return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsSelectable
-    
+
     def sort(self, col:int, order:Qt.SortOrder = Qt.SortOrder.AscendingOrder) -> None:
         self.sortCoordinates(col+1,order == Qt.SortOrder.AscendingOrder)
 
 
 #
 # Table cell validator
-#   
-        
+#
+
 class ValidatedItemDelegate(QStyledItemDelegate):
 
     def __init__(self, parent:Optional[QObject]=None) -> None:
         QStyledItemDelegate.__init__(self, parent)
-    
+
     def createEditor(self, widget, option, index:QModelIndex) -> QWidget:
         if not index.isValid():
             return QWidget()
         if index.column() == 0: #only on the cells in the first column
             editor = QLineEdit(widget)
             # accept only numbers from 0-200
-            validator = QRegularExpressionValidator(QRegularExpression("2\d\d|1\d\d|\d\d|\d"), editor) # pylint: disable=anomalous-backslash-in-string
+            validator = QRegularExpressionValidator(QRegularExpression(r'2\d\d|1\d\d|\d\d|\d'), editor) # pylint: disable=anomalous-backslash-in-string
             editor.setValidator(validator)
             return editor
-        return super(ValidatedItemDelegate, self).createEditor(widget, option, index)
+        return super().createEditor(widget, option, index)

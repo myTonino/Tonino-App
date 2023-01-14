@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ find qrc -iname "*.qrc" | while read f
 do
     fullfilename=$(basename $f)
     fn=${fullfilename%.*}
-    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
+    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc
 done
 
 # translations
@@ -55,7 +55,7 @@ lrelease -qt=5 -verbose conf/tonino.pro
 # clean build
 rm -rf build dist
 
-#pyinstaller 
+#pyinstaller
 #    --noconfirm \
 #    --clean \
 #    --log-level=WARN \
@@ -133,4 +133,3 @@ chmod 755 debian/DEBIAN
 chmod 755 debian/DEBIAN/postinst
 chmod 755 debian/DEBIAN/prerm
 dpkg-deb --build debian ${NAME}_raspbian-jessie-py3.deb
-

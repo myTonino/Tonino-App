@@ -43,12 +43,12 @@ The Tonino app is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-   
+
 The Tonino app is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-   
-Copies of the GNU General Public License has been included with this 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Copies of the GNU General Public License has been included with this
 distribution in the file `LICENSE.txt`. An online version is available at
 <http://www.gnu.org/licenses/>.
 
@@ -137,11 +137,11 @@ v1.0.7 (14.8.2014)
  - Bug fixes and minor improvements
 
 v1.0.6 (23.3.2014)
- - Adds debug mode 
+ - Adds debug mode
  - Font fix for OS X 10.9
 
 v1.0.5 (10.3.2014)
- - Adds statistics LCDs+   
+ - Adds statistics LCDs+
  - Improved serial communication
 
 v1.0.4 (4.3.2014)

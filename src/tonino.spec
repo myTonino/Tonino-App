@@ -57,5 +57,3 @@ import os
 os.system(r'rm dist/Tonino.app/Contents/Info.plist')
 
 plist.write(r'dist/Tonino.app/Contents/Info.plist')
-
-

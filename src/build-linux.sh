@@ -4,8 +4,8 @@
 #
 # Copyright (c) 2016, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -85,6 +85,3 @@ rm -rf usr/share/applications/._*
 mv *.rpm ..
 mv *.deb ..
 cd ..
-
-
-

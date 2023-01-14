@@ -4,8 +4,8 @@
 #
 # Copyright (c) 202022, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ do
 # PyQt5
 #    pyuic5 -o uic/${fn}.py --from-imports ui/${fn}.ui
 # PyQt4
-#    pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui 
+#    pyuic4 -o uic/${fn}.py --from-imports ui/${fn}.ui
 done
 
 # qrc
@@ -52,7 +52,7 @@ done
 #    fullfilename=$(basename $f)
 #    fn=${fullfilename%.*}
 # PyQt5
-#    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc 
+#    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc
 ## PyQt4
 ##    pyrcc4 -py3 -o uic/${fn}_rc.py qrc/${fn}.qrc
 #done

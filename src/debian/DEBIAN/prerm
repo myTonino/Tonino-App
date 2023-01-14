@@ -20,7 +20,7 @@ xdg-mime uninstall /usr/share/tonino/tonino-toni.xml
 
 case "$1" in
    remove|upgrade)
-   if dpkg-query -W xdg-utils; 
+   if dpkg-query -W xdg-utils;
        then clear_mime;
    fi
    ;;
@@ -31,4 +31,3 @@ case "$1" in
 esac
 
 exit 0
-

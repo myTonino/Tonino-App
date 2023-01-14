@@ -1,17 +1,16 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # tonino.py
 #
 # Copyright (c) 2022, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
+#
 #
 # ABOUT
 #
 # This program allows to configure the Tonino roast color analyzer
 #
-# 
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -66,7 +65,7 @@ else: # Linux
             QApplication.addLibraryPath(os.path.dirname(site.getsitepackages()[0]) + '/PyQt6/qt_plugins')
     except Exception: # pylint: disable=broad-except
         pass
-    
+
 import numpy
 from lib import main
 

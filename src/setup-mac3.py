@@ -1,12 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # setup-mac3.py
 #
 # Copyright (c) 2022, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -47,10 +46,10 @@ LICENSE = 'GNU General Public License (GPL)'
 
 
 try:
-    QTDIR = os.environ["QT_PATH"] + r'/'
+    QTDIR = os.environ['QT_PATH'] + r'/'
 except:
     from os.path import expanduser
-    HOME = expanduser("~")
+    HOME = expanduser('~')
     QTDIR = HOME + r'/Qt5.14.2/5.14.2/clang_64/'
 
 APP = ['tonino.py']
@@ -58,47 +57,47 @@ APP = ['tonino.py']
 
 
 DATA_FILES = [
-    "doc/LICENSE.txt",
+    'doc/LICENSE.txt',
 #    ("../Resources/qt_plugins/iconengines", [QTDIR + r'/plugins/iconengines/libqsvgicon.dylib']),
 #    ("../Resources/qt_plugins/imageformats", [QTDIR + r'/plugins/imageformats/libqsvg.dylib']),
 ## Qt5 only:
 #    ("../Resources/qt_plugins/platforms", [QTDIR + r'/plugins/platforms/libqcocoa.dylib']),
-## standard QT translation needed to get the Application menu bar and 
+## standard QT translation needed to get the Application menu bar and
 ## the standard dialog elements translated
 #    ("../Resources/qt_plugins/printsupport", [QTDIR + r'/plugins/printsupport/libcocoaprintersupport.dylib']), # qt5/
 #    ("../Resources/qt_plugins/styles", [QTDIR + r'/plugins/styles/libqmacstyle.dylib']), # QT 5.10 and later requires this (not available on 5.8)
-# standard 
-    ("../Resources/translations", [QTDIR + r'/translations/qt_de.qm']),
-    ("../Resources/translations", [QTDIR + r'/translations/qt_es.qm']),
-    ("../Resources/translations", [QTDIR + r'/translations/qt_fr.qm']),
-    ("../Resources/translations", [QTDIR + r'/translations/qt_it.qm']),
-    ("../Resources/translations", [r"translations/tonino_de.qm"]),
-    ("../Resources/translations", [r"translations/tonino_es.qm"]),
-    ("../Resources/translations", [r"translations/tonino_fr.qm"]),
-    ("../Resources/translations", [r"translations/tonino_it.qm"]),
-    ("../Resources/translations", [r"translations/tonino_nl.qm"]),
+# standard
+    ('../Resources/translations', [QTDIR + r'/translations/qt_de.qm']),
+    ('../Resources/translations', [QTDIR + r'/translations/qt_es.qm']),
+    ('../Resources/translations', [QTDIR + r'/translations/qt_fr.qm']),
+    ('../Resources/translations', [QTDIR + r'/translations/qt_it.qm']),
+    ('../Resources/translations', [r'translations/tonino_de.qm']),
+    ('../Resources/translations', [r'translations/tonino_es.qm']),
+    ('../Resources/translations', [r'translations/tonino_fr.qm']),
+    ('../Resources/translations', [r'translations/tonino_it.qm']),
+    ('../Resources/translations', [r'translations/tonino_nl.qm']),
 #    ("../Resources", [r"conf/qt.conf"]),
-    ("../Resources", [r"includes/mac/avrdude.conf"]),
-    ("../Resources", [r"includes/mac/avrdude"]),
-    ('../Resources', [r"includes/logging.yaml"]),
-    ("../Resources", [r"icons/tonino_doc.icns"]),
+    ('../Resources', [r'includes/mac/avrdude.conf']),
+    ('../Resources', [r'includes/mac/avrdude']),
+    ('../Resources', [r'includes/logging.yaml']),
+    ('../Resources', [r'icons/tonino_doc.icns']),
   ]
-  
+
 # firmware file name
-qd_include = QDir(os.path.dirname(os.path.realpath(__file__)) + "/includes/")
-firmware_files = qd_include.entryInfoList(["tonino-*.hex"],QDir.Filter.Files | QDir.Filter.Readable,QDir.SortFlag.Name | QDir.SortFlag.Reversed)
-tiny_firmware_files = qd_include.entryInfoList(["tinyTonino-*.hex"],QDir.Filter.Files | QDir.Filter.Readable,QDir.SortFlag.Name | QDir.SortFlag.Reversed)
+qd_include = QDir(os.path.dirname(os.path.realpath(__file__)) + '/includes/')
+firmware_files = qd_include.entryInfoList(['tonino-*.hex'],QDir.Filter.Files | QDir.Filter.Readable,QDir.SortFlag.Name | QDir.SortFlag.Reversed)
+tiny_firmware_files = qd_include.entryInfoList(['tinyTonino-*.hex'],QDir.Filter.Files | QDir.Filter.Readable,QDir.SortFlag.Name | QDir.SortFlag.Reversed)
 if len(firmware_files) + len(tiny_firmware_files) > 0:
     if len(firmware_files) > 0:
         firmware_name = str(firmware_files[0].fileName())
-        DATA_FILES = DATA_FILES + [("../Resources", [r"includes/" + firmware_name])]
+        DATA_FILES = DATA_FILES + [('../Resources', [r'includes/' + firmware_name])]
     if len(tiny_firmware_files) > 0:
         tiny_firmware_name = str(tiny_firmware_files[0].fileName())
-        DATA_FILES = DATA_FILES + [("../Resources", [r"includes/" + tiny_firmware_name])]
+        DATA_FILES = DATA_FILES + [('../Resources', [r'includes/' + tiny_firmware_name])]
 else:
-    print("firmware *.hex missing!")
+    print('firmware *.hex missing!')
     quit()
-              
+
 with open('conf/Info.plist', 'r+b') as fp:
     plist = plistlib.load(fp)
     plist['CFBundleDisplayName'] = 'Tonino'
@@ -115,7 +114,7 @@ with open('conf/Info.plist', 'r+b') as fp:
     fp.seek(0, os.SEEK_SET)
     fp.truncate()
     plistlib.dump(plist, fp)
-  
+
 OPTIONS = {
     'strip':False,
     'argv_emulation': False,
@@ -146,7 +145,7 @@ setup(
     setup_requires=['py2app']
 )
 
-            
+
 os.system(r'cp doc/README.txt dist')
 os.system(r'cp doc/LICENSE.txt dist')
 os.system(r'mkdir dist/scales')
@@ -329,10 +328,9 @@ for root, dirs, files in os.walk('.'):
             for r,d,f in os.walk(os.path.join(root,dir)):
                 for fl in f:
 #                    print('Deleting', os.path.join(r,fl))
-                    os.remove(os.path.join(r,fl))               
+                    os.remove(os.path.join(r,fl))
 
-dist_name = r"tonino-mac-" + VERSION + r".dmg"
+dist_name = r'tonino-mac-' + VERSION + r'.dmg'
 os.chdir('..')
-os.system(r"rm " + dist_name)
+os.system(r'rm ' + dist_name)
 os.system(r'hdiutil create ' + dist_name + r' -volname "Tonino" -fs HFS+ -srcfolder "dist"')
-

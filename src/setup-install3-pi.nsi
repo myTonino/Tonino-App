@@ -3,8 +3,8 @@
 ;
 ; Copyright (c) 2016, Paul Holleis, Marko Luther
 ; All rights reserved.
-; 
-; 
+;
+;
 ; LICENSE
 ;
 ; This program is free software: you can redistribute it and/or modify
@@ -26,37 +26,37 @@ RequestExecutionLevel admin
   ; Backup the previously associated file class
   ReadRegStr $R0 HKCR ".${EXT}" ""
   WriteRegStr HKCR ".${EXT}" "${FILECLASS}_backup" "$R0"
- 
+
   WriteRegStr HKCR ".${EXT}" "" "${FILECLASS}"
- 
+
   WriteRegStr HKCR "${FILECLASS}" "" `${DESCRIPTION}`
   WriteRegStr HKCR "${FILECLASS}\DefaultIcon" "" `${ICON}`
   WriteRegStr HKCR "${FILECLASS}\shell" "" "open"
   WriteRegStr HKCR "${FILECLASS}\shell\open" "" `${COMMANDTEXT}`
   WriteRegStr HKCR "${FILECLASS}\shell\open\command" "" `${COMMAND}`
 !macroend
- 
+
 !macro APP_ASSOCIATE_EX EXT FILECLASS DESCRIPTION ICON VERB DEFAULTVERB SHELLNEW COMMANDTEXT COMMAND
   ; Backup the previously associated file class
   ReadRegStr $R0 HKCR ".${EXT}" ""
   WriteRegStr HKCR ".${EXT}" "${FILECLASS}_backup" "$R0"
- 
+
   WriteRegStr HKCR ".${EXT}" "" "${FILECLASS}"
   StrCmp "${SHELLNEW}" "0" +2
   WriteRegStr HKCR ".${EXT}\ShellNew" "NullFile" ""
- 
+
   WriteRegStr HKCR "${FILECLASS}" "" `${DESCRIPTION}`
   WriteRegStr HKCR "${FILECLASS}\DefaultIcon" "" `${ICON}`
   WriteRegStr HKCR "${FILECLASS}\shell" "" `${DEFAULTVERB}`
   WriteRegStr HKCR "${FILECLASS}\shell\${VERB}" "" `${COMMANDTEXT}`
   WriteRegStr HKCR "${FILECLASS}\shell\${VERB}\command" "" `${COMMAND}`
 !macroend
- 
+
 !macro APP_ASSOCIATE_ADDVERB FILECLASS VERB COMMANDTEXT COMMAND
   WriteRegStr HKCR "${FILECLASS}\shell\${VERB}" "" `${COMMANDTEXT}`
   WriteRegStr HKCR "${FILECLASS}\shell\${VERB}\command" "" `${COMMAND}`
 !macroend
- 
+
 !macro APP_ASSOCIATE_REMOVEVERB FILECLASS VERB
   DeleteRegKey HKCR `${FILECLASS}\shell\${VERB}`
 !macroend
@@ -65,15 +65,15 @@ RequestExecutionLevel admin
   ; Backup the previously associated file class
   ReadRegStr $R0 HKCR ".${EXT}" `${FILECLASS}_backup`
   WriteRegStr HKCR ".${EXT}" "" "$R0"
- 
+
   DeleteRegKey HKCR `${FILECLASS}`
 !macroend
- 
+
 !macro APP_ASSOCIATE_GETFILECLASS OUTPUT EXT
   ReadRegStr ${OUTPUT} HKCR ".${EXT}" ""
 !macroend
- 
- 
+
+
 ; !defines for use with SHChangeNotify
 !ifdef SHCNE_ASSOCCHANGED
 !undef SHCNE_ASSOCCHANGED
@@ -83,7 +83,7 @@ RequestExecutionLevel admin
 !undef SHCNF_FLUSH
 !endif
 !define SHCNF_FLUSH        0x1000
- 
+
 !macro UPDATEFILEASSOC
 ; Using the system.dll plugin to call the SHChangeNotify Win32 API function so we
 ; can update the shell.
@@ -150,38 +150,38 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Function .onInit
- 
+
   ReadRegStr $R0 ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
   "UninstallString"
-  StrCmp $R0 "" done  
- 
+  StrCmp $R0 "" done
+
   MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
   "${PRODUCT_NAME} is already installed. $\n$\nClick `OK` to remove the \
   previous version or `Cancel` to cancel this upgrade." /SD IDOK \
   IDOK uninst
   Abort
- 
+
 ;Run the uninstaller
 uninst:
   ClearErrors
   IfSilent mysilent nosilent
-    
+
 mysilent:
   ExecWait '$R0 /S _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
   IfErrors no_remove_uninstaller done
-  
+
 nosilent:
-  ExecWait '$R0 _?=$INSTDIR' ;Do not copy the uninstaller to a temp file 
+  ExecWait '$R0 _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
   IfErrors no_remove_uninstaller done
-    
+
 no_remove_uninstaller:
     ;You can either use Delete /REBOOTOK in the uninstaller or add some code
     ;here to remove the uninstaller. Use a registry key to check
     ;whether the user has chosen to uninstall. If you are using an uninstaller
     ;components page, make sure all sections are uninstalled.
-  
+
 done:
- 
+
 FunctionEnd
 
 Section "MainSection" SEC01
@@ -223,7 +223,7 @@ Section -Post
   ; file associations
   !insertmacro APP_ASSOCIATE "toni" "${PRODUCT_NAME}.Document" "${PRODUCT_NAME} Document" \
      "$INSTDIR\tonino_doc.ico" "Open with ${PRODUCT_NAME}" "$INSTDIR\${PRODUCT_EXE} $\"%1$\""
-     
+
 SectionEnd
 
 
@@ -235,10 +235,10 @@ FunctionEnd
 
 Function un.onInit
 
-    IfSilent +3 
-        MessageBox MB_ICONQUESTION|MB_YESNO|MB_TOPMOST "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2 
-        Abort 
-    HideWindow   
+    IfSilent +3
+        MessageBox MB_ICONQUESTION|MB_YESNO|MB_TOPMOST "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+        Abort
+    HideWindow
 
 FunctionEnd
 
@@ -298,7 +298,7 @@ Section Uninstall
 
   RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
   RMDir "$INSTDIR"
-  
+
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   DeleteRegKey HKCR ".toni"
@@ -306,8 +306,8 @@ Section Uninstall
   DeleteRegKey HKCR "${PRODUCT_NAME}.Document\shell"
   DeleteRegKey HKCR "${PRODUCT_NAME}.Document\shell\open\command"
   DeleteRegKey HKCR "${PRODUCT_NAME}.Document"
- 
+
   !insertmacro APP_UNASSOCIATE "toni" "${PRODUCT_NAME}.Document"
-  
+
   SetAutoClose true
 SectionEnd

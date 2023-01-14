@@ -5,7 +5,7 @@ Open-Source app for the [Tonino Color Meter](http://my-tonino.com)
 
 ![](src/img/app-screen.png?raw=true)
 
-This app connects to a Tonino via USB. Besides triggering the device calibration, it allows to measure sample colors and link them to reference values. The set of linked measurements defines a custom scale that is computed by linear, quadratic or cubic regression and can be uploaded to the connected Tonino. 
+This app connects to a Tonino via USB. Besides triggering the device calibration, it allows to measure sample colors and link them to reference values. The set of linked measurements defines a custom scale that is computed by linear, quadratic or cubic regression and can be uploaded to the connected Tonino.
 
 [Download](https://github.com/myTonino/Tonino-App/releases/latest) (Mac/Windows)
 

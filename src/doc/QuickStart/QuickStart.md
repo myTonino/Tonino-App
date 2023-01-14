@@ -18,7 +18,7 @@ Setup
 1. Install the USB driver
 
 	Download and install the FTDI VCP driver for your platform from [http://www.ftdichip.com/Drivers/VCP.htm](http://www.ftdichip.com/Drivers/VCP.htm)
-	
+
 	NOTE: on Ubuntu as well as Mac OS X 10.9 and newer already include the required USB driver, so no additional installation is required on those platforms
 
 2. Install the Tonino app
@@ -26,7 +26,7 @@ Setup
   **Windows**
 
 > Download and unpack [tonino-win-<version>.zip](https://github.com/myTonino/Tonino-App/releases/latest), then run the Tonino App Windows installer.
-    
+
   **Mac OS X (>=10.7.x)**
 
 > Download and open the Tonino App disk image [tonino-mac-<version>.dmg](https://github.com/myTonino/Tonino-App/releases/latest), then drag the Tonino app icon to your Applications directory.
@@ -60,7 +60,7 @@ Tonino Configuration
 
 ![](display-brightness.png?raw=true)
 
-Under the application settings (e.g. menu Tonino >> Preferences on the Mac) you can set the display brightness of the connected Tonino. 
+Under the application settings (e.g. menu Tonino >> Preferences on the Mac) you can set the display brightness of the connected Tonino.
 
 On newer models you can also set the screen orientation, a target value and range, as well as give the device a name. If a target value ```tv``` and range ```r``` other than 0 is given, the newer models present readings in the range from ```tv-r``` to ```tv+r``` in green (perfect hit), readings below that interval in blue (too light/cool) and readings above that interval in red (too dark/hot).
 

@@ -5,8 +5,8 @@
 #
 # Copyright (c) 2014, Paul Holleis, Marko Luther
 # All rights reserved.
-# 
-# 
+#
+#
 # LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ SOURCES = \
     ../uic/CalibDialogUI.py \
     ../uic/TinyCalibDialogUI.py \
     ../uic/TinyCalibDialogUI2.py
-    
+
 TRANSLATIONS = \
 	../translations/tonino_de.ts \
 	../translations/tonino_it.ts \
