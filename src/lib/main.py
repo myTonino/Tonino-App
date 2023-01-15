@@ -52,7 +52,7 @@ except Exception: # pylint: disable=broad-except
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QFileDialog, QProgressDialog, QDialogButtonBox, QInputDialog, QWidget)
 from PyQt6.QtGui import (QAction, QIcon, QKeyEvent, QClipboard, QCloseEvent)
 from PyQt6.QtCore import (QObject, QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection, QItemSelectionModel, pyqtSlot)
-
+#from PyQt6 import sip # @Reimport @UnresolvedImport @UnusedImport
 
 from lib import __version__
 import lib.serialport
@@ -471,12 +471,12 @@ class Tonino(QApplication):
         process:QProcess = QProcess(self)
         process.finished.connect(self.uploadFirmwareDone) # type: ignore
         process.start(avrdude,ags)
-        if self.aw:
+        if self.aw is not None:
             self.aw.showprogress.emit()
 
     @pyqtSlot(int,'QProcess::ExitStatus')
     def uploadFirmwareDone(self, exitCode:int, _exitStatus:QProcess.ExitStatus) -> None:
-        _log.info('uploadFirmwareDone')
+        _log.info('uploadFirmwareDone(%s)',exitCode)
         if self.aw is not None:
             if exitCode:
                 # update failed
@@ -665,7 +665,6 @@ class Tonino(QApplication):
     def loadScale(self, filename:str) -> bool:
         try:
             if self.aw is not None and self.aw.verifyDirty():
-                import io
                 infile = open(filename, encoding='utf-8')
                 obj = json.load(infile)
                 infile.close()
@@ -704,7 +703,6 @@ class Tonino(QApplication):
 
     def applyScale(self, filename:str) -> bool:
         try:
-            import io
             infile = open(filename, encoding='utf-8')
             obj = json.load(infile)
             infile.close()
@@ -1439,20 +1437,21 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot()
     def showProgress(self) -> None:
         self.progress = QProgressDialog(QApplication.translate('Message','Updating firmware...',None), '', 0, 20, self)
-#        self.progress.setCancelButton(None)
+        self.progress.setCancelButton(None) # type: ignore # here mypy expects a QPushButton, but the API allows a None to remove the Cancel button completely
         self.progress.setWindowModality(Qt.WindowModality.WindowModal)
         self.progress.setAutoClose(False)
         self.progress.show()
         # this try-except is needed as after the "if self.progress" and before the access,
         # the endProgress() might have set self.progress to None already and then the access crashes the app!
         try:
-            for i in range(20):
+            for i in range(25):
                 if self.progress:
                     self.progress.setValue(i)
                 time.sleep(1)
-            if self.progress:
+            if self.progress is not None:
                 self.progress.setRange(0,0)
                 self.progress.setValue(0)
+            if self.progress is not None:
                 self.progress.show()
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
@@ -1733,7 +1732,10 @@ class ApplicationWindow(QMainWindow):
     def updateAVG(self, values:list[float]) -> None:
         if values is not None and len(values) > 0:
             avg:float = np.sum(np.array(values),dtype=np.float64) / len(values)
-            self.ui.LCDavg.display('%.1f' % avg)
+            if 0 <= avg < 1000:
+                self.ui.LCDavg.display('%.1f' % avg)
+            else:
+                self.ui.LCDavg.display('--')
         else:
             self.ui.LCDavg.display('')
         self.ui.LCDavg.repaint()
@@ -1741,14 +1743,21 @@ class ApplicationWindow(QMainWindow):
     def updateSTDEV(self, values:list[float]) -> None:
         if values and len(values) > 1:
             stdev:np.float64 = np.std(np.array(values),dtype=np.float64)
-            self.ui.LCDstdev.display('%.1f' % stdev)
+            if 0 <= stdev < 100:
+                self.ui.LCDstdev.display('%.2f' % stdev)
+            else:
+                self.ui.LCDstdev.display('--')
         else:
             self.ui.LCDstdev.display('')
         self.ui.LCDstdev.repaint()
 
     def updateCONF(self, values:list[float]) -> None:
         if values and len(values) > 1:
-            self.ui.LCDconf.display('%.2f' % self.mean_confidence_interval(values))
+            mean_conf:float = self.mean_confidence_interval(values)
+            if 0 <= mean_conf < 100:
+                self.ui.LCDconf.display('%.2f' % mean_conf)
+            else:
+                self.ui.LCDconf.display('--')
         else:
             self.ui.LCDconf.display('')
         self.ui.LCDconf.repaint()

@@ -3,14 +3,14 @@
 block_cipher = None
 
 
-TONINO_SRC = r'C:\Users\luther\Desktop\tonino-src'
+TONINO_SRC = r'C:\Users\luther\Desktop\src'
 PYTHON3 = r'C:\Program Files\Python311'
 NAME = 'tonino'
 
 ##
 TARGET = 'dist\\' + NAME + '\\'
 PYTHON_PACKAGES = PYTHON3 + r'\Lib\site-packages'
-PYQT_QT = PYTHON_PACKAGES + r'\PyQt6\Qt'
+PYQT_QT = PYTHON_PACKAGES + r'\PyQt6\Qt6'
 PYQT_QT_BIN = PYQT_QT + r'\bin'
 PYQT_QT_TRANSLATIONS = PYQT_QT + r'\translations'
 

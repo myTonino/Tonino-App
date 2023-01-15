@@ -108,11 +108,14 @@ class Scales(QAbstractTableModel):
             self.coordinates = scale['coordinates']
         else:
             self.coordinates = []
+        prev_degree = self.polyfit_degree
         if 'degree' in scale:
             self.polyfit_degree = scale['degree']
             self.app.aw.ui.degreeSlider.setValue(self.app.scales.getPolyfitDegree())
         self.endResetModel()
-        self.computePolyfit()
+        if prev_degree == self.polyfit_degree:
+            # the degree did not change and thus the Polyfit was not recomputed yet
+            self.computePolyfit()
 
     def getScale(self) -> dict[str, Any]:
         scale:dict[str, Any] = {}
@@ -199,10 +202,10 @@ class Scales(QAbstractTableModel):
                 self.setRR(None)
             self.coefficients = list(c)
             self.coefficients.reverse()
-            _log.info('polyfit(%s)=%s',self.polyfit_degree,self.coefficients)
+            _log.debug('polyfit(%s)=%s',self.polyfit_degree,self.coefficients)
             # compute the inverse mapping
             ci, _ = poly.polyfit(yv,xv,self.polyfit_degree,full=True)
-            _log.info('inverse_polyfit(%s)=%s',self.polyfit_degree,list(reversed(list(ci))))
+            _log.debug('inverse_polyfit(%s)=%s',self.polyfit_degree,list(reversed(list(ci))))
         else:
             self.coefficients = None
             self.setRR(None)
