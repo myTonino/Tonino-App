@@ -64,6 +64,10 @@ Under the application settings (e.g. menu Tonino >> Preferences on the Mac) you 
 
 On newer models you can also set the screen orientation, a target value and range, as well as give the device a name. If a target value ```tv``` and range ```r``` other than 0 is given, the newer models present readings in the range from ```tv-r``` to ```tv+r``` in green (perfect hit), readings below that interval in blue (too light/cool) and readings above that interval in red (too dark/hot).
 
+![](default-scale.png?raw=true)
+
+The app version 1.0.24 adds the possibity to set the Agtron scale as default scale for Toninos running the firmware v2.2.0 or later. After changing the default scale, press `Defaults` and re-calibrate the Tonino. Note that firmware v2.2.0 and later do not support the display fip function anymore.
+
 
 Tonino Calibration
 -------------------
