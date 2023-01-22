@@ -95,7 +95,7 @@ RequestExecutionLevel admin
 !define pyinstallerOutputDir 'dist/tonino'
 !define PRODUCT_NAME "Tonino"
 !define PRODUCT_EXE "tonino.exe"
-!define PRODUCT_VERSION "1.0.23.0"
+!define PRODUCT_VERSION "1.0.24.0"
 !define PRODUCT_PUBLISHER "Marko Luther, Paul Holleis"
 !define PRODUCT_WEB_SITE "http://my-tonino.com"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_EXE}"
@@ -265,6 +265,7 @@ Section Uninstall
   Delete "$INSTDIR\libusb0.sys"
   Delete "$INSTDIR\libusb0_x64.dll"
   Delete "$INSTDIR\libusb0_x64.sys"
+  Delete "$INSTDIR\logging.yamml"
 
   SetShellVarContext all
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk"
@@ -284,13 +285,15 @@ Section Uninstall
   RMDir /r "$INSTDIR\qt5_plugins"
   RMDir /r "$INSTDIR\tcl"
   RMDir /r "$INSTDIR\tk"
-
+  RMDir /r "$INSTDIR\contourpy"
+  RMDir /r "$INSTDIR\scipy.libs"
   RMDir /r "$INSTDIR\altgraph-0.17.2.dist-info"
   RMDir /r "$INSTDIR\kiwisolver"
   RMDir /r "$INSTDIR\matplotlib"
   RMDir /r "$INSTDIR\numpy"
   RMDir /r "$INSTDIR\PIL"
   RMDir /r "$INSTDIR\pyinstaller-5.3.dist-info"
+  RMDir /r "$INSTDIR\pyinstaller-5.7.dist-info"
   RMDir /r "$INSTDIR\PyQt6"
   RMDir /r "$INSTDIR\scipy"
   RMDir /r "$INSTDIR\setuptools-63.2.0.dist-info"
