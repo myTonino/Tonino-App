@@ -41,6 +41,9 @@ def cmd2str(c:Union[str,bytes]) -> str:
     return cast(str,c)
 
 class SerialPort:
+
+    __slots__ = [ 'port', 'model', 'baudrate', 'bytesize', 'parity', 'stopbits', 'timeout', 'SP', 'cmdSeparatorChar' ]
+
     def __init__(self,model:int=0) -> None:
         self.port:Optional[str] = None
         self.model:Optional[int] = None # 1: TinyTonino, 0: Classic Tonino, None otherwise

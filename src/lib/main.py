@@ -51,7 +51,8 @@ except Exception: # pylint: disable=broad-except
 
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QFileDialog, QProgressDialog, QDialogButtonBox, QInputDialog, QWidget)
 from PyQt6.QtGui import (QAction, QIcon, QKeyEvent, QClipboard, QCloseEvent)
-from PyQt6.QtCore import (QObject, QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection, QItemSelectionModel, pyqtSlot)
+from PyQt6.QtCore import (QObject, QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection,
+                            QItemSelectionModel, pyqtSlot)
 #from PyQt6 import sip # @Reimport @UnresolvedImport @UnusedImport
 
 from lib import __version__
@@ -60,35 +61,13 @@ import lib.scales
 from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, TinyCalibDialogUI2, DebugDialogUI, PreCalibDialogUI
 import uic.resources as resources
 
+# platform dependent imports:
+if sys.platform.startswith('darwin'):
+    # import module to detect if macOS dark mode is active or not
+    import darkdetect # type: ignore # @UnresolvedImport # pylint: disable=import-error
 
 def u(x:Any) -> str: # convert to unicode string
     return str(x)
-
-## to make py2exe happy with scipy >0.11
-#def __dependencies_for_freezing():
-#    from scipy.sparse.csgraph import _validation  # @UnusedImport
-#    from scipy.special import _ufuncs_cxx  # @UnusedImport
-##    from scipy import integrate
-##    from scipy import interpolate
-#    # to make bbfreeze on Linux happy with scipy > 0.17.0
-#    import scipy.linalg.cython_blas  # @UnusedImport
-#    import scipy.linalg.cython_lapack  # @UnusedImport
-#    import pydoc
-#
-##    import appdirs  # @UnusedImport
-#    import packaging  # @UnusedImport
-#    import packaging.version  # @UnusedImport
-#    import packaging.specifiers  # @UnusedImport
-#    import packaging.markers  # @UnusedImport
-#    import packaging.requirements  # @UnusedImport
-#
-##    import PyQt5.QtSvg  # @UnusedImport
-##    import PyQt5.QtXml  # @UnusedImport
-##    import PyQt5.QtDBus   # @UnusedImport # needed for QT5 builds
-##    import PyQt5.QtPrintSupport   # @UnusedImport # needed for by platform plugin libqcocoa
-#
-#del __dependencies_for_freezing
-
 
 _log: Final = logging.getLogger(__name__)
 
@@ -98,9 +77,22 @@ _log: Final = logging.getLogger(__name__)
 #
 
 class Tonino(QApplication):
+
+    __slots__ = [ 'aw', 'darkmode', 'tonino_model', 'avrdude', 'avrdude_conf', 'included_firmware_name', 'included_firmware_version', 'included_tinyTonino_firmware_name',
+                    'included_tinyTonino_firmware_version', 'resetsettings', 'calib_dark_scan', 'clib_double_scan', 'std_calib_low_r', 'std_calib_low_b', 'std_calib_high_r',
+                    'std_calib_high_b', 'std_calib_target_low', 'std_calib_target_high', 'std_calib_low_r_range', 'std_calib_low_b_range', 'std_calib_high_r_range',
+                    'std_calib_high_b_range', 'tiny_low_rb', 'tiny_high_rb', 'tiny_rb_range_low', 'tiny_rb_range_high', 'workingDirectory', 'currentFile', 'currentFileDirty',
+                    'maxRecentFiles', 'recentFiles', 'pre_cal_targets', 'pre_cal_cardinality', 'pre_cal_degree', 'serialStringMaxLength', 'paramSeparatorChar',
+                    'toninoPort', 'toninoSerial', 'toninoFirmwareVersion', 'scales', 'ser', 'calib_low_r', 'calib_low_b', 'calib_high_r', 'calib_high_b' ]
+
     def __init__(self, arguments) -> None:
         super().__init__(arguments)
         self.aw:Optional[ApplicationWindow] = None
+
+        self.darkmode:bool = False # holds current darkmode state
+        if sys.platform.startswith('darwin'):
+            # remember darkmode
+            self.darkmode = darkdetect.isDark()
 
         # constants
         self.tonino_model:int = 1 # 0: Classic Tonino (@115200 baud); 1: Tiny Tonino (@57600 baud)
@@ -109,7 +101,7 @@ class Tonino(QApplication):
             self.avrdude = 'avrdude.exe'
         else:
             self.avrdude = 'avrdude'
-        self.avrdude_conf:str = 'avrdude.conf'
+        self.avrdude_conf:Final[str] = 'avrdude.conf'
         # ClassicTonino firmware (v1.x.x)
         self.included_firmware_name:Optional[str] = None
         self.included_firmware_version:Optional[list[int]] = None # a list of three int indicating major, minor and build versions of the included firmware
@@ -120,8 +112,8 @@ class Tonino(QApplication):
         self.resetsettings:int = 0 # if set, settings are not loaded on app start
 
         # calib constants
-        self.calib_dark_scan:bool = False # dark readings are already taken on scan by the TinyTonino device!
-        self.clib_double_scan:bool = False
+        self.calib_dark_scan:Final[bool] = False # dark readings are already taken on scan by the TinyTonino device!
+        self.clib_double_scan:Final[bool] = False
 
         ### NOTE: the calib target and range values are reset by the function setModel below!!!
         # setup for the Classic Tonino (this will be updated dynamically based on the model of the connected Tonino in setModel())
@@ -150,20 +142,23 @@ class Tonino(QApplication):
         self.workingDirectory:Optional[str] = None
         self.currentFile:Optional[str] = None
         self.currentFileDirty:bool = False # should be cleared on save and set on any modification
-        self.maxRecentFiles:int = 10
+        self.maxRecentFiles:Final[int] = 10
         self.recentFiles:list[str] = []
 
         self.pre_cal_targets:list[float] = [] # pre calibration targets for the classic r/b ratio formula usind in firmware v2 and v3 for recognizing the calib disk
         self.pre_cal_cardinality:int = 4 # number of required source and target readings; by default 4, can be switched to 8 (two rounds)
         self.pre_cal_degree:int = 2 # quadratic
 
-        self.serialStringMaxLength:int = 50
-        self.paramSeparatorChar:str = ' ' # separator char used by the Tonino serial protocol
+        self.serialStringMaxLength:Final[int] = 50
+        self.paramSeparatorChar:Final[str] = ' ' # separator char used by the Tonino serial protocol
         self.toninoPort:Optional[str] = None # port of the connected Tonino as string
         self.toninoSerial:Optional[str] = None # serial number of Tonino as string or None
         self.toninoFirmwareVersion:list[int] = [] # a list of three int indicating major, minor and build versions of the connected device
+
         self.scales:lib.scales.Scales = lib.scales.Scales(self,self)
+
         self.ser:lib.serialport.SerialPort = lib.serialport.SerialPort() # the serial connection object
+
         # calibration raw readings
         self.calib_low_r:Optional[float] = None
         self.calib_low_b:Optional[float] = None
@@ -214,7 +209,7 @@ class Tonino(QApplication):
     # detects if the given red and blue readings are in the range of either the low or the high calibration disk
     # and sets the corresponding variables accordingly
     def setCalibReadings(self, r:float, b:float) -> None:
-        rb:float = r/float(b)
+        rb:float = r/b
         if self.tonino_model:
             # TinyTonino
             if abs(rb-self.tiny_low_rb) < self.tiny_rb_range_low:
@@ -282,7 +277,8 @@ class Tonino(QApplication):
             filepath_dir:QDir = QDir()
             filepath_dir.setPath(f)
             filepath_elements:list[str] = filepath_dir.absolutePath().split('/')[:-1] # directories as strings (without the filename)
-            self.workingDirectory = freduce(lambda x,y: x + '/' + y, filepath_elements) + '/'
+            if filepath_elements != []:
+                self.workingDirectory = freduce(lambda x,y: x + '/' + y, filepath_elements) + '/'
 
     def retrieveIncludedFirmware(self) -> None:
         _log.debug('retrieveIncludedFirmware')
@@ -363,6 +359,12 @@ class Tonino(QApplication):
                 self.recentFiles = settings.value('recentFiles')
             if settings.contains('preCalTargets'):
                 self.pre_cal_targets = [float(f) for f in settings.value('preCalTargets',self.pre_cal_targets)]
+            if settings.contains('mainSplitter') and self.aw is not None:
+                self.aw.ui.splitter.restoreState(settings.value('mainSplitter'))
+            if self.aw is not None and settings.contains('lastLoadedFile'):
+                lastLoadedFile:Optional[str] = settings.value('lastLoadedFile')
+                if lastLoadedFile is not None:
+                    QTimer.singleShot(10, lambda:self.aw.loadFile(lastLoadedFile, silent=True)) # type: ignore
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             if self.aw:
@@ -381,6 +383,11 @@ class Tonino(QApplication):
             settings.setValue('recentFiles',self.recentFiles)
             # pre calib targets
             settings.setValue('preCalTargets',self.pre_cal_targets)
+            # splitter
+            if self.aw is not None:
+                settings.setValue('mainSplitter',self.aw.ui.splitter.saveState())
+            # remember last loaded file
+            settings.setValue('lastLoadedFile',self.currentFile)
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             self.resetsettings = 0 # ensure that the corrupt settings are not loaded on next start and thus overwritten
@@ -661,8 +668,9 @@ class Tonino(QApplication):
 #
 
     # load scale from file
+    # fails silent if silent is True
     # returns True if loading suceeded
-    def loadScale(self, filename:str) -> bool:
+    def loadScale(self, filename:str, silent:bool = False) -> bool:
         try:
             if self.aw is not None and self.aw.verifyDirty():
                 infile = open(filename, encoding='utf-8')
@@ -675,8 +683,8 @@ class Tonino(QApplication):
             else:
                 return False
         except Exception as e: # pylint: disable=broad-except
-            _log.exception(e)
-            if self.aw:
+            _log.error(e)
+            if self.aw and not silent:
                 QMessageBox.critical(self.aw,QApplication.translate('Message', 'Error',None),QApplication.translate('Message', 'Scale could not be loaded',None))
             return False
 
@@ -746,12 +754,17 @@ class Tonino(QApplication):
 
 class ToninoDialog(QDialog):
 
+    __slots__ = [ 'key' ]
+
     def keyPressEvent(self, event:QKeyEvent) -> None:
         key:int = int(event.key())
         if key == 16777216: #ESCAPE
             self.close()
 
 class PreferencesDialog(ToninoDialog):
+
+    __slots__ = [ 'app', 'displayBrightness', 'targetValue', 'targetRange', 'userName', 'displayFlip', 'defaultScale' ]
+
     def __init__(self, parent:QWidget, application:Tonino) -> None:
         super().__init__(parent)
         self.app:Tonino = application
@@ -760,6 +773,7 @@ class PreferencesDialog(ToninoDialog):
 
         # translations
         self.setWindowTitle(QApplication.translate('Preferences', 'Preferences'))
+        self.ui.groupBoxDefaultScale.setTitle(QApplication.translate('Preferences', 'Default Scale'))
         self.ui.groupBoxToninoDisplay.setTitle(QApplication.translate('Preferences', 'Display'))
         self.ui.dim_label.setText(QApplication.translate('Preferences', 'dim'))
         self.ui.bright_label.setText(QApplication.translate('Preferences', 'bright'))
@@ -836,7 +850,7 @@ class PreferencesDialog(ToninoDialog):
 
 
     @pyqtSlot(int)
-    def displaySliderChanged(self,_:int=0):
+    def displaySliderChanged(self,_:int=0) -> None:
         v:int = self.ui.displaySlider.value()
         if self.displayBrightness is not None and self.app.toninoPort and self.displayBrightness != v:
             self.app.setDisplayBrightness(self.app.toninoPort, v)
@@ -844,28 +858,26 @@ class PreferencesDialog(ToninoDialog):
     @pyqtSlot()
     def accept(self) -> None:
         if self.app.toninoPort:
-            try:
-                v:int = self.ui.targetValueSpinBox.value()
-                r:int = self.ui.rangeSlider.value()
-                if not (self.targetValue and self.targetRange and self.targetValue == v and self.targetRange == r):
-                    # target values have been changed, we write them back to the device
-                    self.app.setTarget(self.app.toninoPort,v,r)
-            except Exception as e: # pylint: disable=broad-except
-                _log.exception(e)
-            try:
-                n:str = self.ui.lineEditName.text()
-                if self.app.toninoPort and not (self.userName and self.userName == n):
-                    # user name has been changed, we write it back to the device
-                    self.app.setUserName(self.app.toninoPort, n)
-            except Exception as e: # pylint: disable=broad-except
-                _log.exception(e)
+            write_all:bool = False # if True all settings are written back to the device (needed after the reset2Defaults on chaning the default scale)
             firmwareVersion = self.app.toninoFirmwareVersion
             if firmwareVersion[0] > 2 or (firmwareVersion[0] == 2 and firmwareVersion[1] >= 2):
                 # from firmwareVersion 2.2.0 and newer the Agtron default scale setting is supported (v2.1.8 is the last released firmware without this feature)
                 try:
                     f:bool = not self.ui.radioButtonAgtron.isChecked()
                     if self.app.toninoPort and not (self.defaultScale is not None and self.defaultScale == f):
-                        self.app.setDefaultScale(self.app.toninoPort, f)
+                        msgBox = QMessageBox(self)
+                        msgBox.setText(QApplication.translate('Dialog','You need to recalibrate your Tonino after changing the default scale. Continue?',None))
+                        msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                        ret:int = msgBox.exec()
+                        if ret == QMessageBox.StandardButton.Yes and self.app.toninoPort:
+                            write_all = True
+                            self.app.setDefaultScale(self.app.toninoPort, f)
+                            self.app.reset2Defaults(self.app.toninoPort)
+                            self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
+                            if self.app.aw is not None:
+                                self.app.aw.showMessage(QApplication.translate('Message','Default scale set to {}'.format('Agtron' if f else 'Tonino'),None))
+                        else:
+                            return
                 except Exception as e: # pylint: disable=broad-except
                     _log.exception(e)
             else:
@@ -875,6 +887,22 @@ class PreferencesDialog(ToninoDialog):
                         self.app.setSetDisplayFlip(self.app.toninoPort,f)
                 except Exception as e: # pylint: disable=broad-except
                     _log.exception(e)
+
+            try:
+                v:int = self.ui.targetValueSpinBox.value()
+                r:int = self.ui.rangeSlider.value()
+                if self.app.toninoPort and (write_all or not (self.targetValue and self.targetRange and self.targetValue == v and self.targetRange == r)):
+                    # target values have been changed, we write them back to the device
+                    self.app.setTarget(self.app.toninoPort,v,r)
+            except Exception as e: # pylint: disable=broad-except
+                _log.exception(e)
+            try:
+                n:str = self.ui.lineEditName.text()
+                if self.app.toninoPort and (write_all or not (self.userName and self.userName == n)):
+                    # user name has been changed, we write it back to the device
+                    self.app.setUserName(self.app.toninoPort, n)
+            except Exception as e: # pylint: disable=broad-except
+                _log.exception(e)
         self.done(0)
 
     @pyqtSlot()
@@ -888,6 +916,9 @@ class PreferencesDialog(ToninoDialog):
         return True
 
 class CalibDialog(ToninoDialog):
+
+    __slots__ = [ 'app' ]
+
     def __init__(self, parent:QWidget, application:Tonino) -> None:
         super().__init__(parent)
         self.setModal(True)
@@ -975,6 +1006,9 @@ class CalibDialog(ToninoDialog):
 ###########################################################################################################################################
 
 class DebugDialog(ToninoDialog):
+
+    __slots__ = [ 'app' ]
+
     def __init__(self, parent:QWidget, application:Tonino) -> None:
         super().__init__(parent)
         self.setModal(True)
@@ -1058,6 +1092,9 @@ class DebugDialog(ToninoDialog):
 ###########################################################################################################################################
 
 class PreCalibDialog(ToninoDialog):
+
+    __slots__ = [ 'app', 'sources', ]
+
     def __init__(self, parent:QWidget, application:Tonino) -> None:
         super().__init__(parent)
         self.setModal(True)
@@ -1234,6 +1271,11 @@ class PreCalibDialog(ToninoDialog):
 #
 
 class ApplicationWindow(QMainWindow):
+
+    __slots__ = [ 'app', 'calibs', 'debugDialog',  'preCalibDialog', 'closing', 'toninoFileExtension', 'toninoFileFilter', 'windowTitleName',
+                    'fastCheck', 'slowCheck', 'checkDecay', 'currentFileDirtyPrefix', 'tableheaders', 'popupadd', 'popupdelete', 'debug',
+                    'debug_logging', 'progress', 'deviceCheckCounter', 'deviceCheckInterval', 'ports', 'recentFileActs', 'recentApplyActs' ]
+
     showprogress = pyqtSignal()
     endprogress = pyqtSignal()
 
@@ -1254,8 +1296,6 @@ class ApplicationWindow(QMainWindow):
         self.ui.pushButtonSort.setText(QApplication.translate('MainWindow', 'Sort'))
         self.ui.pushButtonClear.setText(QApplication.translate('MainWindow', 'Clear'))
         self.ui.pushButtonCalib.setText(QApplication.translate('MainWindow', 'Calibrate'))
-        self.ui.label_3.setText(QApplication.translate('MainWindow', '0'))
-        self.ui.label.setText(QApplication.translate('MainWindow', '3 '))
         self.ui.pushButtonDefaults.setText(QApplication.translate('MainWindow', 'Defaults'))
         self.ui.pushButtonUpload.setText(QApplication.translate('MainWindow', 'Upload'))
         self.ui.menuFile.setTitle(QApplication.translate('MainWindow', 'File'))
@@ -1292,15 +1332,16 @@ class ApplicationWindow(QMainWindow):
 
         # reinitialize QAbstractTable model to ensure the tables parent is initialized to the main window
         self.app.scales = lib.scales.Scales(self.app,self)
+        self.app.scales.modelReset.connect(self.modelReset) # type: ignore
 
         # constants
-        self.toninoFileExtension:str = 'toni'
-        self.toninoFileFilter:str = 'Text files (*.toni)'
+        self.toninoFileExtension:Final[str] = 'toni'
+        self.toninoFileFilter:Final[str] = 'Text files (*.toni)'
         self.windowTitleName = QApplication.translate('MainWindow','Tonino',None)
-        self.fastCheck:int = 1000
-        self.slowCheck:int = 2000
-        self.checkDecay:int = 5*60 # after 5min turn to slowCheck
-        self.currentFileDirtyPrefix:str = '*'
+        self.fastCheck:Final[int] = 1000
+        self.slowCheck:Final[int] = 2000
+        self.checkDecay:Final[int] = 5*60 # after 5min turn to slowCheck
+        self.currentFileDirtyPrefix:Final[str] = '*'
         self.tableheaders:list[str] = ['T',QApplication.translate('MainWindow','Name',None)]
         self.popupadd = QApplication.translate('MainWindow','add',None)
         self.popupdelete = QApplication.translate('MainWindow','delete',None)
@@ -1365,10 +1406,10 @@ class ApplicationWindow(QMainWindow):
         self.ui.pushButtonUpload.setEnabled(False)
         self.ui.pushButtonUpload.repaint()
 
-        # enable buttons
+        # disable buttons
+        self.ui.pushButtonClear.setEnabled(False)
+        self.ui.pushButtonSort.setEnabled(False)
         self.ui.pushButtonDelete.setEnabled(False)
-        self.ui.pushButtonDelete.repaint()
-
 
         # initalize dirty state
         self.app.contentCleared()
@@ -1406,7 +1447,33 @@ class ApplicationWindow(QMainWindow):
 
         self.updateLCDS()
 
+        if sys.platform.startswith('darwin'):
+            # only on macOS we install the eventFilter to catch the signal on switching between light and dark modes
+            self.installEventFilter(self)
+
         _log.info('initalized')
+
+    def eventFilter(self, obj:QObject, event:QEvent):
+        if event.type() == QEvent.Type.ApplicationPaletteChange and sys.platform.startswith('darwin') and darkdetect.isDark() != self.app.darkmode:
+            # called if the palette changed (switch between dark and light mode on macOS)
+            self.app.darkmode = darkdetect.isDark()
+            self.ui.widget.canvas.redraw(force=True)
+            self.app.scales.refresh()
+        return super().eventFilter(obj, event)
+
+    @pyqtSlot()
+    def modelReset(self):
+        len_coordinates = len(self.app.scales.getCoordinates())
+        if len_coordinates > 1:
+            self.ui.pushButtonClear.setEnabled(True)
+            self.ui.pushButtonSort.setEnabled(True)
+        elif len_coordinates >0:
+            self.ui.pushButtonClear.setEnabled(True)
+            self.ui.pushButtonSort.setEnabled(False)
+        else:
+            self.ui.pushButtonDelete.setEnabled(False)
+            self.ui.pushButtonClear.setEnabled(False)
+            self.ui.pushButtonSort.setEnabled(False)
 
     @pyqtSlot(bool)
     def actionCut(self,_:bool=False) -> None:
@@ -1552,12 +1619,13 @@ class ApplicationWindow(QMainWindow):
         else:
             self.setWindowTitle(self.windowTitleName)
 
-    def loadFile(self, filename:str) -> None:
+    # fails silent if silent is True
+    def loadFile(self, filename:str, silent:bool = False) -> None:
         if filename:
             qfile = QFileInfo(filename)
             file_suffix = qfile.suffix()
             if file_suffix == self.toninoFileExtension:
-                res = self.app.loadScale(filename)
+                res = self.app.loadScale(filename, silent)
                 if res:
                     self.setCurrentFile(filename)
 
@@ -1631,22 +1699,32 @@ class ApplicationWindow(QMainWindow):
     def defaults(self,_:bool=False) -> None:
         _log.info('defaults')
         if self.app.toninoPort:
-            self.app.reset2Defaults(self.app.toninoPort)
-            self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
-            self.showMessage(QApplication.translate('Message','Tonino reset to defaults',None))
+            msgBox = QMessageBox(self)
+            msgBox.setText(QApplication.translate('Dialog','You need to recalibrate your Tonino after reseting. Continue?',None))
+            msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            ret:int = msgBox.exec()
+            if ret == QMessageBox.StandardButton.Yes:
+                self.app.reset2Defaults(self.app.toninoPort)
+                self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
+                self.showMessage(QApplication.translate('Message','Tonino reset to defaults',None))
 
     @pyqtSlot(bool)
     def uploadScale(self,_:bool=False) -> None:
         if self.app.toninoPort and self.app.scales.getCoefficients():
             scale:Optional[list[float]] = self.app.scales.getCoefficients()
             if scale is not None:
-                scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
-                self.app.setScale(self.app.toninoPort,scale)
-                self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
-                if self.app.currentFile and self.app.getModel() == 1:
-                    scaleName:str = self.app.strippedName(self.app.currentFile).split('.')[0]
-                    self.app.setScaleName(self.app.toninoPort, scaleName)
-                self.showMessage(QApplication.translate('Message','Scale uploaded',None))
+                msgBox = QMessageBox(self)
+                msgBox.setText(QApplication.translate('Dialog','Uploading the scale will replace the existing scale on your Tonino. Continue?',None))
+                msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                ret:int = msgBox.exec()
+                if ret == QMessageBox.StandardButton.Yes:
+                    scale = [0.]*(4-len(scale)) + scale # ensure a 4 element scale
+                    self.app.setScale(self.app.toninoPort,scale)
+                    self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
+                    if self.app.currentFile and self.app.getModel() == 1:
+                        scaleName:str = self.app.strippedName(self.app.currentFile).split('.')[0]
+                        self.app.setScaleName(self.app.toninoPort, scaleName)
+                    self.showMessage(QApplication.translate('Message','Scale uploaded',None))
 
     @pyqtSlot(bool)
     def addCoordinateSlot(self,_:bool=False) -> None:
@@ -1681,9 +1759,10 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(bool)
     def clearCoordinates(self,_:bool=False) -> None:
         _log.debug('clearCoordinates')
-        self.app.scales.clearCoordinates()
-        self.ui.widget.canvas.repaint()
-        self.updateLCDS()
+        if self.verifyDirty():
+            self.app.scales.clearCoordinates()
+            self.ui.widget.canvas.repaint()
+            self.updateLCDS()
 
     @pyqtSlot(bool)
     def sortCoordinates(self,_:bool=False) -> None:
@@ -1698,7 +1777,7 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(int)
     def sliderChanged(self,_:int=0) -> None:
         self.app.scales.setPolyfitDegree(self.ui.degreeSlider.value())
-        self.ui.widget.canvas.repaint()
+        self.ui.widget.canvas.redraw(force=True)
         self.updateLCDS()
         _log.debug('sliderChanged(%s)',self.ui.degreeSlider.value())
 
@@ -2194,6 +2273,9 @@ if translator.load('qtbase_' + lang + '.qm',resources.getSystemTranslationsPath(
 
 aw = ApplicationWindow(app)
 aw.show()
+
+
+aw.ui.widget.canvas.redraw()
 
 # load Tonino scale on double click a *.toni file in the Finder while Tonino.app is not yet running
 try:

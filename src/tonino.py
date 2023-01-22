@@ -37,6 +37,7 @@ warnings.simplefilter('ignore', DeprecationWarning)
 import sys
 import os
 from platform import system
+from lib.suppress_errors import suppress_stdout_stderr
 
 # on Qt5, the platform plugin cocoa/windows is not found in the plugin directory (dispite the qt.conf file) if we do not
 # extend the libraryPath accordingly
@@ -70,8 +71,12 @@ import numpy
 from lib import main
 
 if __name__ == '__main__':
-    with numpy.errstate(invalid='ignore'):
-        main.app.exec()
+    #the following line is to trap numpy warnings
+    with numpy.errstate(invalid='ignore',divide='ignore',over='ignore',under='ignore'):
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            with suppress_stdout_stderr():
+                main.app.exec()
 
 
 # EOF
