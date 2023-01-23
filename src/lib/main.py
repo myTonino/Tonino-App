@@ -796,7 +796,10 @@ class PreferencesDialog(ToninoDialog):
         if self.app.toninoPort:
             try:
                 self.displayBrightness = self.app.getDisplayBrightness(self.app.toninoPort)
-                self.ui.displaySlider.setValue(self.displayBrightness)
+                if self.displayBrightness is not None:
+                    self.ui.displaySlider.setValue(self.displayBrightness)
+                else:
+                    self.ui.displaySlider.setEnabled(False)
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
             if self.app.getModel() == 1: # TinyTonino
@@ -808,27 +811,40 @@ class PreferencesDialog(ToninoDialog):
                         self.ui.targetValueSpinBox.setValue(self.targetValue)
                         self.ui.rangeSlider.setValue(self.targetRange)
                         self.userName = self.app.getUserName(self.app.toninoPort)
-                        self.ui.lineEditName.setText(self.userName)
+                        if self.userName is None:
+                            self.ui.lineEditName.setText('')
+                            self.ui.lineEditName.setEnabled(False)
+                        else:
+                            self.ui.lineEditName.setText(self.userName)
                         firmwareVersion:list[int] = self.app.toninoFirmwareVersion
                         if firmwareVersion[0] > 2 or (firmwareVersion[0] == 2 and firmwareVersion[1] >= 2):
                             # from firmwareVersion 2.2.0 and newer the Agtron default scale setting is supported (v2.1.8 is the last released firmware without this feature)
-                            self.defaultScale = self.app.getDefaultScale(self.app.toninoPort)
-                            self.ui.groupBoxDefaultScale.setEnabled(True)
-                            if self.defaultScale:
-                                self.ui.radioButtonAgtron.setChecked(False)
-                                self.ui.radioButtonTonino.setChecked(True)
-                            else:
-                                self.ui.radioButtonAgtron.setChecked(True)
-                                self.ui.radioButtonTonino.setChecked(False)
                             self.ui.checkBoxFlip.setEnabled(False)
+                            self.defaultScale = self.app.getDefaultScale(self.app.toninoPort)
+                            if self.defaultScale is None:
+                                self.ui.groupBoxDefaultScale.setEnabled(False)
+                            else:
+                                self.ui.groupBoxDefaultScale.setEnabled(True)
+                                if self.defaultScale:
+                                    self.ui.radioButtonAgtron.setChecked(False)
+                                    self.ui.radioButtonTonino.setChecked(True)
+                                else:
+                                    self.ui.radioButtonAgtron.setChecked(True)
+                                    self.ui.radioButtonTonino.setChecked(False)
                         else:
                             self.displayFlip = self.app.getDisplayFlip(self.app.toninoPort)
-                            if self.displayFlip:
-                                self.ui.checkBoxFlip.setChecked(True)
+                            if self.displayFlip is None:
+                                self.ui.checkBoxFlip.setEnabled(False)
                             else:
-                                self.ui.checkBoxFlip.setChecked(False)
+                                self.ui.checkBoxFlip.setEnabled(True)
+                                if self.displayFlip:
+                                    self.ui.checkBoxFlip.setChecked(True)
+                                else:
+                                    self.ui.checkBoxFlip.setChecked(False)
                             self.ui.groupBoxDefaultScale.setEnabled(False)
-                            self.ui.checkBoxFlip.setEnabled(True)
+                    else:
+                        self.ui.targetValueSpinBox.setEnabled(False)
+                        self.ui.rangeSlider.setEnabled(False)
                 except Exception as e: # pylint: disable=broad-except
                     _log.exception(e)
 
@@ -845,8 +861,9 @@ class PreferencesDialog(ToninoDialog):
         self.ui.buttonBox.accepted.connect(self.accept)
         self.ui.buttonBox.rejected.connect(self.reject)
 
-        self.ui.displaySlider.setTracking(False) # no valueChanged signals while moving
-        self.ui.displaySlider.valueChanged.connect(self.displaySliderChanged)
+        if self.displayBrightness is not None:
+            self.ui.displaySlider.setTracking(False) # no valueChanged signals while moving
+            self.ui.displaySlider.valueChanged.connect(self.displaySliderChanged)
 
 
     @pyqtSlot(int)
@@ -860,7 +877,7 @@ class PreferencesDialog(ToninoDialog):
         if self.app.toninoPort:
             write_all:bool = False # if True all settings are written back to the device (needed after the reset2Defaults on chaning the default scale)
             firmwareVersion = self.app.toninoFirmwareVersion
-            if firmwareVersion[0] > 2 or (firmwareVersion[0] == 2 and firmwareVersion[1] >= 2):
+            if self.defaultScale is not None and (firmwareVersion[0] > 2 or (firmwareVersion[0] == 2 and firmwareVersion[1] >= 2)):
                 # from firmwareVersion 2.2.0 and newer the Agtron default scale setting is supported (v2.1.8 is the last released firmware without this feature)
                 try:
                     f:bool = not self.ui.radioButtonAgtron.isChecked()
@@ -873,34 +890,39 @@ class PreferencesDialog(ToninoDialog):
                             write_all = True
                             self.app.setDefaultScale(self.app.toninoPort, f)
                             self.app.reset2Defaults(self.app.toninoPort)
+                            if self.displayBrightness is not None:
+                                self.app.setDisplayBrightness(self.app.toninoPort, self.ui.displaySlider.value())
                             self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
                             if self.app.aw is not None:
-                                self.app.aw.showMessage(QApplication.translate('Message','Default scale set to {}'.format('Agtron' if f else 'Tonino'),None))
+                                self.app.aw.showMessage(QApplication.translate('Message','Default scale set to {}'.format('Tonino' if f else 'Agtron'),None))
                         else:
                             return
                 except Exception as e: # pylint: disable=broad-except
                     _log.exception(e)
             else:
                 try:
-                    f = self.ui.checkBoxFlip.isChecked()
-                    if not (self.displayFlip is not None and self.displayFlip == f):
-                        self.app.setSetDisplayFlip(self.app.toninoPort,f)
+                    if self.displayFlip is not None:
+                        f = self.ui.checkBoxFlip.isChecked()
+                        if self.displayFlip != f:
+                            self.app.setSetDisplayFlip(self.app.toninoPort,f)
                 except Exception as e: # pylint: disable=broad-except
                     _log.exception(e)
 
             try:
-                v:int = self.ui.targetValueSpinBox.value()
-                r:int = self.ui.rangeSlider.value()
-                if self.app.toninoPort and (write_all or not (self.targetValue and self.targetRange and self.targetValue == v and self.targetRange == r)):
-                    # target values have been changed, we write them back to the device
-                    self.app.setTarget(self.app.toninoPort,v,r)
+                if self.targetValue is not None and self.targetRange is not None:
+                    v:int = self.ui.targetValueSpinBox.value()
+                    r:int = self.ui.rangeSlider.value()
+                    if self.app.toninoPort and (write_all or not (self.targetValue == v and self.targetRange == r)):
+                        # target values have been changed, we write them back to the device
+                        self.app.setTarget(self.app.toninoPort,v,r)
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
             try:
-                n:str = self.ui.lineEditName.text()
-                if self.app.toninoPort and (write_all or not (self.userName and self.userName == n)):
-                    # user name has been changed, we write it back to the device
-                    self.app.setUserName(self.app.toninoPort, n)
+                if self.userName is not None:
+                    n:str = self.ui.lineEditName.text()
+                    if self.app.toninoPort and (write_all or self.userName != n):
+                        # user name has been changed, we write it back to the device
+                        self.app.setUserName(self.app.toninoPort, n)
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
         self.done(0)
