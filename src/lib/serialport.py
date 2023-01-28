@@ -33,12 +33,12 @@ _log: Final = logging.getLogger(__name__)
 def str2cmd(s:Union[str,bytes]) -> bytes:
     if isinstance(s,bytes):
         return s
-    bytes(cast(str,s),'ascii')
+    return bytes(cast(str,s),'ascii')
 
 def cmd2str(c:Union[str,bytes]) -> str:
     if isinstance(c,bytes):
         return str(c,'latin1')
-    cast(str,c)
+    return cast(str,c)
 
 class SerialPort:
 
