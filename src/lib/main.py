@@ -1945,7 +1945,7 @@ class ApplicationWindow(QMainWindow):
 
     def toggleDebug(self, ui:AboutDialogUI.Ui_Dialog) -> None:
         modifiers:Qt.KeyboardModifier = QApplication.keyboardModifiers()
-        if modifiers == (Qt.KeyboardModifier.MetaModifier|Qt.KeyboardModifier.AltModifier):
+        if modifiers in (Qt.KeyboardModifier.MetaModifier,Qt.KeyboardModifier.AltModifier):
             self.toggleDebugLogging()
         else:
             self.debug = (self.debug + 1) % 3
