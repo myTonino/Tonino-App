@@ -59,7 +59,7 @@ from lib import __version__
 import lib.serialport
 import lib.scales
 from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, TinyCalibDialogUI2, DebugDialogUI, PreCalibDialogUI
-import uic.resources as resources
+from uic import resources
 
 # platform dependent imports:
 if sys.platform.startswith('darwin'):
@@ -409,18 +409,16 @@ class Tonino(QApplication):
     def toString(self, o:Any) -> str:
         if sys.version < '3':
             return str(o)
+        if isinstance(o, bytes):
+            return str(o, 'latin1')
         else:
-            if type(o) == bytes:
-                return str(o,'latin1')
-            else:
-                return str(o)
+            return str(o)
 
     def float2str(self, max_len:int, n:float) -> str:
         if n == int(n):
             return '%d'%n
-        else:
-            li:int = len(str(int(n))) + 1 # of characters for decimal point + preceding numbers
-            return ('{number:.{digits}f}'.format(number=n, digits=max(0,max_len-li))).rstrip('0').rstrip('.')
+        li:int = len(str(int(n))) + 1 # of characters for decimal point + preceding numbers
+        return ('{number:.{digits}f}'.format(number=n, digits=max(0,max_len-li))).rstrip('0').rstrip('.')
 
     # format given float numbers into a string of maximal total_size (plus additional space in-between)
     # trying to give as many digits as possible per number
@@ -988,11 +986,11 @@ class CalibDialog(ToninoDialog):
                     raw_readings2 = self.app.getRawReadings(self.app.toninoPort)
                 else:
                     raw_readings2 = None
-                if raw_readings1 == None:
+                if raw_readings1 is None:
                     raw_readings1 = raw_readings2
-                if raw_readings2 == None:
+                if raw_readings2 is None:
                     raw_readings2 = raw_readings1
-                if dark_readings == None:
+                if dark_readings is None:
                     dark_readings = [0., 0., 0., 0.]
                 if raw_readings1 and raw_readings2 and dark_readings and len(raw_readings1)>3 and len(raw_readings2)>3 and len(dark_readings)>3:
                     r:float = (raw_readings1[1] + raw_readings2[1]) / 2. - dark_readings[1]
@@ -1181,12 +1179,14 @@ class PreCalibDialog(ToninoDialog):
         try:
             self.ui.logOutput.appendPlainText('<Master>')
             time.sleep(0.5)
-            res1:Optional[str] = self.insertRequestResponse('RSCAN') # RSCAN
+            res1:Optional[str] = self.insertRequestResponse('RSCAN')
             if res1 is not None:
                 res = self.app.response2values(res1,float,5)
                 if res is not None and len(res) == 5:
                     self.app.pre_cal_targets.append(res[1]/res[3]) # append classic r/b ratio
-                self.ui.logOutput.appendPlainText('targets r/b: ' + str([f'{t:.3f}' for t in self.app.pre_cal_targets]))
+                out = 'targets r/b: ' + str([f'{t:.3f}' for t in self.app.pre_cal_targets])
+                self.ui.logOutput.appendPlainText(out)
+                _log.info(out)
             if len(self.app.pre_cal_targets) >= self.app.pre_cal_cardinality:
                 self.ui.pushButtonScan.setEnabled(True)
                 self.ui.pushButtonScan.repaint()
@@ -1205,12 +1205,14 @@ class PreCalibDialog(ToninoDialog):
                 self.ui.pushButtonPreCal.repaint()
             self.ui.logOutput.appendPlainText('<Scan>')
             time.sleep(0.5)
-            res1 = self.insertRequestResponse('RSCAN') # RSCAN
+            res1 = self.insertRequestResponse('RSCAN')
             if res1:
                 res = self.app.response2values(res1,float,5)
                 if res is not None and len(res) == 5:
                     self.sources.append(res[1]/res[3])
-                self.ui.logOutput.appendPlainText('sources: ' + str([f'{t:.3f}' for t in self.sources]))
+                out = 'sources: ' + str([f'{t:.3f}' for t in self.sources])
+                self.ui.logOutput.appendPlainText(out)
+                _log.info(out)
             if len(self.sources) == len(self.app.pre_cal_targets):
                 self.ui.pushButtonPreCal.setEnabled(True)
                 self.ui.pushButtonPreCal.repaint()
@@ -1225,8 +1227,19 @@ class PreCalibDialog(ToninoDialog):
         try:
             if self.app.toninoPort:
                 self.ui.logOutput.appendPlainText('<PreCal>')
-                c:list[float]
-                c,_ = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True)
+                _log.info('polyfit(%s.%s,%s)',self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree)
+                c:np.ndarray
+                stats:list[float]
+                c,stats = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True)
+                try:
+                    yv:np.ndarray = np.array(self.app.pre_cal_targets)
+                    r2:np.ndarray = 1 - stats[0] / (yv.size * yv.var())
+                    if r2.size>0:
+                        self.ui.logOutput.appendPlainText('RR: ')
+                        self.ui.logOutput.appendPlainText(r2[0])
+                        _log.info('RR: %s',r2[0])
+                except Exception as e: # pylint: disable=broad-except
+                    _log.exception(e)
                 coefficients:list[float] = list(c)
                 coefficients.reverse()
                 coefs:str = ''
@@ -1235,6 +1248,7 @@ class PreCalibDialog(ToninoDialog):
                     coefs = coefs + str(co).replace('.',',') + ' '
                 self.ui.logOutput.appendPlainText('coefficients:')
                 self.ui.logOutput.appendPlainText(coefs[:-1])
+                _log.info('coefficients: %s',coefs[:-1])
                 self.ui.logOutput.repaint()
                 self.app.ser.sendCommand(self.app.toninoPort,self.app.formatCommand('SETPRE',coefficients,fitStringMaxLength=True))
         except Exception as e: # pylint: disable=broad-except
@@ -1302,7 +1316,7 @@ class ApplicationWindow(QMainWindow):
     endprogress = pyqtSignal()
 
     def __init__(self, application:Tonino) -> None:
-        super(QMainWindow, self).__init__()
+        super().__init__()
         self.app:Tonino = application
         self.ui:MainWindowUI.Ui_MainWindow = MainWindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
@@ -1578,7 +1592,7 @@ class ApplicationWindow(QMainWindow):
             else:
                 res = QFileDialog.getSaveFileName(self,msg,path,ffilter)
             if res is not None and res != '':
-                if isinstance(res,list) or isinstance(res,tuple):
+                if isinstance(res, (list, tuple)):
                     res = res[0]
                 self.app.setWorkingDirectory(res)
                 return res
@@ -1801,7 +1815,8 @@ class ApplicationWindow(QMainWindow):
         self.app.scales.setPolyfitDegree(self.ui.degreeSlider.value())
         self.ui.widget.canvas.redraw(force=True)
         self.updateLCDS()
-        _log.debug('sliderChanged(%s)',self.ui.degreeSlider.value())
+        if _log.isEnabledFor(logging.DEBUG):
+            _log.debug('sliderChanged(%s)',self.ui.degreeSlider.value())
 
 
 #
@@ -1877,8 +1892,7 @@ class ApplicationWindow(QMainWindow):
     def getSelectedRows(self) -> list[int]:
         if self.ui.tableView and self.ui.tableView.selectionModel():
             return [s.row() for s in self.ui.tableView.selectionModel().selectedRows()]
-        else:
-            return []
+        return []
 
     # invoked by clicks on coordinates in the graph
     def toggleSelection(self, row:int) -> None:
@@ -1931,7 +1945,7 @@ class ApplicationWindow(QMainWindow):
 
     def toggleDebug(self, ui:AboutDialogUI.Ui_Dialog) -> None:
         modifiers:Qt.KeyboardModifier = QApplication.keyboardModifiers()
-        if modifiers == Qt.KeyboardModifier.MetaModifier|Qt.KeyboardModifier.AltModifier:
+        if modifiers == (Qt.KeyboardModifier.MetaModifier|Qt.KeyboardModifier.AltModifier):
             self.toggleDebugLogging()
         else:
             self.debug = (self.debug + 1) % 3
@@ -1954,7 +1968,7 @@ class ApplicationWindow(QMainWindow):
         else:
             level = logging.INFO
             self.showMessage(QApplication.translate('Message','debug logging OFF',None),msecs=3000)
-        loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict if ('.' not in name)]  # @UndefinedVariable pylint: disable=no-member
+        loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict if '.' not in name]  # @UndefinedVariable pylint: disable=no-member
         for logger in loggers:
             logger.setLevel(level)
             for handler in logger.handlers:
@@ -2031,9 +2045,10 @@ class ApplicationWindow(QMainWindow):
                 self.app.processEvents()
                 version:Optional[list[int]] = self.app.getToninoFirmwareVersion(p.device,onStartup)
                 if version:
-                    _log.debug('port: %s',p.device)
-                    _log.debug('serial: %s',p.serial_number)
-                    _log.debug('firmware version: %s',version)
+                    if _log.isEnabledFor(logging.DEBUG):
+                        _log.debug('port: %s',p.device)
+                        _log.debug('serial: %s',p.serial_number)
+                        _log.debug('firmware version: %s',version)
                     res = p.device,version,p.serial_number
                     break
         return res

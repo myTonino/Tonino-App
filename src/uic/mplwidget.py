@@ -201,10 +201,8 @@ class MplCanvas(FigureCanvas):
             c = self.toninoColors[color]
             if self.app.darkmode:
                 return c[1]
-            else:
-                return c[0]
-        else:
-            return self.makeColort(50,50,50)
+            return c[0]
+        return self.makeColort(50,50,50)
 
     def updatePolyfit(self) -> None:
         # updates the polyfit line data and calls redraw

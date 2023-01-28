@@ -63,8 +63,6 @@ done
 
 # PyQt5
 #$PYTHON/bin/pylupdate5 conf/tonino.pro
-# PyQt4
-#pylupdate4 conf/tonino.pro
 
 $QT_PATH/bin/lrelease -verbose conf/tonino.pro
 

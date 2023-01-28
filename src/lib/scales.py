@@ -225,20 +225,26 @@ class Scales(QAbstractTableModel):
     def computePolyfit(self) -> None:
         if self.polyfit_degree and len(self.coordinates) > self.polyfit_degree:
             _log.debug('computePolyfit: %s',self.polyfit_degree)
-            xv = np.array([e[0] for e in self.coordinates])
-            yv = np.array([e[1] for e in self.coordinates])
+            xv:np.ndarray = np.array([e[0] for e in self.coordinates])
+            yv:np.ndarray = np.array([e[1] for e in self.coordinates])
+            c:np.ndarray
+            stats:list[float]
             c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True)
-            r2 = 1 - stats[0] / (yv.size * yv.var())
-            if r2 and len(r2)>0:
-                self.setRR(r2[0])
-            else:
+            try:
+                r2:np.ndarray = 1 - stats[0] / (yv.size * yv.var())
+                if r2.size>0:
+                    self.setRR(r2[0])
+                else:
+                    self.setRR(None)
+            except Exception:
                 self.setRR(None)
             self.coefficients = list(c)
             self.coefficients.reverse()
-            _log.debug('polyfit(%s)=%s',self.polyfit_degree,self.coefficients)
-            # compute the inverse mapping
-            ci, _ = poly.polyfit(yv,xv,self.polyfit_degree,full=True)
-            _log.debug('inverse_polyfit(%s)=%s',self.polyfit_degree,list(reversed(list(ci))))
+            if _log.isEnabledFor(logging.DEBUG):
+                _log.debug('polyfit(%s)=%s',self.polyfit_degree,self.coefficients)
+                # compute the inverse mapping
+                ci, _ = poly.polyfit(yv,xv,self.polyfit_degree,full=True)
+                _log.debug('inverse_polyfit(%s)=%s',self.polyfit_degree,list(reversed(list(ci))))
         else:
             self.coefficients = None
             self.setRR(None)

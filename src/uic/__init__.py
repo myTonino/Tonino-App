@@ -22,11 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from uic.MainWindowUI import *
-from uic.AboutDialogUI import * # type: ignore
-from uic.icons_rc import *
-from uic.calib_high_rc import *
-from uic.calib_low_rc import *
-from uic.calib_low_tiny_rc import *
-from uic.mplwidget import *
-from uic.resources import *
+from . import MainWindowUI
+from . import AboutDialogUI # type: ignore
+from . import icons_rc
+from . import calib_high_rc
+from . import calib_low_rc
+from . import calib_low_tiny_rc
+from . import mplwidget
+from . import resources

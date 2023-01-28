@@ -132,6 +132,9 @@
          <property name="text">
           <string notr="true">Serial</string>
          </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextSelectableByMouse</set>
+         </property>
         </widget>
        </item>
        <item>

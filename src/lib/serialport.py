@@ -31,14 +31,14 @@ from typing import Optional, Final, Union, Iterator, cast
 _log: Final = logging.getLogger(__name__)
 
 def str2cmd(s:Union[str,bytes]) -> bytes:
-    if type(s) == bytes:
+    if isinstance(s,bytes):
         return s
-    return bytes(cast(str,s),'ascii')
+    bytes(cast(str,s),'ascii')
 
 def cmd2str(c:Union[str,bytes]) -> str:
-    if type(c) == bytes:
+    if isinstance(c,bytes):
         return str(c,'latin1')
-    return cast(str,c)
+    cast(str,c)
 
 class SerialPort:
 
@@ -90,7 +90,7 @@ class SerialPort:
     def openPort(self,port:str) -> None:
         _log.debug('openPort(%s)',port)
         try:
-            if self.port != None and port != self.port:
+            if self.port is not None and port != self.port:
                 self.closePort()
             if not self.SP.is_open:
                 # open port if not yet open
@@ -120,8 +120,7 @@ class SerialPort:
                 self.SP.write(str2cmd(s + '\n'))
                 self.SP.flush()
                 return cmd2str(self.SP.readline())
-            else:
-                return None
+            return None
         except Exception as e:  # pylint: disable=broad-except
             _log.exception(e)
             self.closePort()
@@ -141,12 +140,14 @@ class SerialPort:
                 time.sleep(0.3)
                 r:bytes = self.SP.readline()
                 response:str = cmd2str(r)
-                _log.debug('response(%s): %s',len(response),response.strip())
+                if _log.isEnabledFor(logging.DEBUG):
+                    _log.debug('response(%s): %s',len(response),response.strip())
                 if not (response and len(response) > 0):
                     # we got an empty line, maybe the next line contains the response
                     r = self.SP.readline()
                     response = cmd2str(r)
-                    _log.debug('second response(%s):%s',len(response),response.strip())
+                    if _log.isEnabledFor(logging.DEBUG):
+                        _log.debug('second response(%s):%s',len(response),response.strip())
                 if response and len(response) > 0:
                     # each <command> is answered by the Tonino by returning "<command>:<result>\n"
                     parts:list[str] = response.split(command + self.cmdSeparatorChar)
@@ -156,16 +157,14 @@ class SerialPort:
                         res = ''
             if retry and res == None:
                 return self.sendCommand(port,command,False)
-            else:
-                _log.debug('result: %s',res)
-                return res
+            _log.debug('result: %s',res)
+            return res
         except Exception as e:  # pylint: disable=broad-except
             _log.exception(e)
             self.closePort()
             if retry:
                 return self.sendCommand(port,command,False)
-            else:
-                return None
+            return None
 
     def getSerialPorts(self) -> list[serial.tools.list_ports_common.ListPortInfo]:
         # we are looking for
@@ -187,19 +186,16 @@ class SerialPort:
             if tinyToninos and len(tinyToninos) > 0:
                 self.setModel(1)
                 return tinyToninos
-            else:
-                self.setModel(0)
-                return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
-        else:
-            # pyserial >2.7
-            ports = list(serial.tools.list_ports.comports())
-            tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
-            if tinyToninos and len(tinyToninos) > 0:
-                self.setModel(1)
-                return tinyToninos
-            else:
-                self.setModel(0)
-                return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
+            self.setModel(0)
+            return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
+        # pyserial >2.7
+        ports = list(serial.tools.list_ports.comports())
+        tinyToninos = list(self.filter_ports_by_vid_pid(ports,vid,tinyToninoPID))
+        if tinyToninos and len(tinyToninos) > 0:
+            self.setModel(1)
+            return tinyToninos
+        self.setModel(0)
+        return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
 
     def filter_ports_by_vid_pid(self,ports:list[serial.tools.list_ports_common.ListPortInfo],vid:Optional[int]=None,pid:Optional[int]=None) -> Iterator[serial.tools.list_ports_common.ListPortInfo]:
         """ Given a VID and PID value, scans for available port, and
