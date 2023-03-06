@@ -21,12 +21,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from distutils import sysconfig
-their_parse_makefile = sysconfig.parse_makefile
-def my_parse_makefile(filename, g):
-    their_parse_makefile(filename, g)
-    g['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
-sysconfig.parse_makefile = my_parse_makefile
+#from distutils import sysconfig
+#their_parse_makefile = sysconfig.parse_makefile
+#def my_parse_makefile(filename, g):
+#    their_parse_makefile(filename, g)
+#    g['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
+#sysconfig.parse_makefile = my_parse_makefile
 
 import sys, os
 import subprocess

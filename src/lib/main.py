@@ -2037,8 +2037,8 @@ class ApplicationWindow(QMainWindow):
     # checks all ports for connected Toninos
     # returns (port,version,serial) of the first successful connect or None
     # onStartup should be true if this is the first check after app start
-    def checkPorts(self, ports:list[serial.tools.list_ports_common.ListPortInfo], onStartup:bool=False) -> Optional[Tuple[str,Optional[list[int]],str]]:
-        res:Optional[Tuple[str,Optional[list[int]],str]] = None
+    def checkPorts(self, ports:list[serial.tools.list_ports_common.ListPortInfo], onStartup:bool=False) -> Optional[Tuple[str,Optional[list[int]],Optional[str]]]:
+        res:Optional[Tuple[str,Optional[list[int]],Optional[str]]] = None
         if ports and len(ports):
             for p in ports:
                 self.showMessage(QApplication.translate('Message','Connecting...',None),msecs=3000)
@@ -2171,9 +2171,9 @@ class ApplicationWindow(QMainWindow):
         if res:
             port:str
             version:Optional[list[int]]
-            serialnr:str
+            serialnr:Optional[str]
             port, version, serialnr = res
-            if version is not None:
+            if version is not None and serialnr is not None:
                 self.connectTonino(port,version,serialnr)
 
         # increment decay counter

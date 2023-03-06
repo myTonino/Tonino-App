@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>857</width>
-    <height>455</height>
+    <width>808</width>
+    <height>550</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>550</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string notr="true">Tonino</string>
@@ -452,7 +458,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>600</width>
+         <width>500</width>
          <height>300</height>
         </size>
        </property>
@@ -740,7 +746,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>971</width>
+     <width>808</width>
      <height>24</height>
     </rect>
    </property>

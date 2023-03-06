@@ -38,9 +38,12 @@ from matplotlib import rcParams, patheffects, patches # type: ignore
 from matplotlib.lines import Line2D # type: ignore
 import numpy as np
 import warnings
+import os
 
 import logging
 from typing import Final, Optional, Any, Tuple
+
+from uic import resources
 
 _log: Final = logging.getLogger(__name__)
 
@@ -141,8 +144,18 @@ class MplCanvas(FigureCanvas):
 
         # xkcd design settings
         self.RRfontSize:float = 16.0
-        rcParams['font.family'] = ['Comic Sans MS']
-        rcParams['font.size'] = 14.0
+        
+        resourcePath:str = resources.getResourcePath()
+        dijkstra_font_path:str = resourcePath + 'dijkstra.ttf'
+        if os.path.exists(dijkstra_font_path):
+            mpl.font_manager.fontManager.addfont(dijkstra_font_path)
+            rcParams['axes.unicode_minus'] = True
+            rcParams['font.size'] = 13.0
+            rcParams['font.family'] = ['Dijkstra']
+        else:
+            rcParams['font.family'] = ['Comic Sans MS']
+            rcParams['font.size'] = 14.0
+        
         rcParams['axes.linewidth'] = 1.5
         rcParams['lines.linewidth'] = 2.0
         rcParams['axes.unicode_minus'] = False
@@ -269,12 +282,14 @@ class MplCanvas(FigureCanvas):
         ry:float # pylint: disable=unused-variable
         rx, ry = rect.get_xy()
         cx:float = rx + rect.get_width()/2.0
-        cy:float = ry + rect.get_height() - rect.get_height()/15
+#        cy:float = ry + rect.get_height() - rect.get_height()/15
+        cy:float = ry 
         self.ax.annotate(text, (cx, cy),
+            xytext=(cx, cy),
             color=self.toninoColor('grey'),
             fontsize=10, 
             ha='center', 
-            va='center',
+            va='top',
             path_effects=[])
     
 
