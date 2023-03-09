@@ -155,7 +155,7 @@ class SerialPort:
                         res = parts[1].strip()
                     elif parts and len(parts) == 1:
                         res = ''
-            if retry and res == None:
+            if retry and res is None:
                 return self.sendCommand(port,command,False)
             _log.debug('result: %s',res)
             return res
@@ -199,8 +199,8 @@ class SerialPort:
 
     def filter_ports_by_vid_pid(self,ports:list[serial.tools.list_ports_common.ListPortInfo],vid:Optional[int]=None,pid:Optional[int]=None) -> Iterator[serial.tools.list_ports_common.ListPortInfo]:
         """ Given a VID and PID value, scans for available port, and
-    	f matches are found, returns a dict of 'VID/PID/iSerial/Port'
-    	that have those values.
+        f matches are found, returns a dict of 'VID/PID/iSerial/Port'
+        that have those values.
 
         @param list ports: Ports object of valid ports
         @param int vid: The VID value for a port
@@ -210,8 +210,8 @@ class SerialPort:
         for port in ports:
             #Parse some info out of the identifier string
             try:
-                if vid == None or port.vid == vid:
-                    if pid == None or  port.pid == pid:
+                if vid is None or port.vid == vid:
+                    if pid is None or  port.pid == pid:
                         yield port
             except Exception as e:  # pylint: disable=broad-except
                 _log.exception(e)

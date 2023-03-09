@@ -1257,7 +1257,7 @@ class PreCalibDialog(ToninoDialog):
             self.ui.logOutput.repaint()
 
     @pyqtSlot(bool)
-    def set(self,_:bool=False) -> None:
+    def set(self,_:bool=False) -> None: # noqa: A003
         try:
             if self.app.toninoPort:
                 self.ui.logOutput.appendPlainText('<Set>')
@@ -1401,7 +1401,7 @@ class ApplicationWindow(QMainWindow):
         self.disconnectTonino(True)
 
         # create recent files menu actions
-        for i in range(self.app.maxRecentFiles):
+        for _ in range(self.app.maxRecentFiles):
             fileAct:QAction = QAction(self)
             fileAct.setVisible(False)
             fileAct.triggered.connect(self.openRecent)  # type: ignore
@@ -2147,7 +2147,7 @@ class ApplicationWindow(QMainWindow):
             # in case ports were detected before
             if self.toninoConnected():
                 # a Tonino was already connected before
-                if not self.app.toninoPort in newports:
+                if self.app.toninoPort not in newports:
                     # Tonino port disappeared
                     self.disconnectTonino()
             else:
@@ -2289,7 +2289,7 @@ _log.info(
 
 lang:str
 if platform.system() == 'Darwin':
-    import objc  # type: ignore # @UnusedImport
+    import objc  # type: ignore # @UnusedImport # noqa: F401
     from Cocoa import NSUserDefaults  # type: ignore # @UnresolvedImport
     defs = NSUserDefaults.standardUserDefaults()
     langs = defs.objectForKey_('AppleLanguages')

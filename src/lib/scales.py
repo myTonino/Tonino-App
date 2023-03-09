@@ -236,7 +236,7 @@ class Scales(QAbstractTableModel):
                     self.setRR(r2[0])
                 else:
                     self.setRR(None)
-            except Exception:
+            except Exception: # pylint: disable=broad-except
                 self.setRR(None)
             self.coefficients = list(c)
             self.coefficients.reverse()
@@ -293,27 +293,27 @@ class Scales(QAbstractTableModel):
 
     def coordinates2text(self, coordinates:list[list[Any]]) -> str:
         lines = ["%s %d \"%s\""%(f'{c[0]:.7n}',c[1],c[2]) for c in coordinates]
-        return '\n'.join([str(l) for l in lines])
+        return '\n'.join([str(ll) for ll in lines])
 
     def line2coordinate(self, line:str) -> list[Any]:
-        l = line.replace('\t',' ').split(' ',2)
-        if len(l) == 2:
-            return [locale.atof(l[0]),int(l[1]),'',random.random()]
+        ll = line.replace('\t',' ').split(' ',2)
+        if len(ll) == 2:
+            return [locale.atof(ll[0]),int(ll[1]),'',random.random()]
         else:
-            return [locale.atof(l[0]),int(l[1]),str(eval(l[2])),random.random()] # pylint: disable=eval-used
+            return [locale.atof(ll[0]),int(ll[1]),str(eval(ll[2])),random.random()] # pylint: disable=eval-used
 
     def text2coordinates(self, txt:str) -> list[list[Any]]:
-        return [self.line2coordinate(l) for l in txt.replace('\r','\n').split('\n')]
+        return [self.line2coordinate(ll) for ll in txt.replace('\r','\n').split('\n')]
 
 
 #
 # QAbstractTableModel interface
 #
 
-    def rowCount(self, _parent:QModelIndex = QModelIndex()) -> int:
+    def rowCount(self, _parent:QModelIndex = QModelIndex()) -> int: # noqa: B008
         return len(self.coordinates)
 
-    def columnCount(self, _parent:QModelIndex = QModelIndex()) -> int:
+    def columnCount(self, _parent:QModelIndex = QModelIndex()) -> int: # noqa: B008
         if self.app.aw is not None:
             return len(self.app.aw.tableheaders)
         return 0

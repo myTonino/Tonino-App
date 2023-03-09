@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
 #
 # mplwidget.py
 #
@@ -25,7 +24,11 @@
 
 import matplotlib as mpl # type: ignore
 
-import PyQt6   # @UnusedImport # for mypy typechecking
+from typing import Final, Optional, Any, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import PyQt6 # noqa: F401 # @UnusedImport # for mypy typechecking
+
 from PyQt6.QtWidgets import (QSizePolicy, QMenu, QWidget, QVBoxLayout)
 from PyQt6.QtGui import (QCursor, QAction)
 from PyQt6.QtCore import (Qt, pyqtSlot, QObject, QSemaphore)
@@ -41,7 +44,6 @@ import warnings
 import os
 
 import logging
-from typing import Final, Optional, Any, Tuple
 
 from uic import resources
 
@@ -469,7 +471,7 @@ class MplCanvas(FigureCanvas):
                     grey = self.toninoColor('grey')
                     background = self.toninoColor('background')
                     for i, c in enumerate(coordinates):
-                        if  len(c) > 1 and c[2] and c in selectedCoordinates and not c in annotation_added:
+                        if  len(c) > 1 and c[2] and c in selectedCoordinates and c not in annotation_added:
                             annotation_added.append(c)
                             x:float
                             y:float
@@ -496,7 +498,8 @@ class MplCanvas(FigureCanvas):
         return res
 
     def on_motion(self,event) -> None:
-        if not event.inaxes: return
+        if not event.inaxes:
+            return
         try:
             if self.lastMotionX is not None and self.lastMotionY is not None and (abs(self.lastMotionX - event.xdata) > 0.01 or abs(self.lastMotionY - event.ydata) > 2):
                 self.lastMotionX = None
