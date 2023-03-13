@@ -2,6 +2,10 @@
 
 import os
 import sys
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from types import TracebackType # pylint: disable=unused-import
 
 # from https://stackoverflow.com/questions/11130156/suppress-stdout-stderr-print-from-python-functions
 
@@ -20,7 +24,7 @@ class suppress_stdout_stderr():
     exited (at least, I think that is why it lets exceptions through).
 
     '''
-    def __init__(self):
+    def __init__(self) -> None:
         # Open a pair of null files
         try:
             self.null_fds = [os.open(os.devnull,os.O_RDWR) for _ in range(2)]
@@ -36,13 +40,17 @@ class suppress_stdout_stderr():
             self.null_fds = []
             self.save_fds = []
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         # Assign the null pointers to stdout and stderr.
         if self.save_fds:
             os.dup2(self.null_fds[0],1)
             os.dup2(self.null_fds[1],2)
 
-    def __exit__(self, *_):
+    def __exit__(
+            self,
+            _exc_type: Optional[type[BaseException]],
+            _exc_val: Optional[BaseException],
+            _exc_tb: Optional['TracebackType']) -> None:
         # Re-assign the real stdout/stderr back to (1) and (2)
         try:
             if self.save_fds:

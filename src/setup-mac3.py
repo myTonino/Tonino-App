@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # setup-mac3.py
 #
@@ -36,7 +36,7 @@ import string
 import plistlib
 
 from PyQt6.QtCore import QDir
-
+from typing import Dict, Union, Tuple
 
 import lib
 
@@ -56,8 +56,8 @@ APP = ['tonino.py']
 
 
 
-DATA_FILES = [
-    'doc/LICENSE.txt',
+DATA_FILES:list[tuple[str, list[str]]] = [
+    ('.', ['doc/LICENSE.txt']),
 #    ("../Resources/qt_plugins/iconengines", [QTDIR + r'/plugins/iconengines/libqsvgicon.dylib']),
 #    ("../Resources/qt_plugins/imageformats", [QTDIR + r'/plugins/imageformats/libqsvg.dylib']),
 ## Qt5 only:
@@ -100,7 +100,7 @@ else:
     quit()
 
 with open('conf/Info.plist', 'r+b') as fp:
-    plist = plistlib.load(fp)
+    plist:Dict[str,Union[str,bool,Tuple[str]]] = plistlib.load(fp)
     plist['CFBundleDisplayName'] = 'Tonino'
     plist['CFBundleGetInfoString'] = 'Tonino, Roast Color Analyzer'
     plist['CFBundleIdentifier'] = 'com.tonino'
@@ -326,10 +326,10 @@ for root, dirs, files in os.walk('.'):
     # remove test files
     for dir in dirs:
         if 'tests' in dir:
-            for r,d,f in os.walk(os.path.join(root,dir)):
-                for fl in f:
-#                    print('Deleting', os.path.join(r,fl))
-                    os.remove(os.path.join(r,fl))
+            for rr,_,ff in os.walk(os.path.join(root, dir)):
+                for fl in ff:
+#                    print('Deleting', os.path.join(rr,fl))
+                    os.remove(os.path.join(rr,fl))
 
 dist_name = r'tonino-mac-' + VERSION + r'.dmg'
 os.chdir('..')

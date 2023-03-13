@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # serialport.py
 #
@@ -210,9 +210,8 @@ class SerialPort:
         for port in ports:
             #Parse some info out of the identifier string
             try:
-                if vid is None or port.vid == vid:
-                    if pid is None or  port.pid == pid:
-                        yield port
+                if vid is None or port.vid == vid or pid is None or port.pid == pid:
+                    yield port
             except Exception as e:  # pylint: disable=broad-except
                 _log.exception(e)
 

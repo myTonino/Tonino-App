@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # main.py
 #
@@ -29,18 +29,19 @@ import warnings
 import sys
 import os
 import platform
-import json
+import typing_json # JSON load/dump with support for TypedDicts
 import time
 import serial  # @UnusedImport
 import serial.tools.list_ports  # @UnusedImport
 import numpy as np
+import numpy.typing as npt
 from functools import reduce as freduce
 import numpy.polynomial.polynomial as poly
 import scipy.stats # type: ignore
 
 import logging.config
 from yaml import safe_load as yaml_load
-from typing import Final, Any, Optional, Tuple, Dict
+from typing import Final, Any, Optional, Tuple, Dict, TextIO
 
 try: # activate support for hiDPI screens on Windows
     if str(platform.system()).startswith('Windows'):
@@ -66,9 +67,6 @@ if sys.platform.startswith('darwin'):
     # import module to detect if macOS dark mode is active or not
     import darkdetect # type: ignore # @UnresolvedImport # pylint: disable=import-error
 
-def u(x:Any) -> str: # convert to unicode string
-    return str(x)
-
 _log: Final = logging.getLogger(__name__)
 
 ###########################################################################################################################################
@@ -85,7 +83,7 @@ class Tonino(QApplication):
                     'maxRecentFiles', 'recentFiles', 'pre_cal_targets', 'pre_cal_cardinality', 'pre_cal_degree', 'serialStringMaxLength', 'paramSeparatorChar',
                     'toninoPort', 'toninoSerial', 'toninoFirmwareVersion', 'scales', 'ser', 'calib_low_r', 'calib_low_b', 'calib_high_r', 'calib_high_b' ]
 
-    def __init__(self, arguments) -> None:
+    def __init__(self, arguments:list[str]) -> None:
         super().__init__(arguments)
         self.aw:Optional[ApplicationWindow] = None
 
@@ -316,11 +314,11 @@ class Tonino(QApplication):
         return False
 
     # load Tonino configuration on double click a *.toni file in the Finder while Tonino.app is already running
-    def event(self, event) -> bool:
+    def event(self, event:QEvent) -> bool:
         if event.type() == QEvent.Type.FileOpen:
             try:
-                if self.aw is not None:
-                    self.aw.loadFile(event.file())
+                if self.aw is not None and hasattr(event, 'file'):
+                    self.aw.loadFile(str(event.file()))
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
             return True
@@ -342,7 +340,7 @@ class Tonino(QApplication):
         try:
             settings:QSettings = QSettings()
             if settings.contains('resetsettings'):
-                self.resetsettings = settings.value('resetsettings',self.resetsettings).toInt()[0]
+                self.resetsettings = int(settings.value('resetsettings',self.resetsettings).toInt()[0])
                 if self.resetsettings:
                     self.resetsettings = 0
                     return  #don't load any more settings. They could be corrupted. Stop here.
@@ -400,8 +398,8 @@ class Tonino(QApplication):
 
     # turns a response in a value list with elements of elemType of length numOfArgs or None
     def response2values(self, response:str, elemType:type, numOfArgs:Optional[int]) -> Optional[list[Any]]:
-        res = None
-        values = response.split(self.paramSeparatorChar)
+        res:Optional[list[Any]] = None
+        values:list[str] = response.split(self.paramSeparatorChar)
         if len(values) == numOfArgs:
             res = [elemType(v) for v in values]
         return res
@@ -463,7 +461,7 @@ class Tonino(QApplication):
                 return
             # ClassicTonino firmware
             toninoSketch = resourcePath + self.included_firmware_name
-        ags:list[str] = ['-C',avrdudeconf,'-q','-q','-patmega328p','-carduino','-P',self.toninoPort,'-b57600','-D','-Uflash:w:' + u(toninoSketch) + ':i']
+        ags:list[str] = ['-C',avrdudeconf,'-q','-q','-patmega328p','-carduino','-P',self.toninoPort,'-b57600','-D','-Uflash:w:' + toninoSketch + ':i']
         # -s : Disable safemode prompting
         # -V : Disable automatic verify check when uploading data
         # -v : Enable verbose output. More -v options increase verbosity level.
@@ -479,7 +477,7 @@ class Tonino(QApplication):
         if self.aw is not None:
             self.aw.showprogress.emit()
 
-    @pyqtSlot(int,'QProcess::ExitStatus')
+    @pyqtSlot(int, 'QProcess::ExitStatus')
     def uploadFirmwareDone(self, exitCode:int, _exitStatus:QProcess.ExitStatus) -> None:
         _log.info('uploadFirmwareDone(%s)',exitCode)
         if self.aw is not None:
@@ -524,7 +522,7 @@ class Tonino(QApplication):
         if port:
             response:Optional[str] = self.ser.sendCommand(port,'GETBRIGHTNESS')
             if response is not None:
-                r = self.response2values(response,int,1)
+                r:Optional[list[int]] = self.response2values(response,int,1)
                 if r is not None:
                     return int(r[0])
         return None
@@ -535,11 +533,14 @@ class Tonino(QApplication):
             self.ser.sendCommand(port,self.formatCommand('SETBRIGHTNESS',[brightness]))
 
     # cmd: GETTARGET
-    def getTarget(self, port:str) -> Optional[list[Any]]:
+    def getTarget(self, port:str) -> Optional[list[int]]:
         if port:
             response:Optional[str] = self.ser.sendCommand(port,'GETTARGET')
             if response is not None:
-                return self.response2values(response,int,2)
+                res = self.response2values(response,int,2)
+                if res is not None:
+                    assert all(isinstance(x, int) for x in res)
+                    return res
         return None
 
     # cmd: SETTARGET (value: 0-200 / range: 0-10)
@@ -552,7 +553,7 @@ class Tonino(QApplication):
         if port:
             response:Optional[str] = self.ser.sendCommand(port,'GETSCALE')
             if response is not None:
-                r = self.response2values(response,str,1)
+                r:Optional[list[str]] = self.response2values(response,str,1)
                 if r is not None:
                     return str(r[0])
         return None
@@ -560,14 +561,14 @@ class Tonino(QApplication):
     # cmd: SETSCALE (a string of length 8)
     def setScaleName(self, port:str, name:str) -> None:
         if port:
-            self.ser.sendCommand(port,self.formatCommand('SETSCALE',[u(name[:8]).encode('ascii', 'ignore')]))
+            self.ser.sendCommand(port,self.formatCommand('SETSCALE',[name[:8].encode('ascii', 'ignore')]))
 
     # cmd: GETNAME
     def getUserName(self, port:str) -> Optional[str]:
         if port:
             response:Optional[str] = self.ser.sendCommand(port,'GETNAME')
             if response is not None:
-                r = self.response2values(response,str,1)
+                r:Optional[list[str]] = self.response2values(response,str,1)
                 if r is not None:
                     return str(r[0])
         return None
@@ -577,7 +578,7 @@ class Tonino(QApplication):
         if port:
             response = self.ser.sendCommand(port,'GETDSCALE')
             if response:
-                r = self.response2values(response,int,1)
+                r:Optional[list[int]] = self.response2values(response,int,1)
                 if r is not None:
                     return int(r[0])
         return None
@@ -595,7 +596,7 @@ class Tonino(QApplication):
     # cmd: SETNAME (a string of length 8)
     def setUserName(self, port:str, name:str) -> None:
         if port:
-            self.ser.sendCommand(port,self.formatCommand('SETNAME',[u(name[:8]).encode('ascii', 'ignore')]))
+            self.ser.sendCommand(port,self.formatCommand('SETNAME',[name[:8].encode('ascii', 'ignore')]))
 
     # cmd: GETDFLIP
     def getDisplayFlip(self, port:str) -> Optional[int]:
@@ -617,7 +618,7 @@ class Tonino(QApplication):
             self.ser.sendCommand(port,self.formatCommand('SETDFLIP',[value]))
 
     # cmd: GETSCALING
-    def getScale(self, port:str) -> Optional[Any]:
+    def getScale(self, port:str) -> Optional[list[float]]:
         if port:
             response = self.ser.sendCommand(port,'GETSCALING')
             if response:
@@ -625,31 +626,31 @@ class Tonino(QApplication):
         return None
 
     # cmd: SETSCALING
-    def setScale(self, port:str, scaling:list[Any]) -> None:
+    def setScale(self, port:str, scaling:list[float]) -> None:
         if port:
             self.ser.sendCommand(port,self.formatCommand('SETSCALING',scaling, fitStringMaxLength=True))
 
     # cmd: SETCAL
-    def setCal(self, port:str, cal:list[Any]) -> None:
+    def setCal(self, port:str, cal:list[float]) -> None:
         if port:
             self.ser.sendCommand(port,self.formatCommand('SETCAL',cal, fitStringMaxLength=True))
 
     # cmd: I_SCAN (calibrated r/b)
-    def getRawCalibratedReading(self, port:str) -> Optional[list[Any]]:
+    def getRawCalibratedReading(self, port:str) -> Optional[list[float]]:
         response = self.ser.sendCommand(port,'I_SCAN')
         if response:
             return self.response2values(response,float,1)
         return None
 
     # cmd: II_SCAN (pre-calibrated readings)
-    def getRawReadings(self, port:str) -> Optional[list[Any]]:
+    def getRawReadings(self, port:str) -> Optional[list[float]]:
         response = self.ser.sendCommand(port,'II_SCAN')
         if response:
             return self.response2values(response,float,5)
         return None
 
     # cmd: D_SCAN
-    def getBlackReadings(self, port:str) -> Optional[list[Any]]:
+    def getBlackReadings(self, port:str) -> Optional[list[float]]:
         response = self.ser.sendCommand(port,'D_SCAN')
         if response:
             return self.response2values(response,float,4)
@@ -671,15 +672,14 @@ class Tonino(QApplication):
     def loadScale(self, filename:str, silent:bool = False) -> bool:
         try:
             if self.aw is not None and self.aw.verifyDirty():
-                infile = open(filename, encoding='utf-8')
-                obj = json.load(infile)
+                infile:TextIO = open(filename, encoding='utf-8')
+                #obj = json.load(infile)
+                obj:lib.scales.Scale = typing_json.load(infile, lib.scales.Scale)
                 infile.close()
-                _log.info('loadScale(%s))',filename)
                 self.scales.setScale(obj)
                 self.contentCleared()
                 return True
-            else:
-                return False
+            return False
         except Exception as e: # pylint: disable=broad-except
             _log.error(e)
             if self.aw and not silent:
@@ -690,17 +690,15 @@ class Tonino(QApplication):
     # returns True if saving suceeded
     def saveScale(self, filename:str) -> bool:
         try:
-            cs:dict[str, Any] = self.scales.getScale()
-            if cs:
-                outfile = open(filename, 'w', encoding='utf-8')
-                json.dump(cs, outfile, ensure_ascii=True)
-                outfile.write('\n')
-                outfile.close()
-                self.contentCleared()
-                _log.info('saveScale(%s))',filename)
-                return True
-            else:
-                return False
+            cs:lib.scales.Scale = self.scales.getScale()
+            outfile:TextIO = open(filename, 'w', encoding='utf-8')
+            #json.dump(cs, outfile, ensure_ascii=True)
+            typing_json.dump(cs, lib.scales.Scale, outfile, ensure_ascii=True)
+            outfile.write('\n')
+            outfile.close()
+            self.contentCleared()
+            _log.info('saveScale(%s))',filename)
+            return True
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             if self.aw:
@@ -710,7 +708,8 @@ class Tonino(QApplication):
     def applyScale(self, filename:str) -> bool:
         try:
             infile = open(filename, encoding='utf-8')
-            obj = json.load(infile)
+            #obj = json.load(infile)
+            obj:lib.scales.Scale = typing_json.load(infile, lib.scales.Scale)
             infile.close()
             self.scales.applyScale(obj)
             if self.aw is not None:
@@ -802,7 +801,7 @@ class PreferencesDialog(ToninoDialog):
                 _log.exception(e)
             if self.app.getModel() == 1: # TinyTonino
                 try:
-                    v = self.app.getTarget(self.app.toninoPort)
+                    v:Optional[list[int]] = self.app.getTarget(self.app.toninoPort)
                     if v is not None:
                         self.targetValue = v[0]
                         self.targetRange = v[1]
@@ -875,10 +874,11 @@ class PreferencesDialog(ToninoDialog):
         if self.app.toninoPort:
             write_all:bool = False # if True all settings are written back to the device (needed after the reset2Defaults on chaning the default scale)
             firmwareVersion = self.app.toninoFirmwareVersion
+            f:bool
             if self.defaultScale is not None and (firmwareVersion[0] > 2 or (firmwareVersion[0] == 2 and firmwareVersion[1] >= 2)):
                 # from firmwareVersion 2.2.0 and newer the Agtron default scale setting is supported (v2.1.8 is the last released firmware without this feature)
                 try:
-                    f:bool = not self.ui.radioButtonAgtron.isChecked()
+                    f = not self.ui.radioButtonAgtron.isChecked()
                     if self.app.toninoPort and not (self.defaultScale is not None and self.defaultScale == f):
                         msgBox = QMessageBox(self)
                         msgBox.setText(QApplication.translate('Dialog','You need to recalibrate your Tonino after changing the default scale. Continue?',None))
@@ -972,9 +972,9 @@ class CalibDialog(ToninoDialog):
     def scan(self,_:bool=False) -> None:
         if self.app.toninoPort:
             try:
-                dark_readings:Optional[list[Any]]
-                raw_readings1:Optional[list[Any]]
-                raw_readings2:Optional[list[Any]]
+                dark_readings:Optional[list[float]]
+                raw_readings1:Optional[list[float]]
+                raw_readings2:Optional[list[float]]
                 raw_readings1 = self.app.getRawReadings(self.app.toninoPort)
                 if self.app.calib_dark_scan:
                     time.sleep(.75)
@@ -1228,12 +1228,12 @@ class PreCalibDialog(ToninoDialog):
             if self.app.toninoPort:
                 self.ui.logOutput.appendPlainText('<PreCal>')
                 _log.info('polyfit(%s.%s,%s)',self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree)
-                c:np.ndarray
+                c:npt.NDArray[np.float64]
                 stats:list[float]
                 c,stats = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True)
                 try:
-                    yv:np.ndarray = np.array(self.app.pre_cal_targets)
-                    r2:np.ndarray = 1 - stats[0] / (yv.size * yv.var())
+                    yv:npt.NDArray[np.float64] = np.array(self.app.pre_cal_targets)
+                    r2:npt.NDArray[np.float64] = 1 - stats[0] / (yv.size * yv.var())
                     if r2.size>0:
                         self.ui.logOutput.appendPlainText('RR: ')
                         self.ui.logOutput.appendPlainText(r2[0])
@@ -1498,8 +1498,8 @@ class ApplicationWindow(QMainWindow):
         return super().eventFilter(obj, event)
 
     @pyqtSlot()
-    def modelReset(self):
-        len_coordinates = len(self.app.scales.getCoordinates())
+    def modelReset(self) -> None:
+        len_coordinates:int = len(self.app.scales.getCoordinates())
         if len_coordinates > 1:
             self.ui.pushButtonClear.setEnabled(True)
             self.ui.pushButtonSort.setEnabled(True)
@@ -1700,6 +1700,7 @@ class ApplicationWindow(QMainWindow):
         return self.saveAsFile()
 
     # returns True if saving suceeded and was not canceled
+    @pyqtSlot()
     def saveAsFile(self) -> bool:
         filename:Optional[str] = self.fileDialog(QApplication.translate('Dialog','Save As',None),ffilter=self.toninoFileFilter,openFile=False)
         if filename is not None:
@@ -1769,7 +1770,7 @@ class ApplicationWindow(QMainWindow):
     def addCoordinate(self,retry:bool=True) -> None:
         if self.app.toninoPort:
             try:
-                raw_x:Optional[list[Any]] = self.app.getRawCalibratedReading(self.app.toninoPort)
+                raw_x:Optional[list[float]] = self.app.getRawCalibratedReading(self.app.toninoPort)
                 if raw_x is not None:
                     if np.isnan(raw_x[0]) or raw_x[0] == float('inf'):
                         self.showMessage(QApplication.translate('Message','Coordinate out of range',None),msecs=10000)
@@ -1824,21 +1825,22 @@ class ApplicationWindow(QMainWindow):
 #
 
 
-    def mean_confidence_interval(self, data, confidence:float = 0.95) -> float:
-        a:np.ndarray[Any, np.dtype[Any]] = 1.0*np.array(data)
+    def mean_confidence_interval(self, data:list[float], confidence:float = 0.95) -> float:
+        a:npt.NDArray[np.float64] = 1.0*np.array(data)
         n:int = len(a)
-        _, se = np.mean(a), scipy.stats.sem(a)
+#        _, se = np.mean(a), scipy.stats.sem(a)
+        se:float = scipy.stats.sem(a)
         h:float = se * scipy.stats.t.ppf((1+confidence)/2., n-1)
         return h
 
     def updateLCDS(self) -> None:
         try:
-            coordinates:list[list[Any]]
+            coordinates:list[lib.scales.Coordinate]
             if self.ui and self.ui.tableView and self.ui.tableView.selectionModel() and self.ui.tableView.selectionModel().selectedRows():
                 coordinates = self.app.scales.getSelectedCoordinates()
             else:
                 coordinates = []
-            values:list[float] = [self.app.scales.computeT(x[0]) for x in coordinates]
+            values:list[float] = [self.app.scales.computeT(c.x) for c in coordinates]
             self.updateAVG(values)
             self.updateSTDEV(values)
             self.updateCONF(values)
@@ -2123,14 +2125,15 @@ class ApplicationWindow(QMainWindow):
     # on first call, the self.ports list is initialized, all other calls compare the list of ports with that one
     def deviceCheck(self) -> None:
         newports_obj:list[serial.tools.list_ports_common.ListPortInfo] = self.app.ser.getSerialPorts()
-        newports = []
+        newports:list[str] = []
         for p in newports_obj:
             if p is not None:
                 try:
                     newports.append(p.device)
                 except Exception: # pylint: disable=broad-except
                     pass
-        res = None
+        res:Optional[Tuple[str,Optional[list[int]],Optional[str]]] = None
+        model:Optional[int]
         if self.ports is None:
             # we just started up, check if there is already a Tonino connected we can attach too
             if newports_obj:
@@ -2151,11 +2154,11 @@ class ApplicationWindow(QMainWindow):
                     # Tonino port disappeared
                     self.disconnectTonino()
             else:
-                new_ports = list(set(newports) - set(self.ports))
+                new_ports:list[str] = list(set(newports) - set(self.ports))
                 if self.debug == 2 and new_ports:
                     self.app.toninoPort = new_ports[0]
                     # find the port_obj to extract the Tonino type by PID (tinyToninoPID == 24597)
-                    port_obj = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
+                    port_obj:Optional[serial.tools.list_ports_common.ListPortInfo] = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
                     # Tonino model needs to be set to choose the install the correct firmware version
                     model = 0
                     if port_obj is not None and port_obj.pid == 24597:

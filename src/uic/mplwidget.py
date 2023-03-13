@@ -28,6 +28,9 @@ from typing import Final, Optional, Any, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import PyQt6 # noqa: F401 # @UnusedImport # for mypy typechecking
+    from lib.main import Tonino # @UnusedImport # pylint: disable=unused-import
+    from lib.scales import Coordinate # @UnusedImport # pylint: disable=unused-import
+    from matplotlib.backend_bases import Event # type: ignore # @UnusedImport # pylint: disable=unused-import
 
 from PyQt6.QtWidgets import (QSizePolicy, QMenu, QWidget, QVBoxLayout)
 from PyQt6.QtGui import (QCursor, QAction)
@@ -60,14 +63,13 @@ class MyQAction(QAction):
 
     def get_key(self) -> Optional[tuple[str,float,float]]:
         return self._key
-        
+    
     def set_key(self, value:Optional[tuple[str,float,float]]) -> None:
         self._key = value
     
-    key = property(
+    key:property = property(
         fget=get_key,
-        fset=set_key
-    )
+        fset=set_key)
 
 class MplCanvas(FigureCanvas):
 
@@ -77,7 +79,7 @@ class MplCanvas(FigureCanvas):
         'lastMotionX', 'lastMotionY', 'toninoGray', 'toninoBlue', 'toninoLightBlue', 'toninoRed', 'lightBackgroundColor', 'darkBackgroundColor',
         'fig', 'annotations', 'indexpoint', 'mousepress', 'mousedragged', 'xoffset', 'yoffset', 'RRfontSize', 'ax' ]
     
-    def __init__(self,app) -> None:
+    def __init__(self, app:'Tonino') -> None:
         self.app = app
         
         self.redrawSemaphore = QSemaphore(1)
@@ -112,7 +114,7 @@ class MplCanvas(FigureCanvas):
 
         self.xvalues:np.ndarray[Any, np.dtype[np.floating[Any]]] = np.arange(self.x_min, self.x_max, self.x_step)
         self.yvalues:Optional[np.ndarray[Any, np.dtype[Any]]] = None # is set by update from the polyfit coefficent
-        self.yvalues_default = np.poly1d(self.app.scales.getDefaultCoefficents())(self.xvalues)  # the default Tonino polyfit curve
+        self.yvalues_default:Optional[np.ndarray[Any, np.dtype[Any]]] = np.poly1d(self.app.scales.getDefaultCoefficents())(self.xvalues)  # the default Tonino polyfit curve
         self.yvalues_device:Optional[np.ndarray[Any, np.dtype[Any]]] = None # the device polyfit curve
         
         self.lastMotionX:Optional[float] = None # holds the last x value on mouse movements if any
@@ -133,7 +135,7 @@ class MplCanvas(FigureCanvas):
             'cupping':             (self.makeGreyColor(178), self.makeGreyColor(214))
         }
                
-        self.fig = Figure()
+        self.fig:Figure = Figure()
         
         self.annotations:list[Any] = []
         self.indexpoint:Optional[int] = None
@@ -211,7 +213,7 @@ class MplCanvas(FigureCanvas):
     def makeGreyColor(c:int) -> list[float]:
         return MplCanvas.makeColor(c,c,c)
     
-    def toninoColor(self, color) -> list[float]:
+    def toninoColor(self, color:str) -> list[float]:
         if color in self.toninoColors:
             c = self.toninoColors[color]
             if self.app.darkmode:
@@ -221,7 +223,7 @@ class MplCanvas(FigureCanvas):
 
     def updatePolyfit(self) -> None:
         # updates the polyfit line data and calls redraw
-        c:Optional[list[float]] = self.app.scales.getCoefficients()
+        c:Optional[list[float]] = self.app.scales.getCoefficients()     
         if c is None:
             self.yvalues = None
         else:
@@ -250,7 +252,7 @@ class MplCanvas(FigureCanvas):
     def leftUpperOffset(self,x:float, y:float) -> Tuple[float,float]:
         return x - 1.5*self.xoffset,y + self.yoffset
 
-    def annotationPosition(self, coordinates: list[list[Any]], i:int, c:list[float]) -> Tuple[float,float]:
+    def annotationPosition(self, coordinates: list['Coordinate'], i:int, c:'Coordinate') -> Tuple[float,float]:
         x:float = c[0]
         y:float = c[1]
         if i == 0:
@@ -279,7 +281,7 @@ class MplCanvas(FigureCanvas):
                 x,y = self.leftLowerOffset(x,y)
         return x,y
 
-    def annotate_rectangle(self,rect,text:str) -> None:
+    def annotate_rectangle(self, rect:patches.Rectangle, text:str) -> None:
         rx:float # pylint: disable=unused-variable
         ry:float # pylint: disable=unused-variable
         rx, ry = rect.get_xy()
@@ -337,7 +339,7 @@ class MplCanvas(FigureCanvas):
                         self.ax.patches[0].remove()
                     
                     # draw dark region
-                    dark_rect = patches.Rectangle(
+                    dark_rect:patches.Rectangle = patches.Rectangle(
                         (self.x_min_valid,self.y_min),
                         width=(self.x_max_dark - self.x_min_valid),
                         height=(self.y_max - self.y_min),
@@ -350,7 +352,7 @@ class MplCanvas(FigureCanvas):
                     self.annotate_rectangle(dark_rect,"dark")
                     
                     # draw medium dark region
-                    medium_dark_rect = patches.Rectangle(
+                    medium_dark_rect:patches.Rectangle = patches.Rectangle(
                         (self.x_max_dark,self.y_min),
                         width=(self.x_max_medium_dark - self.x_max_dark),
                         height=(self.y_max - self.y_min),
@@ -363,7 +365,7 @@ class MplCanvas(FigureCanvas):
                     self.annotate_rectangle(medium_dark_rect,"medium\ndark")
                     
                     # draw medium region
-                    medium_rect = patches.Rectangle(
+                    medium_rect:patches.Rectangle = patches.Rectangle(
                         (self.x_max_medium_dark,self.y_min),
                         width=(self.x_max_medium - self.x_max_medium_dark),
                         height=(self.y_max - self.y_min),
@@ -376,7 +378,7 @@ class MplCanvas(FigureCanvas):
                     self.annotate_rectangle(medium_rect,"medium")
                     
                     # draw medium light region
-                    medium_light_rect = patches.Rectangle(
+                    medium_light_rect:patches.Rectangle = patches.Rectangle(
                         (self.x_max_medium,self.y_min),
                         width=(self.x_max_medium_light - self.x_max_medium),
                         height=(self.y_max - self.y_min),
@@ -389,7 +391,7 @@ class MplCanvas(FigureCanvas):
                     self.annotate_rectangle(medium_light_rect,"medium\nlight")
                     
                     # draw  light region
-                    light_rect = patches.Rectangle(
+                    light_rect:patches.Rectangle = patches.Rectangle(
                         (self.x_max_medium_light,self.y_min),
                         width=(self.x_max_valid - self.x_max_medium_light),
                         height=(self.y_max - self.y_min),
@@ -457,7 +459,7 @@ class MplCanvas(FigureCanvas):
                         self.l_polyfit.set_data([], [])
                     self.ax.draw_artist(self.l_polyfit)
 
-                coordinates:list[list[Any]] = self.app.scales.getCoordinates()
+                coordinates:list['Coordinate'] = self.app.scales.getCoordinates()
                 # draw coordinates
                 if self.l_coordinates is not None:
                     cx:list[float] = [c[0] for c in coordinates]
@@ -466,8 +468,8 @@ class MplCanvas(FigureCanvas):
                     self.ax.draw_artist(self.l_coordinates)
                 if annotations:
                     # draw annotations at selected coordinates
-                    selectedCoordinates:list[list[Any]] = self.app.scales.getSelectedCoordinates()
-                    annotation_added:list[list[Any]] = [] # coordinates that we already painted the annotation
+                    selectedCoordinates:list['Coordinate'] = self.app.scales.getSelectedCoordinates()
+                    annotation_added:list['Coordinate'] = [] # coordinates that we already painted the annotation
                     grey = self.toninoColor('grey')
                     background = self.toninoColor('background')
                     for i, c in enumerate(coordinates):
@@ -489,7 +491,7 @@ class MplCanvas(FigureCanvas):
                 if self.redrawSemaphore.available() < 1:
                     self.redrawSemaphore.release(1)
 
-    def closeToCoordinate(self,event) -> bool:
+    def closeToCoordinate(self,event:'Event') -> bool:
         res:bool = False
         for c in self.app.scales.getCoordinates():
             if event.xdata and event.ydata and (abs(c[0] - event.xdata) < 0.01 and abs(c[1] - event.ydata) < 3):
@@ -497,7 +499,7 @@ class MplCanvas(FigureCanvas):
                 break
         return res
 
-    def on_motion(self,event) -> None:
+    def on_motion(self, event:'Event') -> None:
         if not event.inaxes:
             return
         try:
@@ -505,7 +507,7 @@ class MplCanvas(FigureCanvas):
                 self.lastMotionX = None
                 self.lastMotionY = None
                 self.setCursor(Qt.CursorShape.ArrowCursor)
-            if self.mousepress:
+            if self.mousepress and self.indexpoint is not None:
                 self.setCursor(Qt.CursorShape.ClosedHandCursor)
                 if not self.mousedragged:
                     self.app.scales.redoSelection([])
@@ -519,7 +521,7 @@ class MplCanvas(FigureCanvas):
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
 
-    def on_pick(self,event) -> None:
+    def on_pick(self, event:'Event') -> None:
         self.setCursor(Qt.CursorShape.ClosedHandCursor)
         try:
             self.indexpoint = event.ind[-1]
@@ -527,12 +529,12 @@ class MplCanvas(FigureCanvas):
             self.indexpoint = event.ind
         self.mousepress = True
 
-    def on_release(self,event) -> None:
+    def on_release(self, event:'Event') -> None:
         if self.mousepress:
             self.setCursor(Qt.CursorShape.OpenHandCursor)
             if self.mousedragged:
                 self.mousedragged = False
-            else:
+            elif self.app.aw is not None and self.indexpoint is not None:
                 self.app.aw.toggleSelection(self.indexpoint)
         self.mousepress = False
         self.indexpoint = None
@@ -543,8 +545,8 @@ class MplCanvas(FigureCanvas):
             self.setCursor(Qt.CursorShape.OpenHandCursor)
         self.redraw(force=True)
 
-    def onclick(self,event) -> None:
-        if event.inaxes and event.button==3:
+    def onclick(self, event:'Event') -> None:
+        if self.app.aw is not None and event.inaxes and event.button==3:
             # populate menu
             menu:QMenu = QMenu(self) 
             ac:MyQAction = MyQAction(menu)
@@ -579,14 +581,13 @@ class mplwidget(QWidget):
     
     def __init__(self, parent:Optional[QWidget] = None) -> None:
         QWidget.__init__(self, parent)
-        self.app:Optional[QWidget] = None
         if (parent and parent.parent() and parent.parent().parent()):
-            self.app = parent.parent().parent().app # type: ignore
-        self.canvas:MplCanvas = MplCanvas(self.app)
-        vbl:QVBoxLayout = QVBoxLayout()
-        vbl.setContentsMargins(1,1,1,1)
-        vbl.setSpacing(0) 
-        vbl.addWidget(self.canvas)
-        self.setLayout(vbl)
+            self.app:Tonino = parent.parent().parent().app # type: ignore
+            self.canvas:MplCanvas = MplCanvas(self.app)
+            vbl:QVBoxLayout = QVBoxLayout()
+            vbl.setContentsMargins(1,1,1,1)
+            vbl.setSpacing(0) 
+            vbl.addWidget(self.canvas)
+            self.setLayout(vbl)
 
 
