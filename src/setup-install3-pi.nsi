@@ -265,7 +265,7 @@ Section Uninstall
   Delete "$INSTDIR\libusb0.sys"
   Delete "$INSTDIR\libusb0_x64.dll"
   Delete "$INSTDIR\libusb0_x64.sys"
-  Delete "$INSTDIR\logging.yamml"
+  Delete "$INSTDIR\logging.yaml"
 
   SetShellVarContext all
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk"
