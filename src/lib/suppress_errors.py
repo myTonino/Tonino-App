@@ -48,8 +48,8 @@ class suppress_stdout_stderr():
 
     def __exit__(
             self,
-            _exc_type: Optional[type[BaseException]],
-            _exc_val: Optional[BaseException],
+            _exc_type: type[BaseException] | None,
+            _exc_val: BaseException | None,
             _exc_tb: Optional['TracebackType']) -> None:
         # Re-assign the real stdout/stderr back to (1) and (2)
         try:

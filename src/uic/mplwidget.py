@@ -24,7 +24,7 @@
 
 import matplotlib as mpl # type: ignore
 
-from typing import Final, Optional, Any, Tuple, TYPE_CHECKING
+from typing import Final, Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import PyQt6 # noqa: F401 # @UnusedImport # for mypy typechecking
@@ -57,14 +57,14 @@ class MyQAction(QAction):
 
     __slots__ = [ '_key' ]
     
-    def __init__(self, parent:QObject):
+    def __init__(self, parent:QObject) -> None:
         QAction.__init__(self, parent)
-        self._key:Optional[tuple[str,float,float]] = None
+        self._key:tuple[str, float, float] | None = None
 
-    def get_key(self) -> Optional[tuple[str,float,float]]:
+    def get_key(self) -> tuple[str, float, float] | None:
         return self._key
     
-    def set_key(self, value:Optional[tuple[str,float,float]]) -> None:
+    def set_key(self, value:tuple[str, float, float] | None) -> None:
         self._key = value
     
     key:property = property(
@@ -85,7 +85,7 @@ class MplCanvas(FigureCanvas):
         self.redrawSemaphore = QSemaphore(1)
         
         self.ax_background = None # canvas background for bit blitting
-        self.ax_background_bounds:Optional[Tuple[float]] = None
+        self.ax_background_bounds:tuple[float] | None = None
         
         self.x_step:Final = 0.01
         
@@ -97,9 +97,9 @@ class MplCanvas(FigureCanvas):
         self.x_SCA_cupping:Final = 2.2807
         
         # dynamic artists
-        self.l_polyfit:Optional[Line2D] = None
-        self.l_coordinates:Optional[Line2D] = None
-        self.l_title:Optional[Text] = None
+        self.l_polyfit:Line2D | None = None
+        self.l_coordinates:Line2D | None = None
+        self.l_title:Text | None = None
         
         # upper limits of the roast names according to the Agtron scale mapping
         self.x_max_dark:Final = 1.95574986810893
@@ -113,15 +113,15 @@ class MplCanvas(FigureCanvas):
         self.x_max:Final = self.x_max_valid+0.15 # maximum raw Tonino value to be drawn
 
         self.xvalues:np.ndarray[Any, np.dtype[np.floating[Any]]] = np.arange(self.x_min, self.x_max, self.x_step)
-        self.yvalues:Optional[np.ndarray[Any, np.dtype[Any]]] = None # is set by update from the polyfit coefficent
-        self.yvalues_default:Optional[np.ndarray[Any, np.dtype[Any]]] = np.poly1d(self.app.scales.getDefaultCoefficents())(self.xvalues)  # the default Tonino polyfit curve
-        self.yvalues_device:Optional[np.ndarray[Any, np.dtype[Any]]] = None # the device polyfit curve
+        self.yvalues:np.ndarray[Any, np.dtype[Any]] | None = None # is set by update from the polyfit coefficent
+        self.yvalues_default:np.ndarray[Any, np.dtype[Any]] | None = np.poly1d(self.app.scales.getDefaultCoefficents())(self.xvalues)  # the default Tonino polyfit curve
+        self.yvalues_device:np.ndarray[Any, np.dtype[Any]] | None = None # the device polyfit curve
         
-        self.lastMotionX:Optional[float] = None # holds the last x value on mouse movements if any
-        self.lastMotionY:Optional[float] = None # holds the last y value on mouse movements if any
+        self.lastMotionX:float | None = None # holds the last x value on mouse movements if any
+        self.lastMotionY:float | None = None # holds the last y value on mouse movements if any
         
         # Tonino color scheme associating names to color pairs <light_mode_color, dark_mode_color>
-        self.toninoColors:dict[str,Tuple[list[float],list[float]]] = {
+        self.toninoColors:dict[str,tuple[list[float],list[float]]] = {
             'grey':      (self.makeColor(92,93,97), self.makeColor(184,186,194)),
             'blue':      (self.makeColor(74,83,102), self.makeColor(223,231,244)),
             'lightblue': (self.makeColor(74,83,102), self.makeColor(207,221,249)),
@@ -138,7 +138,7 @@ class MplCanvas(FigureCanvas):
         self.fig:Figure = Figure()
         
         self.annotations:list[Any] = []
-        self.indexpoint:Optional[int] = None
+        self.indexpoint:int | None = None
         self.mousepress:bool = False
         self.mousedragged:bool = False
         
@@ -223,7 +223,7 @@ class MplCanvas(FigureCanvas):
 
     def updatePolyfit(self) -> None:
         # updates the polyfit line data and calls redraw
-        c:Optional[list[float]] = self.app.scales.getCoefficients()     
+        c:list[float] | None = self.app.scales.getCoefficients()     
         if c is None:
             self.yvalues = None
         else:
@@ -232,7 +232,7 @@ class MplCanvas(FigureCanvas):
 
     def updateDevicePolyfit(self) -> None:
         # updates the device polyfit line data and calls redraw
-        c:Optional[list[float]] = self.app.scales.getDeviceCoefficients()
+        c:list[float] | None = self.app.scales.getDeviceCoefficients()
         if c is None:
             self.yvalues_device = None
         else:
@@ -240,19 +240,19 @@ class MplCanvas(FigureCanvas):
         # we do a full redraw to ensure that the default/device curve is redrawn
         self.redraw(force=True)
 
-    def rightLowerOffset(self,x:float, y:float) -> Tuple[float,float]:
+    def rightLowerOffset(self,x:float, y:float) -> tuple[float,float]:
         return x + self.xoffset, y - 1.5*self.yoffset
 
-    def leftLowerOffset(self,x:float ,y:float) -> Tuple[float,float]:
+    def leftLowerOffset(self,x:float ,y:float) -> tuple[float,float]:
         return x - 2*self.xoffset,y - 2.5*self.yoffset
 
-    def rightUpperOffset(self,x:float, y:float) -> Tuple[float,float]:
+    def rightUpperOffset(self,x:float, y:float) -> tuple[float,float]:
         return x + self.xoffset,y + 2*self.yoffset
 
-    def leftUpperOffset(self,x:float, y:float) -> Tuple[float,float]:
+    def leftUpperOffset(self,x:float, y:float) -> tuple[float,float]:
         return x - 1.5*self.xoffset,y + self.yoffset
 
-    def annotationPosition(self, coordinates: list['Coordinate'], i:int, c:'Coordinate') -> Tuple[float,float]:
+    def annotationPosition(self, coordinates: list['Coordinate'], i:int, c:'Coordinate') -> tuple[float,float]:
         x:float = c[0]
         y:float = c[1]
         if i == 0:
@@ -444,9 +444,9 @@ class MplCanvas(FigureCanvas):
                 self.fig.canvas.restore_region(self.ax_background)
                 
                 if self.l_title is not None:
-                    RR:Optional[float] = self.app.scales.getRR()
+                    RR:float | None = self.app.scales.getRR()
                     if RR is not None:
-                        self.l_title.set_text("d = %d   RR = %.3f"%(self.app.scales.polyfit_degree,RR))
+                        self.l_title.set_text(f"d = {self.app.scales.polyfit_degree:d}   RR = {RR:.3f}")
                     else:
                         self.l_title.set_text("")
                     self.ax.draw_artist(self.l_title)
@@ -479,7 +479,7 @@ class MplCanvas(FigureCanvas):
                             y:float
                             x,y = self.annotationPosition(coordinates,i,c)
                             an = self.ax.annotate(c[2],xy=(c[0],c[1]),xytext=(x,y),color=grey,
-                                arrowprops=dict(shrinkB=5,connectionstyle="arc3,rad=0.2",arrowstyle='->',color=grey,relpos=(0,0)),
+                                arrowprops={'shrinkB': 5, 'connectionstyle': 'arc3,rad=0.2', 'arrowstyle': '->', 'color': grey, 'relpos': (0,0)},
                                 path_effects=[patheffects.withStroke(linewidth=2, foreground=background)])
                             self.ax.draw_artist(an)
                             self.annotations.append(an)
@@ -579,7 +579,7 @@ class mplwidget(QWidget):
 
     __slots__ = [ 'app', 'canvas' ]
     
-    def __init__(self, parent:Optional[QWidget] = None) -> None:
+    def __init__(self, parent:QWidget | None = None) -> None:
         QWidget.__init__(self, parent)
         if (parent and parent.parent() and parent.parent().parent()):
             self.app:Tonino = parent.parent().parent().app # type: ignore

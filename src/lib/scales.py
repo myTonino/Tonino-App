@@ -38,7 +38,7 @@ from ast import literal_eval
 from lib import __version__
 
 import logging
-from typing import Final, Optional, Union, Any, NamedTuple, TypedDict, TYPE_CHECKING
+from typing import Final, Any, NamedTuple, TypedDict, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from lib.main import Tonino # pylint: disable=unused-import
@@ -47,7 +47,7 @@ _log: Final = logging.getLogger(__name__)
 
 # TypedDicts are mutable
 class Scale(TypedDict):
-    coordinates: list[list[Union[float, str]]] # list of either [x:float, y:float, name:str] or [x:float, y:float, name:str, id:float]
+    coordinates: list[list[float | str]] # list of either [x:float, y:float, name:str] or [x:float, y:float, name:str, id:float]
     appVersion: str
     degree: int
 
@@ -67,10 +67,10 @@ class Scales(QAbstractTableModel):
         QAbstractTableModel.__init__(self, parent)
         self.app = app
         self.defaultCoefficients:list[float] = [.0, .0, 102.2727273, -128.4090909] # x3, x2, x, c
-        self.deviceCoefficients:Optional[list[float]] = None
+        self.deviceCoefficients:list[float] | None = None
         # coefficients are recomputed on loading/setting from coordinates if possible (eg. coordinates are given)
-        self.coefficients:Optional[list[float]] = None
-        self.RR:Optional[float] = None
+        self.coefficients:list[float] | None = None
+        self.RR:float | None = None
         self.coordinates:list[Coordinate] = []
         self.polyfit_degree:int = 0
         # initialize random number generator
@@ -100,7 +100,7 @@ class Scales(QAbstractTableModel):
     # compute the coefficients of the given scale and apply to the current coordinates
     def applyScale(self, scale:Scale) -> None:
         # extract coordinates
-        coordinates: list[list[Union[float, str]]]
+        coordinates: list[list[float | str]]
         if 'coordinates' in scale:
             coordinates = scale['coordinates']
         else:
@@ -120,9 +120,9 @@ class Scales(QAbstractTableModel):
             coefficients.reverse()
             # apply polyfit
             self.beginResetModel()
-            for i in range(len(self.coordinates)):
-                x = self.coordinates[i].x
-                name:str = self.coordinates[i].name
+            for i, co in enumerate(self.coordinates):
+                x = co.x
+                name:str = co.name
                 newY:float = np.poly1d(coefficients)([x])[0]
                 self.coordinates[i] = Coordinate(x, newY, name, random.random())
             self.endResetModel()
@@ -134,7 +134,7 @@ class Scales(QAbstractTableModel):
         if 'coordinates' in scale:
             self.coordinates = []
             for c in scale['coordinates']:
-                if len(c) > 2 and type(c[0]) == float and type(c[1]) == float and type(c[2]) == str:
+                if len(c) > 2 and isinstance(c[0], float) and isinstance(c[1], float) and isinstance(c[2], str):
                     self.coordinates.append(Coordinate(c[0], c[1], c[2], random.random()))
         else:
             self.coordinates = []
@@ -154,7 +154,7 @@ class Scales(QAbstractTableModel):
             degree = self.polyfit_degree,
             coordinates = [[c.x, c.y, c.name] for c in self.coordinates])
 
-    def sortCoordinates(self,col:int = 0, order:Optional[Qt.SortOrder] = None) -> None:
+    def sortCoordinates(self,col:int = 0, order:Qt.SortOrder | None = None) -> None:
         if order is None:
             order = Qt.SortOrder.AscendingOrder
         selectedCoordinates:list[Coordinate] = self.getSelectedCoordinates()
@@ -269,16 +269,16 @@ class Scales(QAbstractTableModel):
             # trigger the redraw of the matplotlib graph canvas
             self.app.aw.ui.widget.canvas.updatePolyfit()
 
-    def getCoefficients(self) -> Optional[list[float]]:
+    def getCoefficients(self) -> list[float] | None:
         return self.coefficients
 
-    def setCoefficients(self,coefficients:Optional[list[float]]) -> None:
+    def setCoefficients(self,coefficients:list[float] | None) -> None:
         self.coefficients = coefficients
 
-    def getDeviceCoefficients(self) -> Optional[list[float]]:
+    def getDeviceCoefficients(self) -> list[float] | None:
         return self.deviceCoefficients
 
-    def setDeviceCoefficients(self,coefficients:Optional[list[float]]) -> None:
+    def setDeviceCoefficients(self,coefficients:list[float] | None) -> None:
         self.deviceCoefficients = coefficients
         # trigger the computation of the device curve redraw of the matplotlib graph canvas
         if self.app.aw is not None:
@@ -287,10 +287,10 @@ class Scales(QAbstractTableModel):
     def getDefaultCoefficents(self) -> list[float]:
         return self.defaultCoefficients
 
-    def getRR(self) -> Optional[float]:
+    def getRR(self) -> float | None:
         return self.RR
 
-    def setRR(self, RR:Optional[float]) -> None:
+    def setRR(self, RR:float | None) -> None:
         self.RR = RR
 
     def setPolyfitDegree(self, d:int) -> None:
@@ -307,11 +307,13 @@ class Scales(QAbstractTableModel):
         self.computePolyfit()
         self.app.contentCleared()
 
-    def coordinates2text(self, coordinates:list[Coordinate]) -> str:
-        lines = ["%s %d \"%s\""%(f'{c.x:.7n}',c.y,c.name) for c in coordinates]
+    @staticmethod
+    def coordinates2text(coordinates:list[Coordinate]) -> str:
+        lines = [f"{c.x:.7n} {c.y:d} \"{c.name}\"" for c in coordinates]
         return '\n'.join([str(ll) for ll in lines])
 
-    def line2coordinate(self, line:str) -> Coordinate:
+    @staticmethod
+    def line2coordinate(line:str) -> Coordinate:
         ll = line.replace('\t',' ').split(' ', 2)
         name = ''
         if len(ll)>2:
@@ -354,17 +356,16 @@ class Scales(QAbstractTableModel):
                 self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
                 self.app.contentModified()
 
-    def data(self, index:QModelIndex, role:int = Qt.ItemDataRole.DisplayRole) -> Optional[Union[str, QBrush, int]]:
+    def data(self, index:QModelIndex, role:int = Qt.ItemDataRole.DisplayRole) -> str | QBrush | int | None:
         if not index.isValid():
             return None
-        if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
+        if role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole):
             if index.column() == 0:
                 v:float = self.getCoordinates()[index.row()].y
                 if role == Qt.ItemDataRole.EditRole:
                     return f'{v:.2f}'.rstrip('0').rstrip('.')
-                else:
-                    return f'{v:.1f}'
-            elif index.column() == 1:
+                return f'{v:.1f}'
+            if index.column() == 1:
                 return self.getCoordinates()[index.row()].name
         # set cell color base on value
         elif role == Qt.ItemDataRole.BackgroundRole:
@@ -372,7 +373,7 @@ class Scales(QAbstractTableModel):
             tonino_value:float = self.coordinates[index.row()].y
             if self.app.aw is None or (raw_tonino_value < self.app.aw.ui.widget.canvas.x_min or raw_tonino_value > self.app.aw.ui.widget.canvas.x_max or tonino_value > 250 or tonino_value < 0):
                 return None
-            elif self.app.darkmode:
+            if self.app.darkmode:
                 return QBrush(QColor(80,80,80))
             return QBrush(QColor(234,229,216))
         elif role == Qt.ItemDataRole.TextAlignmentRole:
@@ -404,15 +405,17 @@ class Scales(QAbstractTableModel):
             return True
         return False
 
-    def setHeaderData(self, _section:int, _orientation:Qt.Orientation, _value:Any, _role:int=Qt.ItemDataRole.EditRole) -> bool:
+    @staticmethod
+    def setHeaderData(_section:int, _orientation:Qt.Orientation, _value:Any, _role:int=Qt.ItemDataRole.EditRole) -> bool:
         return True
 
-    def headerData(self, col:int, orientation:Qt.Orientation, role:int=Qt.ItemDataRole.DisplayRole) -> Optional[str]:
+    def headerData(self, col:int, orientation:Qt.Orientation, role:int=Qt.ItemDataRole.DisplayRole) -> str | None:
         if self.app.aw is not None and orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
             return self.app.aw.tableheaders[col]
         return None
 
-    def flags(self, _index:QModelIndex) -> Qt.ItemFlag:
+    @staticmethod
+    def flags( _index:QModelIndex) -> Qt.ItemFlag:
         return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsSelectable
 
     def sort(self, col:int, order:Qt.SortOrder = Qt.SortOrder.AscendingOrder) -> None:
@@ -425,7 +428,7 @@ class Scales(QAbstractTableModel):
 
 class ValidatedItemDelegate(QStyledItemDelegate):
 
-    def __init__(self, parent:Optional[QObject]=None) -> None:
+    def __init__(self, parent:QObject | None=None) -> None:
         QStyledItemDelegate.__init__(self, parent)
 
     def createEditor(self, widget:QWidget, option:QStyleOptionViewItem, index:QModelIndex) -> QWidget:

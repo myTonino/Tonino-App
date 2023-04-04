@@ -68,4 +68,4 @@ $QT_PATH/bin/lrelease -verbose conf/tonino.pro
 
 # distribution
 rm -rf build dist
-$PYTHON/bin/python3 setup-mac3.py py2app
+$PYTHON/bin/python3 setup_mac3.py py2app

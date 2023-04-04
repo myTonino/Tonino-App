@@ -28,15 +28,13 @@
 #    g['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
 #sysconfig.parse_makefile = my_parse_makefile
 
-import sys, os
+import os
 import subprocess
 from setuptools import setup
 
-import string
 import plistlib
 
 from PyQt6.QtCore import QDir
-from typing import Dict, Union, Tuple
 
 import lib
 
@@ -47,7 +45,7 @@ LICENSE = 'GNU General Public License (GPL)'
 
 try:
     QTDIR = os.environ['QT_PATH'] + r'/'
-except:
+except Exception:
     from os.path import expanduser
     HOME = expanduser('~')
     QTDIR = HOME + r'/Qt5.14.2/5.14.2/clang_64/'
@@ -100,7 +98,7 @@ else:
     quit()
 
 with open('conf/Info.plist', 'r+b') as fp:
-    plist:Dict[str,Union[str,bool,Tuple[str]]] = plistlib.load(fp)
+    plist:dict[str,str | bool | tuple[str]] = plistlib.load(fp)
     plist['CFBundleDisplayName'] = 'Tonino'
     plist['CFBundleGetInfoString'] = 'Tonino, Roast Color Analyzer'
     plist['CFBundleIdentifier'] = 'com.tonino'
@@ -191,10 +189,10 @@ qt_plugin_files = [
 
 
 # remove unused Qt frameworks libs (not in Qt_modules_frameworks)
-for subdir, dirs, files in os.walk('./Tonino.app/Contents/Frameworks'):
-    for dir in dirs:
-        if dir.startswith('Qt') and dir.endswith('.framework') and dir not in Qt_frameworks:
-            file_path = os.path.join(subdir, dir)
+for subdir, dirs, _files in os.walk('./Tonino.app/Contents/Frameworks'):
+    for dd in dirs:
+        if dd.startswith('Qt') and dir.endswith('.framework') and dd not in Qt_frameworks:
+            file_path = os.path.join(subdir, dd)
             print(f'rm -rf {file_path}')
             subprocess.check_call(f'rm -rf {file_path}',shell = True)
 
@@ -203,7 +201,7 @@ for subdir, dirs, files in os.walk('./Tonino.app/Contents/Frameworks'):
 # (py2app v0.26.1 copes non-relocated PlugIns to the toplevel)
 try:
     subprocess.check_call('rm -rf ./Tonino.app/Contents/plugins',shell = True)
-except:
+except Exception:
     pass
 
 
@@ -214,7 +212,7 @@ for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
         # if PyQt6 exists we remove PyQt5 completely
         try:
             subprocess.check_call(f'rm -rf {rootdir}/PyQt5',shell = True)
-        except:
+        except Exception:
             pass
     # remove Qt artefacts
     for qt_dir in [
@@ -240,7 +238,7 @@ for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
             pass
     for pyqt_dir in ['PyQt5', 'PyQt6']:
         # remove unused PyQt libs (not in Qt_modules)
-        for subdir, dirs, files in os.walk(f'{rootdir}/{pyqt_dir}'):
+        for subdir, _dirs, files in os.walk(f'{rootdir}/{pyqt_dir}'):
             for file in files:
                 if file.endswith('.pyi'):
                     file_path = os.path.join(subdir, file)
@@ -254,10 +252,10 @@ for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
     # remove unused Qt frameworks libs (not in Qt_modules_frameworks)
     for qt_dir in ['PyQt5/Qt5/lib', 'PyQt6/Qt6/lib']:
         qt = f'{rootdir}/{qt_dir}'
-        for root, dirs, _ in os.walk(qt):
-            for dir in dirs:
-                if dir.startswith('Qt') and dir.endswith('.framework') and dir not in Qt_frameworks:
-                    file_path = os.path.join(qt, dir)
+        for _root, dirs, _ in os.walk(qt):
+            for dd in dirs:
+                if dd.startswith('Qt') and dd.endswith('.framework') and dd not in Qt_frameworks:
+                    file_path = os.path.join(qt, dd)
                     subprocess.check_call(f'rm -rf {file_path}',shell = True)
 
     # remove unused plugins
@@ -269,7 +267,7 @@ for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
                 else:
                     for subdir, _, files in os.walk(os.path.join(root,d)):
                         for file in files:
-                            if not (file in qt_plugin_files):
+                            if file not in qt_plugin_files:
                                 file_path = os.path.join(subdir, file)
                                 subprocess.check_call(f'rm -rf {file_path}',shell = True)
 # comment for non-Framework variant
@@ -283,15 +281,15 @@ for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
 # remove duplicate mpl_data folder
 try:
     subprocess.check_call('rm -rf ./Tonino.app/Contents/Resources/mpl-data',shell = True)
-except:
+except Exception:
     pass
 try:
     subprocess.check_call('rm -rf ./Tonino.app/Contents/Resources/lib/python3.10/matplotlib/mpl-data/sample_data',shell = True)
-except:
+except Exception:
     pass
 try:
     subprocess.check_call('rm -rf ./Tonino.app/Contents/Resources/lib/python3.11/matplotlib/mpl-data/sample_data',shell = True)
-except:
+except Exception:
     pass
 
 print('*** Removing unused files ***')
@@ -324,9 +322,9 @@ for root, dirs, files in os.walk('.'):
 #            print('Deleting', file)
 #            os.remove(os.path.join(root,file))
     # remove test files
-    for dir in dirs:
-        if 'tests' in dir:
-            for rr,_,ff in os.walk(os.path.join(root, dir)):
+    for dd in dirs:
+        if 'tests' in dd:
+            for rr,_,ff in os.walk(os.path.join(root, dd)):
                 for fl in ff:
 #                    print('Deleting', os.path.join(rr,fl))
                     os.remove(os.path.join(rr,fl))

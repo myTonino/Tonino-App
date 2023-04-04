@@ -167,15 +167,15 @@ def getSystemTranslationsPath() -> str:
 # otherwise the path is computed on first call and then memorized
 # if the computed path does not exists it is created
 # if creation or access of the path fails None is returned and memorized
-def getDataDirectory() -> Optional[str]:
+def getDataDirectory() -> str | None:
     app:QCoreApplication = QCoreApplication.instance()
     if app is not None:
         return _getAppDataDirectory()
     return None
 
 # internal function to return
-@functools.lru_cache(maxsize=None)  #for Python >= 3.9 can use @functools.cache
-def _getAppDataDirectory() -> Optional[str]:
+@functools.cache  #for Python >= 3.9 can use @functools.cache
+def _getAppDataDirectory() -> str | None:
     data_dir = QStandardPaths.standardLocations(
         QStandardPaths.StandardLocation.AppLocalDataLocation
     )[0]

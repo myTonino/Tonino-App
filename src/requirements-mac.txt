@@ -1,3 +1,5 @@
+pyobjc-core==9.0.1
+pyobjc-framework-Cocoa==9.0.1
 py2app==0.28.5
 pyserial==3.5
 pyyaml==6.0

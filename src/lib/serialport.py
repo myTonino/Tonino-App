@@ -26,16 +26,17 @@ import serial.tools.list_ports
 import time
 import platform
 import logging
-from typing import Optional, Final, Union, Iterator, cast
+from typing import Final, cast
+from collections.abc import Iterator
 
 _log: Final = logging.getLogger(__name__)
 
-def str2cmd(s:Union[str,bytes]) -> bytes:
+def str2cmd(s:str | bytes) -> bytes:
     if isinstance(s,bytes):
         return s
     return bytes(cast(str,s),'ascii')
 
-def cmd2str(c:Union[str,bytes]) -> str:
+def cmd2str(c:str | bytes) -> str:
     if isinstance(c,bytes):
         return str(c,'latin1')
     return cast(str,c)
@@ -45,8 +46,8 @@ class SerialPort:
     __slots__ = [ 'port', 'model', 'baudrate', 'bytesize', 'parity', 'stopbits', 'timeout', 'SP', 'cmdSeparatorChar' ]
 
     def __init__(self,model:int=0) -> None:
-        self.port:Optional[str] = None
-        self.model:Optional[int] = None # 1: TinyTonino, 0: Classic Tonino, None otherwise
+        self.port:str | None = None
+        self.model:int | None = None # 1: TinyTonino, 0: Classic Tonino, None otherwise
         self.setModel(model) # set model and correspoding baudrate
         self.baudrate:int = 115200
         self.bytesize:int = serial.EIGHTBITS
@@ -56,7 +57,7 @@ class SerialPort:
         self.SP:serial.Serial = serial.Serial()
         self.cmdSeparatorChar:str = ':'
 
-    def setModel(self,model:Optional[int]=0) -> None:
+    def setModel(self,model:int | None=0) -> None:
         self.model = model
         if self.model == 1:
             # Tiny Tonino
@@ -65,7 +66,7 @@ class SerialPort:
             # Classic Tonino
             self.baudrate = 115200
 
-    def getModel(self) -> Optional[int]:
+    def getModel(self) -> int | None:
         return self.model
 
     #loads configuration to ports
@@ -110,7 +111,7 @@ class SerialPort:
         except Exception as e:  # pylint: disable=broad-except
             _log.exception(e)
 
-    def writeString(self,port:str, s:str) -> Optional[str]:
+    def writeString(self,port:str, s:str) -> str | None:
         if not self.SP.is_open:
             self.openPort(port)
         try:
@@ -126,9 +127,9 @@ class SerialPort:
             self.closePort()
             return None
 
-    def sendCommand(self,port:str, command:str, retry:bool=True) -> Optional[str]:
+    def sendCommand(self,port:str, command:str, retry:bool=True) -> str | None:
         _log.debug('sendCommand(%s,%s,%s)',port,command,retry)
-        res:Optional[str] = None
+        res:str | None = None
         if not self.SP.is_open:
             self.openPort(port)
         try:
@@ -197,7 +198,8 @@ class SerialPort:
         self.setModel(0)
         return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
 
-    def filter_ports_by_vid_pid(self,ports:list[serial.tools.list_ports_common.ListPortInfo],vid:Optional[int]=None,pid:Optional[int]=None) -> Iterator[serial.tools.list_ports_common.ListPortInfo]:
+    @staticmethod
+    def filter_ports_by_vid_pid(ports:list[serial.tools.list_ports_common.ListPortInfo],vid:int | None=None,pid:int | None=None) -> Iterator[serial.tools.list_ports_common.ListPortInfo]:
         """ Given a VID and PID value, scans for available port, and
         f matches are found, returns a dict of 'VID/PID/iSerial/Port'
         that have those values.
