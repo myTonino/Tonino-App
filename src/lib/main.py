@@ -33,7 +33,6 @@ import json
 #import typing_json # JSON load/dump with support for TypedDicts
 import time
 import serial  # @UnusedImport
-import serial.tools.list_ports  # @UnusedImport
 import numpy as np
 import numpy.typing as npt
 from functools import reduce as freduce
@@ -42,7 +41,10 @@ import scipy.stats # type: ignore
 
 import logging.config
 from yaml import safe_load as yaml_load
-from typing import Final, Any, TextIO, cast
+from typing import Final, Any, TextIO, cast, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import serial.tools.list_ports_common  # @UnusedImport
 
 try: # activate support for hiDPI screens on Windows
     if str(platform.system()).startswith('Windows'):
@@ -221,18 +223,17 @@ class Tonino(QApplication):
                 self.calib_high_r = r
                 self.calib_high_b = b
                 _log.debug('setCalibReadings(%s,%s): TinyTonino HIGH',r,b)
-        else:
-            # ClassicTonino
-            if abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range:
-                # calib_low disk recognized
-                self.calib_low_r = r
-                self.calib_low_b = b
-                _log.debug('setCalibReadings(%s,%s): ClassicTonino LOW',r,b)
-            elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range:
-                # calib_high disk recognized
-                self.calib_high_r = r
-                self.calib_high_b = b
-                _log.debug('setCalibReadings(%s,%s): ClassicTonino HEIGH',r,b)
+        # ClassicTonino
+        elif abs(r - self.std_calib_low_r) < self.std_calib_low_r_range and abs(b - self.std_calib_low_b) < self.std_calib_low_b_range:
+            # calib_low disk recognized
+            self.calib_low_r = r
+            self.calib_low_b = b
+            _log.debug('setCalibReadings(%s,%s): ClassicTonino LOW',r,b)
+        elif abs(r - self.std_calib_high_r) < self.std_calib_high_r_range and abs(b - self.std_calib_high_b) < self.std_calib_high_b_range:
+            # calib_high disk recognized
+            self.calib_high_r = r
+            self.calib_high_b = b
+            _log.debug('setCalibReadings(%s,%s): ClassicTonino HEIGH',r,b)
 
     def getCalibLow(self) -> tuple[float, float] | None:
         if self.calib_low_r and self.calib_low_b:
@@ -318,7 +319,7 @@ class Tonino(QApplication):
         if event.type() == QEvent.Type.FileOpen:
             try:
                 if self.aw is not None and hasattr(event, 'file'):
-                    self.aw.loadFile(str(event.file()))
+                    self.aw.loadFile(str(event.file())) # pyright: ignore # Cannot access member "file" for type "QEvent"
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
             return True
@@ -400,16 +401,13 @@ class Tonino(QApplication):
 
     # turns a response in a value list with elements of elemType of length numOfArgs or None
     def response2values(self, response:str, elemType:type, numOfArgs:int | None) -> list[Any] | None:
-        res:list[Any] | None = None
         values:list[str] = response.split(self.paramSeparatorChar)
         if len(values) == numOfArgs:
-            res = [elemType(v) for v in values]
-        return res
+            return [elemType(v) for v in values]
+        return None
 
     @staticmethod
     def toString(o:Any) -> str:
-        if sys.version < '3':
-            return str(o)
         if isinstance(o, bytes):
             return str(o, 'latin1')
         return str(o)
@@ -497,7 +495,6 @@ class Tonino(QApplication):
     # onStartup should be true if this is the first check after app start
     def getToninoFirmwareVersion(self, port:str, onStartup:bool=False) -> list[int] | None:
         _log.debug('getToninoFirmwareVersion(%s,%s)',port,onStartup)
-        res:list[int] | None = None
         if port:
             # send "TONINO" to the given serial port and returns the successful parsed version as int list
             # [major,minor,build]
@@ -516,8 +513,8 @@ class Tonino(QApplication):
 #            self.ser.sendCommand(port,"",False) # first send a dummy empty cmd to get serial started # NOTE: this seems not to be neccessary any longer
             response:str | None = self.ser.sendCommand(port,'TONINO')
             if response is not None:
-                res = self.response2values(response,int,3)
-        return res
+                return self.response2values(response,int,3)
+        return None
 
     # cmd: GETBRIGHTNESS (0-15)
     def getDisplayBrightness(self, port:str) -> int | None:
@@ -588,11 +585,7 @@ class Tonino(QApplication):
     # cmd: SETDSCALE
     def setDefaultScale(self, port:str, scaleFlag:bool) -> None:
         if port:
-            value:int
-            if scaleFlag:
-                value = 1
-            else:
-                value = 0
+            value:int = 1 if scaleFlag else 0
             self.ser.sendCommand(port,self.formatCommand('SETDSCALE',[value]))
 
     # cmd: SETNAME (a string of length 8)
@@ -613,10 +606,7 @@ class Tonino(QApplication):
     # cmd: SETDFLIP
     def setSetDisplayFlip(self, port:str, flipFlag:bool) -> None:
         if port:
-            if flipFlag:
-                value = 1
-            else:
-                value = 0
+            value:int = 1 if flipFlag else 0
             self.ser.sendCommand(port,self.formatCommand('SETDFLIP',[value]))
 
     # cmd: GETSCALING
@@ -894,7 +884,7 @@ class PreferencesDialog(ToninoDialog):
                                 self.app.setDisplayBrightness(self.app.toninoPort, self.ui.displaySlider.value())
                             self.app.scales.setDeviceCoefficients(self.app.getScale(self.app.toninoPort))
                             if self.app.aw is not None:
-                                self.app.aw.showMessage(QApplication.translate('Message','Default scale set to {}'.format('Tonino' if f else 'Agtron'),None))
+                                self.app.aw.showMessage(QApplication.translate('Message','Default scale set to {}',None).format('Tonino' if f else 'Agtron')) # pylint: disable=consider-using-f-string
                         else:
                             return
                 except Exception as e: # pylint: disable=broad-except
@@ -948,12 +938,12 @@ class CalibDialog(ToninoDialog):
         self.ui:CalibDialogUI.Ui_Dialog | TinyCalibDialogUI2.Ui_Dialog | TinyCalibDialogUI.Ui_Dialog
         if app.tonino_model == 0: # Classic Tonino
             self.ui = CalibDialogUI.Ui_Dialog()
-        else: # Tiny Tonino
-            if app.toninoFirmwareVersion and len(app.toninoFirmwareVersion) > 2 and (app.toninoFirmwareVersion[0] > 2 or app.toninoFirmwareVersion[1] > 0):
-                # from v2.1.0 on the red disk is the one to start calibration
-                self.ui = TinyCalibDialogUI2.Ui_Dialog()
-            else:
-                self.ui = TinyCalibDialogUI.Ui_Dialog()
+        # Tiny Tonino
+        elif app.toninoFirmwareVersion and len(app.toninoFirmwareVersion) > 2 and (app.toninoFirmwareVersion[0] > 2 or app.toninoFirmwareVersion[1] > 0):
+            # from v2.1.0 on the red disk is the one to start calibration
+            self.ui = TinyCalibDialogUI2.Ui_Dialog()
+        else:
+            self.ui = TinyCalibDialogUI.Ui_Dialog()
         self.ui.setupUi(self)
 
         # translations
@@ -1115,7 +1105,7 @@ class DebugDialog(ToninoDialog):
 
 class PreCalibDialog(ToninoDialog):
 
-    __slots__ = [ 'app', 'sources', ]
+    __slots__ = [ 'app', 'sources' ]
 
     def __init__(self, parent:QWidget, application:Tonino) -> None:
         super().__init__(parent)
@@ -1780,12 +1770,11 @@ class ApplicationWindow(QMainWindow):
                         self.app.scales.addCoordinate(raw_x[0],0)
                         self.ui.widget.canvas.repaint()
                         QTimer.singleShot(0, self.ui.tableView.scrollToBottom)
+                elif retry:
+                    self.addCoordinate(retry=False)
+                    self.ui.widget.canvas.repaint()
                 else:
-                    if retry:
-                        self.addCoordinate(retry=False)
-                        self.ui.widget.canvas.repaint()
-                    else:
-                        self.showMessage(QApplication.translate('Message','Coordinate out of range',None),msecs=10000)
+                    self.showMessage(QApplication.translate('Message','Coordinate out of range',None),msecs=10000)
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
 
@@ -1991,11 +1980,10 @@ class ApplicationWindow(QMainWindow):
         modifiers:Qt.KeyboardModifier = QApplication.keyboardModifiers()
         if modifiers == Qt.KeyboardModifier.ControlModifier:
             self.showPreCalib()
+        elif self.debug:
+            self.showDebug()
         else:
-            if self.debug:
-                self.showDebug()
-            else:
-                self.showCalib()
+            self.showCalib()
 
     def showCalib(self) -> None:
         _log.debug('showCalib')
@@ -2042,7 +2030,7 @@ class ApplicationWindow(QMainWindow):
     # checks all ports for connected Toninos
     # returns (port,version,serial) of the first successful connect or None
     # onStartup should be true if this is the first check after app start
-    def checkPorts(self, ports:list[serial.tools.list_ports_common.ListPortInfo], onStartup:bool=False) -> tuple[str, list[int] | None, str | None] | None:
+    def checkPorts(self, ports:list['serial.tools.list_ports_common.ListPortInfo'], onStartup:bool=False) -> tuple[str, list[int] | None, str | None] | None:
         res:tuple[str, list[int] | None, str | None] | None = None
         if ports and len(ports):
             for p in ports:
@@ -2127,7 +2115,7 @@ class ApplicationWindow(QMainWindow):
     # checks regular for connect or disconnect of a Tonino device
     # on first call, the self.ports list is initialized, all other calls compare the list of ports with that one
     def deviceCheck(self) -> None:
-        newports_obj:list[serial.tools.list_ports_common.ListPortInfo] = self.app.ser.getSerialPorts()
+        newports_obj:list['serial.tools.list_ports_common.ListPortInfo'] = self.app.ser.getSerialPorts()
         newports:list[str] = []
         for p in newports_obj:
             if p is not None:
@@ -2149,28 +2137,27 @@ class ApplicationWindow(QMainWindow):
                             _log.debug('ClassicTonino detected: %s',res)
                         else:
                             _log.debug('TinyTonino detected: %s',res)
+        # in case ports were detected before
+        elif self.toninoConnected():
+            # a Tonino was already connected before
+            if self.app.toninoPort not in newports:
+                # Tonino port disappeared
+                self.disconnectTonino()
         else:
-            # in case ports were detected before
-            if self.toninoConnected():
-                # a Tonino was already connected before
-                if self.app.toninoPort not in newports:
-                    # Tonino port disappeared
-                    self.disconnectTonino()
+            new_ports:list[str] = list(set(newports) - set(self.ports))
+            if self.debug == 2 and new_ports:
+                self.app.toninoPort = new_ports[0]
+                # find the port_obj to extract the Tonino type by PID (tinyToninoPID == 24597)
+                port_obj:'serial.tools.list_ports_common.ListPortInfo' | None = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
+                # Tonino model needs to be set to choose the install the correct firmware version
+                model = 0
+                if port_obj is not None and port_obj.pid == 24597:
+                    model = 1
+                self.app.setModel(model)
+                self.checkFirmwareVersion()
             else:
-                new_ports:list[str] = list(set(newports) - set(self.ports))
-                if self.debug == 2 and new_ports:
-                    self.app.toninoPort = new_ports[0]
-                    # find the port_obj to extract the Tonino type by PID (tinyToninoPID == 24597)
-                    port_obj:serial.tools.list_ports_common.ListPortInfo | None = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
-                    # Tonino model needs to be set to choose the install the correct firmware version
-                    model = 0
-                    if port_obj is not None and port_obj.pid == 24597:
-                        model = 1
-                    self.app.setModel(model)
-                    self.checkFirmwareVersion()
-                else:
-                    # test if any of the new ports is connected to a Tonino
-                    res = self.checkPorts(newports_obj)
+                # test if any of the new ports is connected to a Tonino
+                res = self.checkPorts(newports_obj)
         # update serial ports
         self.ports = newports
         # connect if version was returned
@@ -2235,11 +2222,10 @@ class ApplicationWindow(QMainWindow):
                 event.accept()
             else:
                 QApplication.exit()
+        elif event is not None:
+            event.ignore()
         else:
-            if event is not None:
-                event.ignore()
-            else:
-                QApplication.exit()
+            QApplication.exit()
 
 
 ###########################################################################################################################################

@@ -45,10 +45,9 @@ def main_is_frozen() -> bool:
                 ib = True
         elif platf == 'Windows':
             ib = hasattr(sys, 'frozen')
-        elif platf == 'Linux':
-            if getattr(sys, 'frozen', False):
-                # The application is frozen
-                ib = True
+        elif platf == 'Linux' and getattr(sys, 'frozen', False):
+            # The application is frozen
+            ib = True
     except Exception as e: # pylint: disable=broad-except
         _log.exception(e)
     return ib
@@ -85,11 +84,10 @@ def getResourcePath() -> str:
             res = QApplication.applicationDirPath() + "/includes/"
         else:
             res = os.path.dirname(os.path.realpath(__file__)) + "/../includes/"
+    elif main_is_frozen():
+        res = os.path.dirname(sys.executable) + "\\"
     else:
-        if main_is_frozen():
-            res = os.path.dirname(sys.executable) + "\\"
-        else:
-            res = os.path.dirname(os.path.realpath(__file__)) + "\\..\\includes\\"
+        res = os.path.dirname(os.path.realpath(__file__)) + "\\..\\includes\\"
     return res
 
 # returns the path to the platform dependent binaries
@@ -105,11 +103,10 @@ def getResourceBinaryPath() -> str:
             res = QApplication.applicationDirPath() + "/includes/linux/"
         else:
             res = os.path.dirname(os.path.realpath(__file__)) + "/../includes/linux/"
+    elif main_is_frozen():
+        res = os.path.dirname(sys.executable) + "\\"
     else:
-        if main_is_frozen():
-            res = os.path.dirname(sys.executable) + "\\"
-        else:
-            res = os.path.dirname(os.path.realpath(__file__)) + "\\..\\includes\\windows\\"
+        res = os.path.dirname(os.path.realpath(__file__)) + "\\..\\includes\\windows\\"
     return res
     
 # returns the path to the translations
@@ -125,11 +122,10 @@ def getTranslationsPath() -> str:
             res = QApplication.applicationDirPath() + "/translations/"
         else:
             res = os.path.dirname(os.path.realpath(__file__)) + "/../translations/"
+    elif main_is_frozen():
+        res = os.path.dirname(sys.executable) + "\\translations\\"
     else:
-        if main_is_frozen():
-            res = os.path.dirname(sys.executable) + "\\translations\\"
-        else:
-            res = os.path.dirname(os.path.realpath(__file__)) + "\\..\\translations\\"
+        res = os.path.dirname(os.path.realpath(__file__)) + "\\..\\translations\\"
     return res
     
     
@@ -146,11 +142,10 @@ def getSystemTranslationsPath() -> str:
             res = QApplication.applicationDirPath() + "/translations/"
         else:
             res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+    elif main_is_frozen():
+        res = os.path.dirname(sys.executable) + "\\translations\\"
     else:
-        if main_is_frozen():
-            res = os.path.dirname(sys.executable) + "\\translations\\"
-        else:
-            res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+        res = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     return res
 
 

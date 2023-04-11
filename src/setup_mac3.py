@@ -37,6 +37,7 @@ import plistlib
 from PyQt6.QtCore import QDir
 
 import lib
+import sys
 
 # current version
 VERSION = lib.__version__
@@ -95,7 +96,7 @@ if len(firmware_files) + len(tiny_firmware_files) > 0:
         DATA_FILES = DATA_FILES + [('../Resources', [r'includes/' + tiny_firmware_name])]
 else:
     print('firmware *.hex missing!')
-    quit()
+    sys.exit()
 
 with open('conf/Info.plist', 'r+b') as fp:
     plist:dict[str,str | bool | tuple[str]] = plistlib.load(fp)
@@ -107,7 +108,7 @@ with open('conf/Info.plist', 'r+b') as fp:
     plist['LSMinimumSystemVersion'] = os.environ['MACOSX_DEPLOYMENT_TARGET']
     plist['LSMultipleInstancesProhibited'] = 'false'
 #    plist['LSPrefersPPC'] = False, # not used any longer
-    plist['LSArchitecturePriority'] = 'x86_64',
+    plist['LSArchitecturePriority'] = 'x86_64'
     plist['NSHumanReadableCopyright'] = LICENSE
     plist['NSHighResolutionCapable'] = True
     fp.seek(0, os.SEEK_SET)
@@ -243,10 +244,9 @@ for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
                 if file.endswith('.pyi'):
                     file_path = os.path.join(subdir, file)
                     subprocess.check_call(f'rm -rf {file_path}',shell = True)
-                if file.endswith('.abi3.so') or file.endswith('.pyi'):
-                    if file.split('.')[0] not in Qt_modules:
-                        file_path = os.path.join(subdir, file)
-                        subprocess.check_call(f'rm -rf {file_path}',shell = True)
+                if file.endswith(('.abi3.so', '.pyi')) and file.split('.')[0] not in Qt_modules:
+                    file_path = os.path.join(subdir, file)
+                    subprocess.check_call(f'rm -rf {file_path}',shell = True)
 
 # uncomment for non-Framework variant
     # remove unused Qt frameworks libs (not in Qt_modules_frameworks)

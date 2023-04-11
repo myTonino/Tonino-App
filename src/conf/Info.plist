@@ -46,9 +46,7 @@
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSArchitecturePriority</key>
-	<array>
-		<string>x86_64</string>
-	</array>
+	<string>x86_64</string>
 	<key>LSHasLocalizedDisplayName</key>
 	<false/>
 	<key>LSMinimumSystemVersion</key>

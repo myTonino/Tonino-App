@@ -73,11 +73,9 @@ from lib import main
 
 if __name__ == '__main__':
     #the following line is to trap numpy warnings
-    with numpy.errstate(invalid='ignore',divide='ignore',over='ignore',under='ignore'):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            with suppress_stdout_stderr():
-                main.app.exec()
+    with numpy.errstate(invalid='ignore',divide='ignore',over='ignore',under='ignore'), warnings.catch_warnings(), suppress_stdout_stderr():
+        warnings.simplefilter('ignore')
+        main.app.exec()
 
 
 # EOF

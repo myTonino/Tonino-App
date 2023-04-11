@@ -26,8 +26,11 @@ import serial.tools.list_ports
 import time
 import platform
 import logging
-from typing import Final, cast
 from collections.abc import Iterator
+
+from typing import Final, cast, TYPE_CHECKING
+if TYPE_CHECKING:
+    import serial.tools.list_ports_common  # @UnusedImport
 
 _log: Final = logging.getLogger(__name__)
 
@@ -167,7 +170,7 @@ class SerialPort:
                 return self.sendCommand(port,command,False)
             return None
 
-    def getSerialPorts(self) -> list[serial.tools.list_ports_common.ListPortInfo]:
+    def getSerialPorts(self) -> list['serial.tools.list_ports_common.ListPortInfo']:
         # we are looking for
         #   Classic Tonino: VID 403(hex)/1027(dec) and PID 6001(hex)/24577(dec)
         #      Tiny Tonino: VID 403(hex)/1027(dec) and PID 6015(hex)/24597(dec)
@@ -178,8 +181,8 @@ class SerialPort:
         # TinyTonino model (1)
 #        tinyToninoProduct:str = "VID_0403\+PID_6015"
         tinyToninoPID:int = 24597 # 6015 (hex)
-        ports:list[serial.tools.list_ports_common.ListPortInfo]
-        tinyToninos:list[serial.tools.list_ports_common.ListPortInfo]
+        ports:list['serial.tools.list_ports_common.ListPortInfo']
+        tinyToninos:list['serial.tools.list_ports_common.ListPortInfo']
         if platform.system() == 'Windows':
             # pyserial >2.7
             ports = list(serial.tools.list_ports.comports())
@@ -199,7 +202,7 @@ class SerialPort:
         return list(self.filter_ports_by_vid_pid(ports,vid,classicToninoPID))
 
     @staticmethod
-    def filter_ports_by_vid_pid(ports:list[serial.tools.list_ports_common.ListPortInfo],vid:int | None=None,pid:int | None=None) -> Iterator[serial.tools.list_ports_common.ListPortInfo]:
+    def filter_ports_by_vid_pid(ports:list['serial.tools.list_ports_common.ListPortInfo'],vid:int | None=None,pid:int | None=None) -> Iterator['serial.tools.list_ports_common.ListPortInfo']:
         """ Given a VID and PID value, scans for available port, and
         f matches are found, returns a dict of 'VID/PID/iSerial/Port'
         that have those values.

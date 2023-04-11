@@ -100,17 +100,9 @@ class Scales(QAbstractTableModel):
     # compute the coefficients of the given scale and apply to the current coordinates
     def applyScale(self, scale:Scale) -> None:
         # extract coordinates
-        coordinates: list[list[float | str]]
-        if 'coordinates' in scale:
-            coordinates = scale['coordinates']
-        else:
-            coordinates = []
+        coordinates: list[list[float | str]] = scale['coordinates'] if 'coordinates' in scale else []
         # extract degree
-        polyfit_degree: int
-        if 'degree' in scale:
-            polyfit_degree = scale['degree']
-        else:
-            polyfit_degree = 1
+        polyfit_degree:int = scale['degree'] if 'degree' in scale else 1
         # compute polyfit
         if len(coordinates) > polyfit_degree:
             xv:npt.NDArray[np.float64] = np.array([e[0] for e in coordinates])
@@ -209,12 +201,7 @@ class Scales(QAbstractTableModel):
 
     def addCoordinate(self, x:float, y:int, name:str='') -> None:
         _log.debug('addCoordinate(%s,%s,%s)',x,y,name)
-        y2:float
-        if y == 0:
-            # y from I_SCAN, we compute the T value
-            y2 = self.float2float(self.computeT(x), 2)
-        else:
-            y2 = float(y) #self.float2float(y, 2)
+        y2:float = self.float2float(self.computeT(x), 2) if y == 0 else float(y)
         if name == '':
             name = name or str(len(self.coordinates)+1)
         new_coordinate:Coordinate = Coordinate(x, y2, name, random.random())
@@ -340,21 +327,20 @@ class Scales(QAbstractTableModel):
     def updateCoordinate(self, row:int, c0:float, c1:float) -> None:
         # respect the limits
         # NOSORT
-        if False and ((row > 0 and c0 <= self.coordinates[row-1][0]) or (row < len(self.coordinates) - 1 and c0 >= self.coordinates[row+1][0])):
-            return
-        else:
-            selectedCoordinates = self.getSelectedCoordinates()
-            self.beginResetModel()
-            self.coordinates[row] = Coordinate(c0, float(f'{c1:.2f}'.rstrip('0').rstrip('.')), self.coordinates[row].name, random.random())
-            self.endResetModel()
-            self.computePolyfit()
-            selection:QItemSelection = QItemSelection()
-            for i,c in enumerate(self.coordinates):
-                if c in selectedCoordinates:
-                    selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
-            if self.app.aw is not None:
-                self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
-                self.app.contentModified()
+#        if ((row > 0 and c0 <= self.coordinates[row-1][0]) or (row < len(self.coordinates) - 1 and c0 >= self.coordinates[row+1][0])):
+#            return
+        selectedCoordinates = self.getSelectedCoordinates()
+        self.beginResetModel()
+        self.coordinates[row] = Coordinate(c0, float(f'{c1:.2f}'.rstrip('0').rstrip('.')), self.coordinates[row].name, random.random())
+        self.endResetModel()
+        self.computePolyfit()
+        selection:QItemSelection = QItemSelection()
+        for i,c in enumerate(self.coordinates):
+            if c in selectedCoordinates:
+                selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
+        if self.app.aw is not None:
+            self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
+            self.app.contentModified()
 
     def data(self, index:QModelIndex, role:int = Qt.ItemDataRole.DisplayRole) -> str | QBrush | int | None:
         if not index.isValid():
