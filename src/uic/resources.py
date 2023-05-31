@@ -166,7 +166,7 @@ def getDataDirectory() -> str | None:
     app:QCoreApplication = QCoreApplication.instance()
     if app is not None:
         return _getAppDataDirectory()
-    return None
+    return None # type: ignore # mypy Statement is unreachable  [unreachable]
 
 # internal function to return
 @functools.cache  #for Python >= 3.9 can use @functools.cache

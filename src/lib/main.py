@@ -41,10 +41,11 @@ import scipy.stats # type: ignore
 
 import logging.config
 from yaml import safe_load as yaml_load
-from typing import Final, Any, TextIO, cast, TYPE_CHECKING
+from typing import Final, Any, TextIO, cast, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import serial.tools.list_ports_common  # @UnusedImport
+from PyQt6.QtGui import QStyleHints  # @UnusedImport
 
 try: # activate support for hiDPI screens on Windows
     if str(platform.system()).startswith('Windows'):
@@ -56,19 +57,19 @@ except Exception: # pylint: disable=broad-except
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QFileDialog, QProgressDialog, QDialogButtonBox, QInputDialog, QWidget)
 from PyQt6.QtGui import (QAction, QIcon, QKeyEvent, QClipboard, QCloseEvent)
 from PyQt6.QtCore import (QObject, QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection,
-                            QItemSelectionModel, pyqtSlot)
+                            QItemSelectionModel, pyqtSlot, qVersion, QVersionNumber)
 #from PyQt6 import sip # @Reimport @UnresolvedImport @UnusedImport
 
 from lib import __version__
 import lib.serialport
 import lib.scales
-from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, TinyCalibDialogUI2, DebugDialogUI, PreCalibDialogUI
-from uic import resources
+from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, TinyCalibDialogUI2, DebugDialogUI, PreCalibDialogUI # type: ignore
+from uic import resources # type: ignore
 
 # platform dependent imports:
-if sys.platform.startswith('darwin'):
-    # import module to detect if macOS dark mode is active or not
-    import darkdetect # type: ignore # @UnresolvedImport # pylint: disable=import-error
+if sys.platform.startswith('darwin') and QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
+    # import darkdetect module to detect if macOS dark mode is active or not if Qt < 6.5.0, otherwise we related to QTs ColorScheme() mechanism
+    import darkdetect # type: ignore # type: ignore # @UnresolvedImport # pylint: disable=import-error
 
 _log: Final = logging.getLogger(__name__)
 
@@ -91,9 +92,17 @@ class Tonino(QApplication):
         self.aw:ApplicationWindow | None = None
 
         self.darkmode:bool = False # holds current darkmode state
-        if sys.platform.startswith('darwin'):
-            # remember darkmode
-            self.darkmode = darkdetect.isDark()
+        self.style_hints:Optional['QStyleHints'] = None # holds the styleHints instance on Qt 6.5 and higher
+        if QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
+            if sys.platform.startswith('darwin'):
+                # remember darkmode using darkdetect on macOS Legacy with older Qt versions
+                self.darkmode = darkdetect.isDark() # type: ignore # "isDark" is not a known member of module "darkdetect" # pylint: disable=c-extension-no-member
+            # otherwise we do not have any mean to detect the systems palette
+        else:
+            # we use the Qt 6.5 ColorScheme mechanism to detect dark mode
+            self.style_hints = self.styleHints()
+            self.darkmode = self.style_hints.colorScheme() == Qt.ColorScheme.Dark
+            self.style_hints.colorSchemeChanged.connect(self.colorSchemeChanged)
 
         # constants
         self.tonino_model:int = 1 # 0: Classic Tonino (@115200 baud); 1: Tiny Tonino (@57600 baud)
@@ -166,6 +175,16 @@ class Tonino(QApplication):
         self.calib_high_r:float | None = None
         self.calib_high_b:float | None = None
         self.retrieveIncludedFirmware()
+
+    try:
+        @pyqtSlot('Qt::ColorScheme')
+        def colorSchemeChanged(self, colorScheme:'Qt.ColorScheme') -> None:
+            if self.aw is not None and self.darkmode != bool(colorScheme == Qt.ColorScheme.Dark):
+                self.darkmode = bool(colorScheme == Qt.ColorScheme.Dark) # not self.darkmode
+                self.aw.ui.widget.canvas.redraw(force=True)
+                self.scales.refresh()
+    except Exception: # pylint: disable=broad-except
+        pass
 
     def setModel(self,model:int) -> None:
         self.tonino_model = model
@@ -1475,18 +1494,22 @@ class ApplicationWindow(QMainWindow):
 
         self.updateLCDS()
 
-        if sys.platform.startswith('darwin'):
+        if sys.platform.startswith('darwin') and QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
             # only on macOS we install the eventFilter to catch the signal on switching between light and dark modes
             self.installEventFilter(self)
 
         _log.info('initalized')
 
-    def eventFilter(self, obj:QObject, event:QEvent):
-        if event.type() == QEvent.Type.ApplicationPaletteChange and sys.platform.startswith('darwin') and darkdetect.isDark() != self.app.darkmode:
-            # called if the palette changed (switch between dark and light mode on macOS)
-            self.app.darkmode = darkdetect.isDark()
-            self.ui.widget.canvas.redraw(force=True)
-            self.app.scales.refresh()
+    def eventFilter(self, obj, event):
+        # pylint: disable=c-extension-no-member
+        try:
+            if event.type() == QEvent.Type.ApplicationPaletteChange and self.app is not None and sys.platform.startswith('darwin') and QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0) and darkdetect.isDark() != self.app.darkmode: # type: ignore # "isDark" is not a known member of module "darkdetect"
+                    # called if the palette changed (switch between dark and light mode on macOS Legacy builds)
+                self.app.darkmode = darkdetect.isDark() # not self.app.darkmode # type: ignore
+                self.ui.widget.canvas.redraw(force=True)
+                self.app.scales.refresh()
+        except Exception: # pylint: disable=broad-except
+            pass
         return super().eventFilter(obj, event)
 
     @pyqtSlot()
@@ -1622,8 +1645,6 @@ class ApplicationWindow(QMainWindow):
             # update window title
             self.updateWindowTitle()
             # update recent file menu
-            if self.app.recentFiles is None:
-                self.app.recentFiles = []
             try:
                 self.app.recentFiles = list(filter((filename).__ne__, self.app.recentFiles))
             except Exception as e: # pylint: disable=broad-except

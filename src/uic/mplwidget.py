@@ -24,7 +24,7 @@
 
 import matplotlib as mpl # type: ignore
 
-from typing import Final, Any, TYPE_CHECKING
+from typing import Final, Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import PyQt6 # noqa: F401 # @UnusedImport # for mypy typechecking
@@ -84,7 +84,7 @@ class MplCanvas(FigureCanvas):
         
         self.redrawSemaphore = QSemaphore(1)
         
-        self.ax_background = None # canvas background for bit blitting
+        self.ax_background:None | Any = None # canvas background for bit blitting
         self.ax_background_bounds:tuple[float] | None = None
         
         self.x_step:Final = 0.01

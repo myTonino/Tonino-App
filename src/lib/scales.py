@@ -123,13 +123,10 @@ class Scales(QAbstractTableModel):
 
     def setScale(self, scale: Scale) -> None:
         self.beginResetModel()
-        if 'coordinates' in scale:
-            self.coordinates = []
-            for c in scale['coordinates']:
-                if len(c) > 2 and isinstance(c[0], float) and isinstance(c[1], float) and isinstance(c[2], str):
-                    self.coordinates.append(Coordinate(c[0], c[1], c[2], random.random()))
-        else:
-            self.coordinates = []
+        self.coordinates = []
+        for c in scale['coordinates']:
+            if len(c) > 2 and isinstance(c[0], float) and isinstance(c[1], float) and isinstance(c[2], str):
+                self.coordinates.append(Coordinate(c[0], c[1], c[2], random.random()))
         prev_degree = self.polyfit_degree
         if 'degree' in scale:
             self.polyfit_degree = scale['degree']

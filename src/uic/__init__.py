@@ -23,7 +23,7 @@
 
 from . import MainWindowUI
 from . import AboutDialogUI # type: ignore
-from . import icons_rc
+from . import icons_rc # type: ignore
 from . import calib_high_rc
 from . import calib_low_rc
 from . import calib_low_tiny_rc
