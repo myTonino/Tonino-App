@@ -480,6 +480,8 @@ class MplCanvas(FigureCanvas):
                             x,y = self.annotationPosition(coordinates,i,c)
                             an = self.ax.annotate(c[2],xy=(c[0],c[1]),xytext=(x,y),color=grey,
                                 arrowprops={'shrinkB': 5, 'connectionstyle': 'arc3,rad=0.2', 'arrowstyle': '->', 'color': grey, 'relpos': (0,0)},
+                                fontfamily='sans-serif',
+                                fontsize='small',
                                 path_effects=[patheffects.withStroke(linewidth=2, foreground=background)])
                             self.ax.draw_artist(an)
                             self.annotations.append(an)

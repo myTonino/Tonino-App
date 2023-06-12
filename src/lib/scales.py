@@ -77,7 +77,7 @@ class Scales(QAbstractTableModel):
         random.seed()
 
     def computeT(self, x:float) -> float:
-        return float(np.poly1d(self.deviceCoefficients or self.coefficients or self.defaultCoefficients)([x])[0])
+        return max(0,float(np.poly1d(self.deviceCoefficients or self.coefficients or self.defaultCoefficients)([x])[0]))
 
     # accessors and selectors
 
