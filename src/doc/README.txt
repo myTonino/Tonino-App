@@ -11,7 +11,7 @@ The project home of this app is on GitHub where all source and binary files are 
 
 FEATURES
 
-o runs on macOS 10.15 and newer, Windows 8
+o runs on macOS 11 and newer, 64bit Windows 10
 o allows to connect to a Tonino device and trigger the measurements
 o designer for custom scales
 o save/load of custom scales
@@ -23,11 +23,11 @@ o update the firmware of a connected Tonino device
 INSTALLATION
 
 
-o Windows 8 and newer
+o Windows 10 (64bit) and newer
 
 - Download and run the Tonino App Windows installer
 
-o Mac OS X 10.15 and newer
+o Mac OS X 11 and newer
 
 - Download and run the Tonino App OS X installer
 - Double click on the dmg file you just downloaded
@@ -58,24 +58,27 @@ LIBRARIES
 
 The Tonino app uses the following libraries in unmodified forms:
 
-- Python 3.10.x released under the PSF licence http://www.python.org/psf/
+- Python 3.11.x released under the PSF licence http://www.python.org/psf/
   http://www.python.org/
-- QT 6.3.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
+- QT 6.5.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
   http://qt-project.org/products/licensing
 - Numpy 1.x and Scipy 1.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
   http://www.scipy.org/
 - PyQt 6.x and SIP 6.x under the Qt GNU GPL v. 3.0 licence; Copyright (c) 2010 Riverbank Computing Limited
   http://www.riverbankcomputing.co.uk/software/pyqt/
-- matplotlib 2.x, Copyright (c) 2002-2013 John D. Hunter; All Rights Reserved. Distributed under a licence based on PSF.
+- matplotlib 3.x, Copyright (c) 2002-2013 John D. Hunter; All Rights Reserved. Distributed under a licence based on PSF.
   http://matplotlib.sourceforge.net
 - py2app 0.28.x under the PSF open source licence; Copyright (c) 2004-2006 Bob Ippolito <bob at redivi.com>
-  Copyright (c) 2010-2022 Ronald Oussoren <ronaldoussoren at mac.com>.
+  Copyright (c) 2010-2023 Ronald Oussoren <ronaldoussoren at mac.com>.
   http://packages.python.org/py2app/
 - pyinstaller, Copyright (c) 2000-2022 Thomas Heller, Mark Hammond, Jimmy Retzlaff
   http://www.py2exe.org/
 
 
 VERSION HISTORY
+
+v1.0.25 (6/2023)
+ - Adds Windows dark mode support
 
 v1.0.24 (1/2023)
  - Adds Agtron default scale support
