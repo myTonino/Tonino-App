@@ -30,7 +30,7 @@ from collections.abc import Iterator
 
 from typing import Final, cast, TYPE_CHECKING
 if TYPE_CHECKING:
-    import serial.tools.list_ports_common  # @UnusedImport
+    import serial.tools.list_ports_common  # @UnusedImport # # noqa: TCH004
 
 _log: Final = logging.getLogger(__name__)
 
