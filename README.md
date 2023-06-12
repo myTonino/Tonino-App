@@ -22,6 +22,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.25 Adds Windows dark mode support
 - v1.0.24 Adds Agtron default scale support
 - v1.0.23 Adds support for M1 Macs and logging
 - v1.0.22 Adds PRECAL support<br>(last version supporting macOS 10.13 and Windows 8)</br>

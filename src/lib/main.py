@@ -2267,7 +2267,9 @@ app = Tonino(args)
 app.setApplicationName('Tonino')                  #needed by QSettings() to store windows geometry in operating system
 app.setOrganizationName('myTonino')               #needed by QSettings() to store windows geometry in operating system
 app.setOrganizationDomain('my-tonino.com')        #needed by QSettings() to store windows geometry in operating system
-if platform.system() == 'Windows':
+if platform.system().startswith('Windows'):
+    # on Windows we use the Fusion style which supports the dark mode
+    app.setStyle('Fusion')
     app.setWindowIcon(QIcon('tonino.png'))
     if resources.main_is_frozen():
         try:

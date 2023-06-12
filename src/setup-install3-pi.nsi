@@ -1,7 +1,7 @@
 ;
 ; setup-install.nsi
 ;
-; Copyright (c) 2016, Paul Holleis, Marko Luther
+; Copyright (c) 2023, Paul Holleis, Marko Luther
 ; All rights reserved.
 ;
 ;
@@ -95,7 +95,7 @@ RequestExecutionLevel admin
 !define pyinstallerOutputDir 'dist/tonino'
 !define PRODUCT_NAME "Tonino"
 !define PRODUCT_EXE "tonino.exe"
-!define PRODUCT_VERSION "1.0.24.0"
+!define PRODUCT_VERSION "1.0.25.0"
 !define PRODUCT_PUBLISHER "Marko Luther, Paul Holleis"
 !define PRODUCT_WEB_SITE "http://my-tonino.com"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_EXE}"
@@ -236,7 +236,7 @@ FunctionEnd
 Function un.onInit
 
     IfSilent +3
-        MessageBox MB_ICONQUESTION|MB_YESNO|MB_TOPMOST "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+        MessageBox MB_ICONQUESTION|MB_YESNO|MB_TOPMOST "Are you sure you want to remove $(^Name) and all of its components?" IDYES +2
         Abort
     HideWindow
 
@@ -290,6 +290,7 @@ Section Uninstall
   RMDir /r "$INSTDIR\altgraph-0.17.2.dist-info"
   RMDir /r "$INSTDIR\kiwisolver"
   RMDir /r "$INSTDIR\matplotlib"
+  RMDir /r "$INSTDIR\matplotlib.libs"
   RMDir /r "$INSTDIR\numpy"
   RMDir /r "$INSTDIR\PIL"
   RMDir /r "$INSTDIR\pyinstaller-5.3.dist-info"
