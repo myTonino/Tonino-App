@@ -77,6 +77,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.26 (7/2023)
+ - Fixes regression in v1.0.25 preventing a proper connection to Tonino Classics
+
 v1.0.25 (6/2023)
  - Adds Windows dark mode support
 
