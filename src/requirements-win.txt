@@ -1,7 +1,7 @@
-pyinstaller==5.12.0
+pyinstaller==5.13.0
 pyserial==3.5
 pyyaml==6.0
-numpy==1.24.3
-scipy==1.10.1
+numpy==1.25.1
+scipy==1.11.1
 PyQt6==6.5.1
-matplotlib==3.7.0
+matplotlib==3.7.2

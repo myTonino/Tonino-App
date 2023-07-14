@@ -211,7 +211,7 @@ target-version = "py311"
 ## pyright conf
 
 [tool.pyright]
-include = ["lib", "uic"]
+include = ["lib"]
 #exclude = []
 # ignore = ["src/oldstuff"]
 

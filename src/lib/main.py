@@ -156,7 +156,7 @@ class Tonino(QApplication):
         self.recentFiles:list[str] = []
 
         self.pre_cal_targets:list[float] = [] # pre calibration targets for the classic r/b ratio formula usind in firmware v2 and v3 for recognizing the calib disk
-        self.pre_cal_cardinality:int = 4 # number of required source and target readings; by default 4, can be switched to 8 (two rounds)
+        self.pre_cal_cardinality:int = 2 # number of required source and target readings; by default 2 (just the calib disk patches)
         self.pre_cal_degree:int = 2 # quadratic
 
         self.serialStringMaxLength:Final[int] = 50
