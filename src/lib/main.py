@@ -41,11 +41,12 @@ import scipy.stats # type: ignore
 
 import logging.config
 from yaml import safe_load as yaml_load
-from typing import Final, Any, TextIO, cast, Optional, TYPE_CHECKING
+from typing import Final, Any, TextIO, cast, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import serial.tools.list_ports_common  # @UnusedImport
-from PyQt6.QtGui import QStyleHints  # @UnusedImport
+    from PyQt6.QtGui import QStyleHints  # @UnusedImport
+    from PyQt6.QtWidgets import QPushButton  # @UnusedImport
 
 try: # activate support for hiDPI screens on Windows
     if str(platform.system()).startswith('Windows'):
@@ -92,7 +93,7 @@ class Tonino(QApplication):
         self.aw:ApplicationWindow | None = None
 
         self.darkmode:bool = False # holds current darkmode state
-        self.style_hints:Optional['QStyleHints'] = None # holds the styleHints instance on Qt 6.5 and higher
+        self.style_hints: 'QStyleHints'|None = None # holds the styleHints instance on Qt 6.5 and higher
         if QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
             if sys.platform.startswith('darwin'):
                 # remember darkmode using darkdetect on macOS Legacy with older Qt versions
@@ -101,8 +102,9 @@ class Tonino(QApplication):
         else:
             # we use the Qt 6.5 ColorScheme mechanism to detect dark mode
             self.style_hints = self.styleHints()
-            self.darkmode = self.style_hints.colorScheme() == Qt.ColorScheme.Dark
-            self.style_hints.colorSchemeChanged.connect(self.colorSchemeChanged)
+            if self.style_hints is not None:
+                self.darkmode = self.style_hints.colorScheme() == Qt.ColorScheme.Dark
+                self.style_hints.colorSchemeChanged.connect(self.colorSchemeChanged)
 
         # constants
         self.tonino_model:int = 1 # 0: Classic Tonino (@115200 baud); 1: Tiny Tonino (@57600 baud)
@@ -334,8 +336,8 @@ class Tonino(QApplication):
         return False
 
     # load Tonino configuration on double click a *.toni file in the Finder while Tonino.app is already running
-    def event(self, event:QEvent) -> bool:
-        if event.type() == QEvent.Type.FileOpen:
+    def event(self, event:QEvent|None) -> bool:
+        if event is not None and event.type() == QEvent.Type.FileOpen:
             try:
                 if self.aw is not None and hasattr(event, 'file'):
                     self.aw.loadFile(str(event.file())) # pyright: ignore # Cannot access member "file" for type "QEvent"
@@ -434,7 +436,7 @@ class Tonino(QApplication):
     @staticmethod
     def float2str(max_len:int, n:float) -> str:
         if n == int(n):
-            return f'{n:d}'
+            return f'{n:.0f}'
         li:int = len(str(int(n))) + 1 # of characters for decimal point + preceding numbers
         return (f'{n:.{max(0,max_len-li)}f}').rstrip('0').rstrip('.')
 
@@ -454,7 +456,7 @@ class Tonino(QApplication):
     def formatCommand(self, cmd:str, values:list[Any], onSend:bool=True, fitStringMaxLength:bool=False) -> str:
         if fitStringMaxLength:
             prefix:str = cmd + (' ' if onSend else ':')
-            return prefix + self.floats2str(self.serialStringMaxLength - len(prefix) - (len(values)-1),values)
+            return prefix + self.floats2str(self.serialStringMaxLength - len(prefix) - (len(values)-1), values)
         return cmd + (' ' if onSend else ':') + self.paramSeparatorChar + self.paramSeparatorChar.join([self.toString(v) for v in values])
 
 #    def resetArduino(self) -> None:
@@ -638,6 +640,7 @@ class Tonino(QApplication):
 
     # cmd: SETSCALING
     def setScale(self, port:str, scaling:list[float]) -> None:
+        _log.info('setScale(%s,%s)',port,scaling)
         if port:
             self.ser.sendCommand(port,self.formatCommand('SETSCALING',scaling, fitStringMaxLength=True))
 
@@ -681,6 +684,7 @@ class Tonino(QApplication):
     # fails silent if silent is True
     # returns True if loading suceeded
     def loadScale(self, filename:str, silent:bool = False) -> bool:
+        _log.info('loadScale(%s,%s)',filename, silent)
         try:
             if self.aw is not None and self.aw.verifyDirty():
                 infile:TextIO
@@ -764,10 +768,11 @@ class ToninoDialog(QDialog):
 
     __slots__ = [ 'key' ]
 
-    def keyPressEvent(self, event:QKeyEvent) -> None:
-        key:int = int(event.key())
-        if key == 16777216: #ESCAPE
-            self.close()
+    def keyPressEvent(self, event:QKeyEvent|None) -> None:
+        if event is not None:
+            key:int = int(event.key())
+            if key == 16777216: #ESCAPE
+                self.close()
 
 class PreferencesDialog(ToninoDialog):
 
@@ -970,8 +975,10 @@ class CalibDialog(ToninoDialog):
         self.ui.pushButtonScan.setText(QApplication.translate('Dialog', 'Scan'))
 
         # disable elements
-        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
-        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint()
+        ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_button is not None:
+            ok_button.setEnabled(False)
+            ok_button.repaint()
         self.ui.calibLowLabel.setEnabled(False)
         self.ui.calibHighLabel.setEnabled(False)
         # connect actions
@@ -1018,8 +1025,10 @@ class CalibDialog(ToninoDialog):
                         self.ui.calibHighLabel.repaint()
                     # if both, low and high readings are set, enable the OK button
                     if calib_low is not None and calib_high is not None:
-                        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
-                        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint() # on some Qt/PyQt 5.x versions the button is not automatically repainted!
+                        ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+                        if ok_button is not None:
+                            ok_button.setEnabled(True)
+                            ok_button.repaint() # on some Qt/PyQt 5.x versions the button is not automatically repainted!
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
 
@@ -1054,8 +1063,10 @@ class DebugDialog(ToninoDialog):
         # prepare log
         #self.ui.logOutput.setReadOnly(True)
         # disable elements
-        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
-        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint()
+        ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_button is not None:
+            ok_button.setEnabled(False)
+            ok_button.repaint()
         self.ui.pushButtonScan.setEnabled(False)
         self.ui.pushButtonScan.repaint()
         QTimer.singleShot(0, self.insertSettings)
@@ -1081,8 +1092,10 @@ class DebugDialog(ToninoDialog):
             self.app.processEvents()
             self.insertRequestResponse('GETCALINIT')
             self.app.processEvents()
-        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
-        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok).repaint()
+            ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+            if ok_button is not None:
+                ok_button.setEnabled(True)
+                ok_button.repaint()
         self.ui.pushButtonScan.setEnabled(True)
         self.ui.pushButtonScan.repaint()
 
@@ -1273,7 +1286,7 @@ class PreCalibDialog(ToninoDialog):
             if self.app.toninoPort:
                 self.ui.logOutput.appendPlainText('<Set>')
                 line:str
-                ok:bool
+                ok:bool|None
                 line, ok = QInputDialog.getText(self, 'Set Pre-Calibration', 'Enter pre-calibration triple:')
                 if ok:
                     line = line.replace('\t',' ').replace(',','.')
@@ -1390,8 +1403,8 @@ class ApplicationWindow(QMainWindow):
         self.checkDecay:Final[int] = 5*60 # after 5min turn to slowCheck
         self.currentFileDirtyPrefix:Final[str] = '*'
         self.tableheaders:list[str] = ['T',QApplication.translate('MainWindow','Name',None)]
-        self.popupadd = QApplication.translate('MainWindow','add',None)
-        self.popupdelete = QApplication.translate('MainWindow','delete',None)
+        self.popupadd:str = QApplication.translate('MainWindow','add',None)
+        self.popupdelete:str = QApplication.translate('MainWindow','delete',None)
 
         # variables
         self.debug:int = 0 # toggled via a right-click / Control-click (macOS) on the About dialog
@@ -1470,7 +1483,9 @@ class ApplicationWindow(QMainWindow):
         self.ui.tableView.setItemDelegate(lib.scales.ValidatedItemDelegate(self.ui.tableView))
 
         # connect the table selection
-        self.ui.tableView.selectionModel().selectionChanged.connect(self.selectionChanged)
+        sm: QItemSelectionModel | None = self.ui.tableView.selectionModel()
+        if sm is not None:
+            sm.selectionChanged.connect(self.selectionChanged)
 
         self.showprogress.connect(self.showProgress)
         self.endprogress.connect(self.endProgress)
@@ -1537,18 +1552,20 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(bool)
     def actionCopy(self,_:bool=False) -> None:
         try:
-            clipboard = QApplication.clipboard()
-            selected = self.app.scales.getSelectedCoordinates()
-            selected_text = self.app.scales.coordinates2text(selected)
-            clipboard.setText(selected_text)
+            clipboard: QClipboard|None = QApplication.clipboard()
+            if clipboard is not None:
+                selected = self.app.scales.getSelectedCoordinates()
+                selected_text = self.app.scales.coordinates2text(selected)
+                clipboard.setText(selected_text)
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
 
     @pyqtSlot(bool)
     def actionPaste(self,_:bool=False) -> None:
         try:
-            clipboard:QClipboard = QApplication.clipboard()
-            self.app.scales.addCoordinates(self.app.scales.text2coordinates(clipboard.text()))
+            clipboard: QClipboard|None = QApplication.clipboard()
+            if clipboard is not None:
+                self.app.scales.addCoordinates(self.app.scales.text2coordinates(clipboard.text()))
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
 
@@ -1586,10 +1603,11 @@ class ApplicationWindow(QMainWindow):
 # Keyboard Handling
 #
 
-    def keyPressEvent(self, event:QKeyEvent) -> None:
-        key:int = int(event.key())
-        if key == 16777219: # backspace
-            self.deleteCoordinates()
+    def keyPressEvent(self, event: QKeyEvent|None) -> None:
+        if event is not None:
+            key:int = int(event.key())
+            if key == 16777219: # backspace
+                self.deleteCoordinates()
 
 
 #
@@ -1696,7 +1714,7 @@ class ApplicationWindow(QMainWindow):
 
     @pyqtSlot(bool)
     def openRecent(self,_:bool=False) -> None:
-        action:QObject = self.sender()
+        action: QObject|None = self.sender()
         if action is not None and isinstance(action, QAction):
             _log.debug('openRecent')
             self.loadFile(action.data())
@@ -1736,7 +1754,7 @@ class ApplicationWindow(QMainWindow):
 
     @pyqtSlot(bool)
     def applyRecent(self,_:bool=False) -> None:
-        action:QObject = self.sender()
+        action: QObject|None = self.sender()
         if action is not None and isinstance(action, QAction):
             _log.debug('applyRecent')
             self.applyScale(action.data())
@@ -1802,8 +1820,10 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot(bool)
     def deleteCoordinates(self,_:bool=False) -> None:
         _log.debug('deleteCoordinates')
-        self.app.scales.deleteCoordinates([s.row() for s in self.ui.tableView.selectionModel().selectedRows()])
-        self.ui.widget.canvas.repaint()
+        sm: QItemSelectionModel|None = self.ui.tableView.selectionModel()
+        if sm is not None:
+            self.app.scales.deleteCoordinates([s.row() for s in sm.selectedRows()])
+            self.ui.widget.canvas.repaint()
 
     @pyqtSlot(bool)
     def clearCoordinates(self,_:bool=False) -> None:
@@ -1848,7 +1868,8 @@ class ApplicationWindow(QMainWindow):
     def updateLCDS(self) -> None:
         try:
             coordinates:list[lib.scales.Coordinate]
-            if self.ui and self.ui.tableView and self.ui.tableView.selectionModel() and self.ui.tableView.selectionModel().selectedRows():
+            sm: QItemSelectionModel | None = self.ui.tableView.selectionModel()
+            if self.ui and self.ui.tableView and sm is not None and sm.selectedRows():
                 coordinates = self.app.scales.getSelectedCoordinates()
             else:
                 coordinates = []
@@ -1895,7 +1916,8 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot('QItemSelection','QItemSelection')
     def selectionChanged(self, _newSelection:QItemSelection, _oldSelection:QItemSelection) -> None:
         self.updateLCDS()
-        if self.ui.tableView.selectionModel().selectedRows():
+        sm: QItemSelectionModel | None = self.ui.tableView.selectionModel()
+        if sm is not None and sm.selectedRows():
             self.ui.pushButtonDelete.setEnabled(True)
             self.ui.pushButtonDelete.repaint()
         else:
@@ -1904,15 +1926,18 @@ class ApplicationWindow(QMainWindow):
         self.ui.widget.canvas.redraw()
 
     def getSelectedRows(self) -> list[int]:
-        if self.ui.tableView and self.ui.tableView.selectionModel():
-            return [s.row() for s in self.ui.tableView.selectionModel().selectedRows()]
+        sm: QItemSelectionModel | None = self.ui.tableView.selectionModel()
+        if self.ui.tableView and sm is not None:
+            return [s.row() for s in sm.selectedRows()]
         return []
 
     # invoked by clicks on coordinates in the graph
     def toggleSelection(self, row:int) -> None:
         self.ui.tableView.setFocus()
-        self.ui.tableView.selectionModel().select(QItemSelection(self.app.scales.createIndex(row,0),self.app.scales.createIndex(row,1)),
-            QItemSelectionModel.SelectionFlag.Toggle)
+        sm: QItemSelectionModel | None = self.ui.tableView.selectionModel()
+        if sm is not None:
+            sm.select(QItemSelection(self.app.scales.createIndex(row,0),self.app.scales.createIndex(row,1)),
+                QItemSelectionModel.SelectionFlag.Toggle)
 
 
 #
@@ -2305,7 +2330,7 @@ if platform.system() == 'Darwin':
     from Cocoa import NSUserDefaults  # type: ignore # @UnresolvedImport # pylint: disable=no-name-in-module
     defs = NSUserDefaults.standardUserDefaults()
     langs = defs.objectForKey_('AppleLanguages')
-    if langs.objectAtIndex_(0)[:3] == 'zh_' or langs.objectAtIndex_(0)[:3] == 'pt_':
+    if langs.objectAtIndex_(0)[:3] in ('zh_', 'pt_'):
         lang = langs.objectAtIndex_(0)[:5]
     else:
         lang = langs.objectAtIndex_(0)[:2]

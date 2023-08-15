@@ -192,7 +192,7 @@ qt_plugin_files = [
 # remove unused Qt frameworks libs (not in Qt_modules_frameworks)
 for subdir, dirs, _files in os.walk('./Tonino.app/Contents/Frameworks'):
     for dd in dirs:
-        if dd.startswith('Qt') and dir.endswith('.framework') and dd not in Qt_frameworks:
+        if dd.startswith('Qt') and dd.endswith('.framework') and dd not in Qt_frameworks:
             file_path = os.path.join(subdir, dd)
             print(f'rm -rf {file_path}')
             subprocess.check_call(f'rm -rf {file_path}',shell = True)

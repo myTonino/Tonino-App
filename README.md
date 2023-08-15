@@ -22,6 +22,7 @@ Tonino Resources
 
 Version History
 ---------------
+- v1.0.27 Fixes regression in v1.0.26 preventing loading of some scales
 - v1.0.26 Fixes regression in v1.0.25 preventing a proper connection to Tonino Classics
 - v1.0.25 Adds Windows dark mode support
 - v1.0.24 Adds Agtron default scale support

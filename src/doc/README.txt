@@ -77,6 +77,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 VERSION HISTORY
 
+v1.0.27 (8/2023)
+ - Fixes regression in v1.0.26 preventing loading of some scales
+
 v1.0.26 (7/2023)
  - Fixes regression in v1.0.25 preventing a proper connection to Tonino Classics
 

@@ -163,7 +163,7 @@ def getSystemTranslationsPath() -> str:
 # if the computed path does not exists it is created
 # if creation or access of the path fails None is returned and memorized
 def getDataDirectory() -> str | None:
-    app:QCoreApplication = QCoreApplication.instance()
+    app:QCoreApplication|None = QCoreApplication.instance()
     if app is not None:
         return _getAppDataDirectory()
     return None # type: ignore # mypy Statement is unreachable  [unreachable]

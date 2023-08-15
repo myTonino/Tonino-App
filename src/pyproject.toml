@@ -172,12 +172,17 @@ enable='''c-extension-no-member,'''
 
 [tool.mypy]
 files = ["lib/*.py", "uic/mplwidget.py", "uic/resources.py"]
+exclude = ['build', 'dist']
 python_version = "3.11"
 check_untyped_defs = true
 
 [[tool.mypy.overrides]]
 module = "matplotlib.*"
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "uic.*"
+follow_imports = 'skip'
 
 
 ## ruff conf

@@ -583,7 +583,9 @@ class mplwidget(QWidget):
     
     def __init__(self, parent:QWidget | None = None) -> None:
         QWidget.__init__(self, parent)
-        if (parent and parent.parent() and parent.parent().parent()):
+        if (parent is not None and
+                parent.parent() is not None and
+                parent.parent().parent() is not None): # type: ignore
             self.app:Tonino = parent.parent().parent().app # type: ignore
             self.canvas:MplCanvas = MplCanvas(self.app)
             vbl:QVBoxLayout = QVBoxLayout()

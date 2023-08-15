@@ -125,7 +125,7 @@ class Scales(QAbstractTableModel):
         self.beginResetModel()
         self.coordinates = []
         for c in scale['coordinates']:
-            if len(c) > 2 and isinstance(c[0], float) and isinstance(c[1], float) and isinstance(c[2], str):
+            if len(c) > 2 and isinstance(c[0], float) and isinstance(c[1], int|float) and isinstance(c[2], str):
                 self.coordinates.append(Coordinate(c[0], c[1], c[2], random.random()))
         prev_degree = self.polyfit_degree
         if 'degree' in scale:
@@ -161,7 +161,9 @@ class Scales(QAbstractTableModel):
             if c in selectedCoordinates:
                 selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
         if self.app.aw is not None:
-            self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
+            sm: QItemSelectionModel | None = self.app.aw.ui.tableView.selectionModel()
+            if sm is not None:
+                sm.select(selection,QItemSelectionModel.SelectionFlag.Select)
 
     # deletes the coordinates at the given positions
     def deleteCoordinates(self, positions:list[int]) -> None:
@@ -336,8 +338,10 @@ class Scales(QAbstractTableModel):
             if c in selectedCoordinates:
                 selection.merge(QItemSelection(self.createIndex(i,0),self.createIndex(i,1)),QItemSelectionModel.SelectionFlag.Select)
         if self.app.aw is not None:
-            self.app.aw.ui.tableView.selectionModel().select(selection,QItemSelectionModel.SelectionFlag.Select)
-            self.app.contentModified()
+            sm: QItemSelectionModel | None = self.app.aw.ui.tableView.selectionModel()
+            if sm is not None:
+                sm.select(selection,QItemSelectionModel.SelectionFlag.Select)
+                self.app.contentModified()
 
     def data(self, index:QModelIndex, role:int = Qt.ItemDataRole.DisplayRole) -> str | QBrush | int | None:
         if not index.isValid():
@@ -414,7 +418,7 @@ class ValidatedItemDelegate(QStyledItemDelegate):
     def __init__(self, parent:QObject | None=None) -> None:
         QStyledItemDelegate.__init__(self, parent)
 
-    def createEditor(self, widget:QWidget, option:QStyleOptionViewItem, index:QModelIndex) -> QWidget:
+    def createEditor(self, widget:QWidget|None, option:QStyleOptionViewItem, index:QModelIndex) -> QWidget|None:
         if not index.isValid():
             return QWidget()
         if index.column() == 0: #only on the cells in the first column
