@@ -66,7 +66,7 @@ On newer models you can also set the screen orientation, a target value and rang
 
 ![](default-scale.png?raw=true)
 
-The app version 1.0.24 adds the possibity to set the Agtron scale as default scale for Toninos running the firmware v2.2.0 or later. After changing the default scale, press `Defaults` and re-calibrate the Tonino. Note that firmware v2.2.0 and later do not support the display fip function anymore.
+The app version 1.0.24 adds the possibility to set the Agtron scale as default scale for Toninos running the firmware v2.2.0 or later. After changing the default scale, press `Defaults` and re-calibrate the Tonino. Note that firmware v2.2.0 and later do not support the display fip function anymore.
 
 
 Tonino Calibration

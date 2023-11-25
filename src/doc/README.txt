@@ -60,7 +60,7 @@ The Tonino app uses the following libraries in unmodified forms:
 
 - Python 3.11.x released under the PSF licence http://www.python.org/psf/
   http://www.python.org/
-- QT 6.5.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
+- QT 6.6.x under the Qt GNU Lesser General Public License version 2.1 (LGPL)
   http://qt-project.org/products/licensing
 - Numpy 1.x and Scipy 1.x, Copyright (c) 2005, NumPy Developers; All Rights Reserved
   http://www.scipy.org/
@@ -76,6 +76,9 @@ The Tonino app uses the following libraries in unmodified forms:
 
 
 VERSION HISTORY
+
+v1.0.28 (11/2023)
+ - Universal macOS binary
 
 v1.0.27 (8/2023)
  - Fixes regression in v1.0.26 preventing loading of some scales

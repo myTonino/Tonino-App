@@ -108,7 +108,7 @@ class Scales(QAbstractTableModel):
             xv:npt.NDArray[np.float64] = np.array([e[0] for e in coordinates])
             yv:npt.NDArray[np.float64] = np.array([e[1] for e in coordinates])
             coefficients:list[float]
-            coefficients = poly.polyfit(xv,yv,polyfit_degree,full=False)
+            coefficients = poly.polyfit(xv,yv,polyfit_degree,full=False) # type:ignore[no-untyped-call]
             coefficients.reverse()
             # apply polyfit
             self.beginResetModel()
@@ -230,7 +230,7 @@ class Scales(QAbstractTableModel):
             yv:npt.NDArray[np.float64] = np.array([c.y for c in self.coordinates])
             c:npt.NDArray[np.float64]
             stats:list[float]
-            c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True)
+            c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True) # type: ignore[no-untyped-call]
             try:
                 r2:npt.NDArray[np.float64] = 1 - stats[0] / (yv.size * yv.var())
                 if r2.size>0:
@@ -245,7 +245,7 @@ class Scales(QAbstractTableModel):
                 _log.debug('polyfit(%s)=%s',self.polyfit_degree,self.coefficients)
                 # compute the inverse mapping
                 ci:npt.NDArray[np.float64]
-                ci = poly.polyfit(yv,xv,self.polyfit_degree,full=False)
+                ci = poly.polyfit(yv,xv,self.polyfit_degree,full=False) # type: ignore[no-untyped-call]
                 _log.debug('inverse_polyfit(%s)=%s',self.polyfit_degree,list(reversed(list(ci))))
         else:
             self.coefficients = None

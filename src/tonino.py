@@ -39,7 +39,7 @@ import os
 from platform import system
 from lib.suppress_errors import suppress_stdout_stderr
 
-# on Qt5, the platform plugin cocoa/windows is not found in the plugin directory (dispite the qt.conf file) if we do not
+# on Qt5, the platform plugin cocoa/windows is not found in the plugin directory (despite the qt.conf file) if we do not
 # extend the libraryPath accordingly
 ib:bool
 if system().startswith('Windows'):

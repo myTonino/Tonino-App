@@ -28,21 +28,21 @@ import platform
 import logging
 from collections.abc import Iterator
 
-from typing import Final, cast, TYPE_CHECKING
+from typing import Final, TYPE_CHECKING
 if TYPE_CHECKING:
     import serial.tools.list_ports_common  # @UnusedImport # # noqa: TCH004
 
 _log: Final = logging.getLogger(__name__)
 
 def str2cmd(s:str | bytes) -> bytes:
-    if isinstance(s,bytes):
+    if isinstance(s, bytes):
         return s
-    return bytes(cast(str,s),'ascii')
+    return bytes(str(s), 'ascii')
 
 def cmd2str(c:str | bytes) -> str:
-    if isinstance(c,bytes):
+    if isinstance(c, bytes):
         return str(c,'latin1')
-    return cast(str,c)
+    return str(c)
 
 class SerialPort:
 
@@ -51,7 +51,7 @@ class SerialPort:
     def __init__(self,model:int=0) -> None:
         self.port:str | None = None
         self.model:int | None = None # 1: TinyTonino, 0: Classic Tonino, None otherwise
-        self.setModel(model) # set model and correspoding baudrate
+        self.setModel(model) # set model and corresponding baudrate
         self.baudrate:int = 115200
         self.bytesize:int = serial.EIGHTBITS
         self.parity:str = serial.PARITY_NONE
@@ -110,7 +110,7 @@ class SerialPort:
         try:
             self.port = None
             self.SP.close()
-            time.sleep(0.7) # on OS X opening a serial port too fast after closing the port get's disabled
+            time.sleep(0.7) # on OS X opening a serial port too fast after closing the port gets disabled
         except Exception as e:  # pylint: disable=broad-except
             _log.exception(e)
 

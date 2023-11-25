@@ -38,10 +38,11 @@ from PyQt6.QtCore import (Qt, pyqtSlot, QObject, QSemaphore)
 mpl.use('QtAgg')
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas  # type: ignore
     
-from matplotlib.text import Text # type: ignore
-from matplotlib.figure import Figure # type: ignore
-from matplotlib import rcParams, patheffects, patches # type: ignore
-from matplotlib.lines import Line2D # type: ignore
+from matplotlib.text import Text
+from matplotlib.figure import Figure
+from matplotlib import rcParams, patheffects, patches
+from matplotlib.lines import Line2D
+from matplotlib.backend_bases import LocationEvent, MouseEvent, PickEvent
 import numpy as np
 import warnings
 import os
@@ -85,7 +86,7 @@ class MplCanvas(FigureCanvas):
         self.redrawSemaphore = QSemaphore(1)
         
         self.ax_background:None | Any = None # canvas background for bit blitting
-        self.ax_background_bounds:tuple[float] | None = None
+        self.ax_background_bounds:tuple[float,float,float,float] | None = None
         
         self.x_step:Final = 0.01
         
@@ -113,7 +114,7 @@ class MplCanvas(FigureCanvas):
         self.x_max:Final = self.x_max_valid+0.15 # maximum raw Tonino value to be drawn
 
         self.xvalues:np.ndarray[Any, np.dtype[np.floating[Any]]] = np.arange(self.x_min, self.x_max, self.x_step)
-        self.yvalues:np.ndarray[Any, np.dtype[Any]] | None = None # is set by update from the polyfit coefficent
+        self.yvalues:np.ndarray[Any, np.dtype[Any]] | None = None # is set by update from the polyfit coefficient
         self.yvalues_default:np.ndarray[Any, np.dtype[Any]] | None = np.poly1d(self.app.scales.getDefaultCoefficents())(self.xvalues)  # the default Tonino polyfit curve
         self.yvalues_device:np.ndarray[Any, np.dtype[Any]] | None = None # the device polyfit curve
         
@@ -121,7 +122,7 @@ class MplCanvas(FigureCanvas):
         self.lastMotionY:float | None = None # holds the last y value on mouse movements if any
         
         # Tonino color scheme associating names to color pairs <light_mode_color, dark_mode_color>
-        self.toninoColors:dict[str,tuple[list[float],list[float]]] = {
+        self.toninoColors:dict[str,tuple[tuple[float,float,float],tuple[float,float,float]]] = {
             'grey':      (self.makeColor(92,93,97), self.makeColor(184,186,194)),
             'blue':      (self.makeColor(74,83,102), self.makeColor(223,231,244)),
             'lightblue': (self.makeColor(74,83,102), self.makeColor(207,221,249)),
@@ -189,10 +190,10 @@ class MplCanvas(FigureCanvas):
             right=False,
             direction="out",    # draw the ticks outside of the graph
             labelright=False) 
-        self.ax.set_ylim([self.y_min, self.y_max])
-        self.ax.set_xlim([self.x_min, self.x_max])
+        self.ax.set_ylim((self.y_min, self.y_max))
+        self.ax.set_xlim((self.x_min, self.x_max))
         
-        FigureCanvas.__init__(self, self.fig)
+        FigureCanvas.__init__(self, self.fig) # type: ignore[no-untyped-call]
         FigureCanvas.setSizePolicy(self,  #@UndefinedVariable
                                 QSizePolicy.Policy.Expanding,
                                 QSizePolicy.Policy.Expanding)
@@ -206,20 +207,20 @@ class MplCanvas(FigureCanvas):
 
 
     @staticmethod
-    def makeColor(r:int,g:int,b:int) -> list[float]:
-        return [r/255.,g/255.,b/255.]
+    def makeColor(r:int,g:int,b:int) -> tuple[float,float,float]:
+        return (r/255.,g/255.,b/255.)
     
     @staticmethod
-    def makeGreyColor(c:int) -> list[float]:
+    def makeGreyColor(c:int) -> tuple[float,float,float]:
         return MplCanvas.makeColor(c,c,c)
     
-    def toninoColor(self, color:str) -> list[float]:
+    def toninoColor(self, color:str) -> tuple[float,float,float]:
         if color in self.toninoColors:
             c = self.toninoColors[color]
             if self.app.darkmode:
                 return c[1]
             return c[0]
-        return self.makeColort(50,50,50)
+        return self.makeColor(50,50,50)
 
     def updatePolyfit(self) -> None:
         # updates the polyfit line data and calls redraw
@@ -413,10 +414,10 @@ class MplCanvas(FigureCanvas):
                         path_effects=[]
                         )
                     
-                    if self.yvalues_device is None:
+                    if self.yvalues_device is None and self.yvalues_default is not None:
                         # add default Tonino curve
                         self.ax.plot(self.xvalues, self.yvalues_default, color=grey, linewidth=1, path_effects=[])
-                    else:
+                    elif self.yvalues_device is not None:
                         # add device curve if available
                         self.ax.plot(self.xvalues, self.yvalues_device, color=blue)
                     
@@ -437,11 +438,13 @@ class MplCanvas(FigureCanvas):
                         self.fig.canvas.draw() # NOTE: this needs to be done NOW and not via draw_idle() at any time later, to avoid ghost lines
                             
                     # initialize bitblit background
-                    self.ax_background = self.fig.canvas.copy_from_bbox(self.fig.bbox)
+                    if hasattr(self.fig.canvas,'copy_from_bbox'):
+                        self.ax_background = self.fig.canvas.copy_from_bbox(self.fig.bbox)
                     self.ax_background_bounds = self.fig.bbox.bounds
                 
                 # restore background
-                self.fig.canvas.restore_region(self.ax_background)
+                if hasattr(self.fig.canvas,'restore_region'):
+                    self.fig.canvas.restore_region(self.ax_background)
                 
                 if self.l_title is not None:
                     RR:float | None = self.app.scales.getRR()
@@ -485,15 +488,17 @@ class MplCanvas(FigureCanvas):
                                 path_effects=[patheffects.withStroke(linewidth=2, foreground=background)])
                             self.ax.draw_artist(an)
                             self.annotations.append(an)
-                
-                self.fig.canvas.blit(self.ax.get_figure().bbox)
+                if self.fig.canvas is not None:
+                    ax_fig = self.ax.get_figure()
+                    if ax_fig is not None:
+                        self.fig.canvas.blit(ax_fig.bbox)
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
             finally:
                 if self.redrawSemaphore.available() < 1:
                     self.redrawSemaphore.release(1)
 
-    def closeToCoordinate(self,event:'Event') -> bool:
+    def closeToCoordinate(self, event:LocationEvent) -> bool:
         res:bool = False
         for c in self.app.scales.getCoordinates():
             if event.xdata and event.ydata and (abs(c[0] - event.xdata) < 0.01 and abs(c[1] - event.ydata) < 3):
@@ -502,34 +507,36 @@ class MplCanvas(FigureCanvas):
         return res
 
     def on_motion(self, event:'Event') -> None:
-        if not event.inaxes:
+        if not (isinstance(event, LocationEvent) and event.inaxes):
             return
         try:
-            if self.lastMotionX is not None and self.lastMotionY is not None and (abs(self.lastMotionX - event.xdata) > 0.01 or abs(self.lastMotionY - event.ydata) > 2):
-                self.lastMotionX = None
-                self.lastMotionY = None
-                self.setCursor(Qt.CursorShape.ArrowCursor)
-            if self.mousepress and self.indexpoint is not None:
-                self.setCursor(Qt.CursorShape.ClosedHandCursor)
-                if not self.mousedragged:
-                    self.app.scales.redoSelection([])
-                self.mousedragged = True
-                self.app.scales.updateCoordinate(self.indexpoint,event.xdata,event.ydata)
-                self.redraw(force=False,annotations=False)
-            elif not self.lastMotionX and not self.lastMotionY and self.closeToCoordinate(event):
-                self.lastMotionX = event.xdata
-                self.lastMotionY = event.ydata
-                self.setCursor(Qt.CursorShape.OpenHandCursor)
+            if event.xdata is not None and event.ydata is not None:
+                if self.lastMotionX is not None and self.lastMotionY is not None and (abs(self.lastMotionX - event.xdata) > 0.01 or abs(self.lastMotionY - event.ydata) > 2):
+                    self.lastMotionX = None
+                    self.lastMotionY = None
+                    self.setCursor(Qt.CursorShape.ArrowCursor)
+                if self.mousepress and self.indexpoint is not None:
+                    self.setCursor(Qt.CursorShape.ClosedHandCursor)
+                    if not self.mousedragged:
+                        self.app.scales.redoSelection([])
+                    self.mousedragged = True
+                    self.app.scales.updateCoordinate(self.indexpoint,event.xdata,event.ydata)
+                    self.redraw(force=False,annotations=False)
+                elif not self.lastMotionX and not self.lastMotionY and self.closeToCoordinate(event):
+                    self.lastMotionX = event.xdata
+                    self.lastMotionY = event.ydata
+                    self.setCursor(Qt.CursorShape.OpenHandCursor)
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
 
     def on_pick(self, event:'Event') -> None:
         self.setCursor(Qt.CursorShape.ClosedHandCursor)
-        try:
-            self.indexpoint = event.ind[-1]
-        except Exception: # pylint: disable=broad-except
-            self.indexpoint = event.ind
-        self.mousepress = True
+        if isinstance(event, PickEvent):
+            try:
+                self.indexpoint = event.ind[-1] # type: ignore
+            except Exception: # pylint: disable=broad-except
+                self.indexpoint = event.ind # type: ignore
+            self.mousepress = True
 
     def on_release(self, event:'Event') -> None:
         if self.mousepress:
@@ -541,14 +548,14 @@ class MplCanvas(FigureCanvas):
         self.mousepress = False
         self.indexpoint = None
         self.app.scales.computePolyfit()
-        if  self.closeToCoordinate(event):
+        if  isinstance(event, LocationEvent) and self.closeToCoordinate(event):
             self.lastMotionX = event.xdata
             self.lastMotionY = event.ydata
             self.setCursor(Qt.CursorShape.OpenHandCursor)
         self.redraw(force=True)
 
     def onclick(self, event:'Event') -> None:
-        if self.app.aw is not None and event.inaxes and event.button==3:
+        if self.app.aw is not None and isinstance(event, LocationEvent) and isinstance(event, MouseEvent) and event.inaxes and event.button==3:
             # populate menu
             menu:QMenu = QMenu(self) 
             ac:MyQAction = MyQAction(menu)

@@ -37,7 +37,8 @@ import numpy as np
 import numpy.typing as npt
 from functools import reduce as freduce
 import numpy.polynomial.polynomial as poly
-import scipy.stats # type: ignore
+#import scipy.stats # type: ignore
+from scipy.stats import sem as scipy_stats_sem, t as scipy_stats_t # type: ignore
 
 import logging.config
 from yaml import safe_load as yaml_load
@@ -93,7 +94,7 @@ class Tonino(QApplication):
         self.aw:ApplicationWindow | None = None
 
         self.darkmode:bool = False # holds current darkmode state
-        self.style_hints: 'QStyleHints'|None = None # holds the styleHints instance on Qt 6.5 and higher
+        self.style_hints: 'QStyleHints|None' = None # holds the styleHints instance on Qt 6.5 and higher
         if QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
             if sys.platform.startswith('darwin'):
                 # remember darkmode using darkdetect on macOS Legacy with older Qt versions
@@ -157,7 +158,7 @@ class Tonino(QApplication):
         self.maxRecentFiles:Final[int] = 10
         self.recentFiles:list[str] = []
 
-        self.pre_cal_targets:list[float] = [] # pre calibration targets for the classic r/b ratio formula usind in firmware v2 and v3 for recognizing the calib disk
+        self.pre_cal_targets:list[float] = [] # pre calibration targets for the classic r/b ratio formula used in firmware v2 and v3 for recognizing the calib disk
         self.pre_cal_cardinality:int = 2 # number of required source and target readings; by default 2 (just the calib disk patches)
         self.pre_cal_degree:int = 2 # quadratic
 
@@ -277,7 +278,7 @@ class Tonino(QApplication):
                 target_high_rb:float = self.std_calib_target_high
                 calib_low_rb:float = calib_low[0]/calib_low[1]
                 calib_high_rb:float = calib_high[0]/calib_high[1]
-                c:list[float] = poly.polyfit([calib_low_rb,calib_high_rb],[target_low_rb,target_high_rb],1)
+                c:list[float] = poly.polyfit([calib_low_rb,calib_high_rb],[target_low_rb,target_high_rb],1) # type: ignore[no-untyped-call]
                 # transfer result to connected Tonino
                 self.setCal(self.toninoPort,[c[1],c[0]])
                 if self.aw is not None:
@@ -285,7 +286,7 @@ class Tonino(QApplication):
 
     def getWorkingDirectory(self) -> str:
         if self.workingDirectory is None:
-            if platform.system() in ['Darwin','Linux']:
+            if platform.system() in {'Darwin','Linux'}:
                 self.workingDirectory = QDir().homePath() + '/Documents/'
             else:
                 self.workingDirectory = QDir().homePath()
@@ -531,7 +532,7 @@ class Tonino(QApplication):
                 time.sleep(2.5)  # wait a second until the Arduino Nano did a reset
             else:
                 time.sleep(2)  # wait a second until the Arduino Nano did a reset
-#            self.ser.sendCommand(port,"",False) # first send a dummy empty cmd to get serial started # NOTE: this seems not to be neccessary any longer
+#            self.ser.sendCommand(port,"",False) # first send a dummy empty cmd to get serial started # NOTE: this seems not to be necessary any longer
             response:str | None = self.ser.sendCommand(port,'TONINO')
             if response is not None:
                 return self.response2values(response,int,3)
@@ -682,7 +683,7 @@ class Tonino(QApplication):
 
     # load scale from file
     # fails silent if silent is True
-    # returns True if loading suceeded
+    # returns True if loading succeeded
     def loadScale(self, filename:str, silent:bool = False) -> bool:
         _log.info('loadScale(%s,%s)',filename, silent)
         try:
@@ -702,7 +703,7 @@ class Tonino(QApplication):
             return False
 
     # write current scale to file
-    # returns True if saving suceeded
+    # returns True if saving succeeded
     def saveScale(self, filename:str) -> bool:
         try:
             cs:lib.scales.Scale = self.scales.getScale()
@@ -888,7 +889,7 @@ class PreferencesDialog(ToninoDialog):
     @pyqtSlot()
     def accept(self) -> None:
         if self.app.toninoPort:
-            write_all:bool = False # if True all settings are written back to the device (needed after the reset2Defaults on chaning the default scale)
+            write_all:bool = False # if True all settings are written back to the device (needed after the reset2Defaults on changing the default scale)
             firmwareVersion = self.app.toninoFirmwareVersion
             f:bool
             if self.defaultScale is not None and (firmwareVersion[0] > 2 or (firmwareVersion[0] == 2 and firmwareVersion[1] >= 2)):
@@ -975,7 +976,7 @@ class CalibDialog(ToninoDialog):
         self.ui.pushButtonScan.setText(QApplication.translate('Dialog', 'Scan'))
 
         # disable elements
-        ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
         if ok_button is not None:
             ok_button.setEnabled(False)
             ok_button.repaint()
@@ -1025,7 +1026,7 @@ class CalibDialog(ToninoDialog):
                         self.ui.calibHighLabel.repaint()
                     # if both, low and high readings are set, enable the OK button
                     if calib_low is not None and calib_high is not None:
-                        ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+                        ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
                         if ok_button is not None:
                             ok_button.setEnabled(True)
                             ok_button.repaint() # on some Qt/PyQt 5.x versions the button is not automatically repainted!
@@ -1063,7 +1064,7 @@ class DebugDialog(ToninoDialog):
         # prepare log
         #self.ui.logOutput.setReadOnly(True)
         # disable elements
-        ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
         if ok_button is not None:
             ok_button.setEnabled(False)
             ok_button.repaint()
@@ -1081,7 +1082,7 @@ class DebugDialog(ToninoDialog):
         self.insertRequestResponse('GETBRIGHTNESS')
         self.app.processEvents()
         if self.app.getModel() == 0:
-            # followings are only supported by the Classic Tonino:
+            # only supported by the Classic Tonino:
             self.insertRequestResponse('GETCAL')
             self.app.processEvents()
             self.insertRequestResponse('GETSAMPLING')
@@ -1092,7 +1093,7 @@ class DebugDialog(ToninoDialog):
             self.app.processEvents()
             self.insertRequestResponse('GETCALINIT')
             self.app.processEvents()
-            ok_button: 'QPushButton'|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+            ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
             if ok_button is not None:
                 ok_button.setEnabled(True)
                 ok_button.repaint()
@@ -1254,7 +1255,7 @@ class PreCalibDialog(ToninoDialog):
                 _log.info('polyfit(%s.%s,%s)',self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree)
                 c:npt.NDArray[np.float64]
                 stats:list[float]
-                c,stats = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True)
+                c,stats = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True) # type: ignore[no-untyped-call]
                 try:
                     yv:npt.NDArray[np.float64] = np.array(self.app.pre_cal_targets)
                     r2:npt.NDArray[np.float64] = 1 - stats[0] / (yv.size * yv.var())
@@ -1420,7 +1421,7 @@ class ApplicationWindow(QMainWindow):
         self.recentFileActs:list[QAction] | None = []
         self.recentApplyActs:list[QAction] | None = []
 
-        # inital UI configuration
+        # initial UI configuration
         self.setWindowTitle(self.windowTitleName)
         self.disconnectTonino(True)
 
@@ -1471,7 +1472,7 @@ class ApplicationWindow(QMainWindow):
         self.ui.pushButtonSort.setEnabled(False)
         self.ui.pushButtonDelete.setEnabled(False)
 
-        # initalize dirty state
+        # initialize dirty state
         self.app.contentCleared()
 
         # move slider
@@ -1619,17 +1620,17 @@ class ApplicationWindow(QMainWindow):
         try:
             if path is None:
                 path = self.app.getWorkingDirectory()
-            res:str|tuple[str, str]
+#            res: str | tuple[str, str]
+            res_str:str = ''
             if openFile:
-                res = QFileDialog.getOpenFileName(self,msg,path,ffilter)
+                res:tuple[str, str] = QFileDialog.getOpenFileName(self,msg,path,ffilter)
+                res_str = res[0]
             else:
                 res = QFileDialog.getSaveFileName(self,msg,path,ffilter)
-            if res is not None and res != '':
-                if isinstance(res, list | tuple):
-                    res = res[0]
-                self.app.setWorkingDirectory(res)
-                return res
-            return None
+            if res_str == '':
+                return None
+            self.app.setWorkingDirectory(res_str)
+            return res_str
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             return None
@@ -1719,7 +1720,7 @@ class ApplicationWindow(QMainWindow):
             _log.debug('openRecent')
             self.loadFile(action.data())
 
-    # returns True if saving suceeded and was not canceled
+    # returns True if saving succeeded and was not canceled
     @pyqtSlot(bool)
     def saveFile(self,_:bool=False) -> bool:
         currentFile:str | None = self.app.currentFile
@@ -1730,7 +1731,7 @@ class ApplicationWindow(QMainWindow):
             return True
         return self.saveAsFile()
 
-    # returns True if saving suceeded and was not canceled
+    # returns True if saving succeeded and was not canceled
     @pyqtSlot()
     def saveAsFile(self) -> bool:
         filename:str | None = self.fileDialog(QApplication.translate('Dialog','Save As',None),ffilter=self.toninoFileFilter,openFile=False)
@@ -1768,7 +1769,7 @@ class ApplicationWindow(QMainWindow):
         _log.info('defaults')
         if self.app.toninoPort:
             msgBox = QMessageBox(self)
-            msgBox.setText(QApplication.translate('Dialog','You need to recalibrate your Tonino after reseting. Continue?',None))
+            msgBox.setText(QApplication.translate('Dialog','You need to recalibrate your Tonino after resetting. Continue?',None))
             msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             ret:int = msgBox.exec()
             if ret == QMessageBox.StandardButton.Yes:
@@ -1860,9 +1861,9 @@ class ApplicationWindow(QMainWindow):
     def mean_confidence_interval(data:list[float], confidence:float = 0.95) -> float:
         a:npt.NDArray[np.float64] = 1.0*np.array(data)
         n:int = len(a)
-#        _, se = np.mean(a), scipy.stats.sem(a)
-        se:float = scipy.stats.sem(a)
-        h:float = se * scipy.stats.t.ppf((1+confidence)/2., n-1)
+#        _, se = np.mean(a), scipy_stats_sem(a)
+        se:float = scipy_stats_sem(a)
+        h:float = se * scipy_stats_t.ppf((1+confidence)/2., n-1)
         return h
 
     def updateLCDS(self) -> None:
@@ -2194,7 +2195,7 @@ class ApplicationWindow(QMainWindow):
             if self.debug == 2 and new_ports:
                 self.app.toninoPort = new_ports[0]
                 # find the port_obj to extract the Tonino type by PID (tinyToninoPID == 24597)
-                port_obj:'serial.tools.list_ports_common.ListPortInfo' | None = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
+                port_obj:'serial.tools.list_ports_common.ListPortInfo | None' = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
                 # Tonino model needs to be set to choose the install the correct firmware version
                 model = 0
                 if port_obj is not None and port_obj.pid == 24597:
@@ -2330,7 +2331,7 @@ if platform.system() == 'Darwin':
     from Cocoa import NSUserDefaults  # type: ignore # @UnresolvedImport # pylint: disable=no-name-in-module
     defs = NSUserDefaults.standardUserDefaults()
     langs = defs.objectForKey_('AppleLanguages')
-    if langs.objectAtIndex_(0)[:3] in ('zh_', 'pt_'):
+    if langs.objectAtIndex_(0)[:3] in {'zh_', 'pt_'}:
         lang = langs.objectAtIndex_(0)[:5]
     else:
         lang = langs.objectAtIndex_(0)[:2]

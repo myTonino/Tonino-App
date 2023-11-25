@@ -119,7 +119,7 @@ chmod +rx debian/usr/bin/tonino
 chmod -R +r dist
 chmod +x dist/icons
 
-# buid .deb package (into /usr/share)
+# build .deb package (into /usr/share)
 
 tar -cf dist-rpi.tar dist
 rm -rf debian/usr/share/tonino

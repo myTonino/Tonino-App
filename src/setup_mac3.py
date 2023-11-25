@@ -53,35 +53,25 @@ except Exception:
 
 APP = ['tonino.py']
 
-
-
 DATA_FILES:list[tuple[str, list[str]]] = [
-    ('.', ['doc/LICENSE.txt']),
-#    ("../Resources/qt_plugins/iconengines", [QTDIR + r'/plugins/iconengines/libqsvgicon.dylib']),
-#    ("../Resources/qt_plugins/imageformats", [QTDIR + r'/plugins/imageformats/libqsvg.dylib']),
-## Qt5 only:
-#    ("../Resources/qt_plugins/platforms", [QTDIR + r'/plugins/platforms/libqcocoa.dylib']),
-## standard QT translation needed to get the Application menu bar and
-## the standard dialog elements translated
-#    ("../Resources/qt_plugins/printsupport", [QTDIR + r'/plugins/printsupport/libcocoaprintersupport.dylib']), # qt5/
-#    ("../Resources/qt_plugins/styles", [QTDIR + r'/plugins/styles/libqmacstyle.dylib']), # QT 5.10 and later requires this (not available on 5.8)
-# standard
-    ('../Resources/translations', [QTDIR + r'/translations/qtbase_de.qm']),
-    ('../Resources/translations', [QTDIR + r'/translations/qtbase_es.qm']),
-    ('../Resources/translations', [QTDIR + r'/translations/qtbase_fr.qm']),
-    ('../Resources/translations', [QTDIR + r'/translations/qtbase_it.qm']),
-    ('../Resources/translations', [r'translations/tonino_de.qm']),
-    ('../Resources/translations', [r'translations/tonino_es.qm']),
-    ('../Resources/translations', [r'translations/tonino_fr.qm']),
-    ('../Resources/translations', [r'translations/tonino_it.qm']),
-    ('../Resources/translations', [r'translations/tonino_nl.qm']),
-    ('../Resources/translations', [r'translations/qtbase_nl.qm']),
-#    ("../Resources", [r"conf/qt.conf"]),
-    ('../Resources', [r'includes/mac/avrdude.conf']),
-    ('../Resources', [r'includes/mac/avrdude']),
-    ('../Resources', [r'includes/logging.yaml']),
-    ('../Resources', [r'icons/tonino_doc.icns']),
-  ]
+    ('./translations', [
+        QTDIR + r'/translations/qtbase_de.qm',
+        QTDIR + r'/translations/qtbase_es.qm',
+        QTDIR + r'/translations/qtbase_fr.qm',
+        QTDIR + r'/translations/qtbase_it.qm',
+        r'translations/tonino_de.qm',
+        r'translations/tonino_es.qm',
+        r'translations/tonino_fr.qm',
+        r'translations/tonino_it.qm',
+        r'translations/tonino_nl.qm',
+        r'translations/qtbase_nl.qm']),
+    ('.', [
+        'doc/LICENSE.txt',
+        r'includes/mac/avrdude.conf',
+        r'includes/mac/avrdude',
+        r'includes/logging.yaml',
+        r'icons/tonino_doc.icns']),
+]
 
 # firmware file name
 qd_include = QDir(os.path.dirname(os.path.realpath(__file__)) + '/includes/')
@@ -107,7 +97,6 @@ with open('conf/Info.plist', 'r+b') as fp:
     plist['CFBundleVersion'] = 'Tonino ' + VERSION
     plist['LSMinimumSystemVersion'] = os.environ['MACOSX_DEPLOYMENT_TARGET']
     plist['LSMultipleInstancesProhibited'] = 'false'
-#    plist['LSPrefersPPC'] = False, # not used any longer
     plist['LSArchitecturePriority'] = 'x86_64'
     plist['NSHumanReadableCopyright'] = LICENSE
     plist['NSHighResolutionCapable'] = True
@@ -116,7 +105,7 @@ with open('conf/Info.plist', 'r+b') as fp:
     plistlib.dump(plist, fp)
 
 OPTIONS = {
-    'strip':False,
+    'no_strip': False,
     'argv_emulation': False,
     'semi_standalone': False,
     'site_packages': True,
@@ -124,11 +113,11 @@ OPTIONS = {
     'optimize':  2,
     'compressed': True,
     'iconfile': 'icons/tonino.icns',
-    'arch': 'x86_64',
+    'arch': 'universal2', # 'universal2', 'x86_64',
     'matplotlib_backends': '-', # '-' for imported or explicit 'qt4agg' (without this, the full matplotlib folder is again included in Resources/lib (see above)
     'includes': ['serial',
                  'pydoc'],
-    'excludes' :  ['tkinter','curses',
+    'excludes' :  ['tkinter','curses', 'PyInstaller',
                       'PyQt5', # standard builds are now running on PyQt6. If PyQt5 is not excluded here it will be included in Resources/lib/python310.zip
                 ],
     'plist'    : plist}
@@ -165,11 +154,13 @@ print('*** Removing unused Qt frameworks ***')
 # QT modules to keep frameworks:
 Qt_modules = [
     'QtCore',
-    'QtGui',
-    'QtWidgets',
-    'QtSvg',
-    'QtPrintSupport',
     'QtDBus',
+    'QtGui',
+#    'QtNetwork',
+#    'QtPdf',
+    'QtSvg',
+    'QtWidgets',
+#    'QtPrintSupport',
 ]
 Qt_frameworks = [module + '.framework' for module in Qt_modules]
 

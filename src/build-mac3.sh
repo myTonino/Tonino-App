@@ -28,7 +28,11 @@ export PYTHONPATH=$PYTHON/lib/python3.11/site-packages
 
 export PATH=$PYTHON/bin:$PYTHON:/lib:$PATH
 
-export QT_PATH=~/Qt/6.5.1/macos
+#export QT_PATH=~/Qt/6.5.3/macos
+export QT_PATH=${PYTHONPATH}/PyQt6/Qt6
+
+QTTOOLS=qt6-tools
+
 export PATH=$PATH:$QT_PATH/bin:$QT_PATH/lib
 #export DYLD_FRAMEWORK_PATH=$QT_PATH/lib # this works only if Qt version of PyQt is the same as in QT_PATH
 
@@ -53,18 +57,15 @@ done
 #    fn=${fullfilename%.*}
 # PyQt5
 #    pyrcc5 -o uic/${fn}_rc.py qrc/${fn}.qrc
-## PyQt4
-##    pyrcc4 -py3 -o uic/${fn}_rc.py qrc/${fn}.qrc
 #done
 
 # translations
 # PyQt6
 ./pylupdate6pro conf/tonino.pro
 
-# PyQt5
-#$PYTHON/bin/pylupdate5 conf/tonino.pro
+#$QT_PATH/bin/lrelease -verbose conf/tonino.pro
+$QTTOOLS lrelease -verbose translations/*.ts
 
-$QT_PATH/bin/lrelease -verbose conf/tonino.pro
 
 # distribution
 rm -rf build dist
