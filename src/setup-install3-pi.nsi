@@ -300,6 +300,8 @@ Section Uninstall
   RMDir /r "$INSTDIR\setuptools-63.2.0.dist-info"
   RMDir /r "$INSTDIR\yaml"
 
+  RMDir /r "$INSTDIR\_internal"
+
   RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
   RMDir "$INSTDIR"
 
