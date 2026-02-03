@@ -1,8 +1,6 @@
-#
-
 import os
 import sys
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from types import TracebackType # pylint: disable=unused-import
@@ -47,9 +45,9 @@ class suppress_stdout_stderr:
 
     def __exit__(
             self,
-            _exc_type: type[BaseException] | None,
-            _exc_val: BaseException | None,
-            _exc_tb: 'TracebackType | None') -> None:
+            _exc_type: type[BaseException] | None = None,
+            _exc_val: BaseException | None = None,
+        _exc_tb: 'TracebackType|None' = None) -> None:
         # Re-assign the real stdout/stderr back to (1) and (2)
         try:
             if self.save_fds:

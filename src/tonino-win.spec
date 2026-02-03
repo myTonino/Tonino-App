@@ -4,7 +4,7 @@ block_cipher = None
 
 
 TONINO_SRC = r'C:\Users\luther\Desktop\src'
-PYTHON3 = r'C:\Program Files\Python311'
+PYTHON3 = r'C:\Program Files\Python314'
 NAME = 'tonino'
 
 ##
@@ -20,8 +20,9 @@ a = Analysis(['tonino.py'],
              datas=[],
              hiddenimports=[],
              hookspath=[],
-             runtime_hooks=[],
-             excludes= [],
+             runtime_hooks=['./pyinstaller_hooks/rthooks/pyi_rth_mplconfig.py'], # overwrites default MPL runtime hook which keeps loading font cache from (new) temp directory
+             additional_hooks_dir=[],
+             excludes= ['mypy'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)

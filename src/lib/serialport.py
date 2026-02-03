@@ -77,7 +77,7 @@ class SerialPort:
         _log.debug('configurePort: %s',port)
         self.port = port
         if platform.system() == 'Windows':
-            self.SP.setDTR(False) # type: ignore
+            self.SP.setDTR(False) # type: ignore[attr-defined]
             _log.debug('setDTR(False)')
         self.SP.port = self.port
         self.SP.baudrate = self.baudrate
@@ -181,8 +181,8 @@ class SerialPort:
         # TinyTonino model (1)
 #        tinyToninoProduct:str = "VID_0403\+PID_6015"
         tinyToninoPID:int = 24597 # 6015 (hex)
-        ports:list['serial.tools.list_ports_common.ListPortInfo']
-        tinyToninos:list['serial.tools.list_ports_common.ListPortInfo']
+        ports:list[serial.tools.list_ports_common.ListPortInfo]
+        tinyToninos:list[serial.tools.list_ports_common.ListPortInfo]
         if platform.system() == 'Windows':
             # pyserial >2.7
             ports = list(serial.tools.list_ports.comports())

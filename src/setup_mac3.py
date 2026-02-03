@@ -49,7 +49,7 @@ try:
 except Exception:
     from os.path import expanduser
     HOME = expanduser('~')
-    QTDIR = HOME + r'/Qt5.14.2/5.14.2/clang_64/'
+    QTDIR = HOME + r'/Qt/6.5.3/clang_64/'
 
 APP = ['tonino.py']
 
@@ -197,7 +197,7 @@ except Exception:
     pass
 
 
-for python_version in ['python3.8', 'python3.9', 'python3.10', 'python3.11']:
+for python_version in ['python3.11', 'python3.12']:
     rootdir = f'./Tonino.app/Contents/Resources/lib/{python_version}'
 
     if os.path.isdir(f'{rootdir}/PyQt6'):
@@ -280,6 +280,10 @@ except Exception:
     pass
 try:
     subprocess.check_call('rm -rf ./Tonino.app/Contents/Resources/lib/python3.11/matplotlib/mpl-data/sample_data',shell = True)
+except Exception:
+    pass
+try:
+    subprocess.check_call('rm -rf ./Tonino.app/Contents/Resources/lib/python3.12/matplotlib/mpl-data/sample_data',shell = True)
 except Exception:
     pass
 

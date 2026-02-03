@@ -2,7 +2,7 @@
 #
 # build-mac3.sh
 #
-# Copyright (c) 202022, Paul Holleis, Marko Luther
+# Copyright (c) 2024, Paul Holleis, Marko Luther
 # All rights reserved.
 #
 #
@@ -22,9 +22,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export MACOSX_DEPLOYMENT_TARGET=11.0
-export PYTHON=/Library/Frameworks/Python.framework/Versions/3.11
+export PYTHON=/Library/Frameworks/Python.framework/Versions/3.12
 
-export PYTHONPATH=$PYTHON/lib/python3.11/site-packages
+export PYTHONPATH=$PYTHON/lib/python3.12/site-packages
 
 export PATH=$PYTHON/bin:$PYTHON:/lib:$PATH
 

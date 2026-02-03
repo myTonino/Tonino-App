@@ -2,7 +2,7 @@
 #
 # __init__.py
 #
-# Copyright (c) 2023, Paul Holleis, Marko Luther
+# Copyright (c) 2026, Paul Holleis, Marko Luther
 # All rights reserved.
 #
 #
@@ -21,4 +21,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__version__ = '1.0.28'
+__version__ = '1.0.29'

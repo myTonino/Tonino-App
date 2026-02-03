@@ -22,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import matplotlib as mpl # type: ignore
+import matplotlib as mpl
 
 from typing import Final, Any, Optional, TYPE_CHECKING
 
@@ -30,13 +30,13 @@ if TYPE_CHECKING:
     import PyQt6 # noqa: F401 # @UnusedImport # for mypy typechecking
     from lib.main import Tonino # @UnusedImport # pylint: disable=unused-import
     from lib.scales import Coordinate # @UnusedImport # pylint: disable=unused-import
-    from matplotlib.backend_bases import Event # type: ignore # @UnusedImport # pylint: disable=unused-import
+    from matplotlib.backend_bases import Event # @UnusedImport # pylint: disable=unused-import
 
 from PyQt6.QtWidgets import (QSizePolicy, QMenu, QWidget, QVBoxLayout)
 from PyQt6.QtGui import (QCursor, QAction)
 from PyQt6.QtCore import (Qt, pyqtSlot, QObject, QSemaphore)
 mpl.use('QtAgg')
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas  # type: ignore
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
     
 from matplotlib.text import Text
 from matplotlib.figure import Figure
@@ -476,7 +476,7 @@ class MplCanvas(FigureCanvas):
                     grey = self.toninoColor('grey')
                     background = self.toninoColor('background')
                     for i, c in enumerate(coordinates):
-                        if  len(c) > 1 and c[2] and c in selectedCoordinates and c not in annotation_added:
+                        if c in selectedCoordinates and c not in annotation_added:
                             annotation_added.append(c)
                             x:float
                             y:float
@@ -533,9 +533,9 @@ class MplCanvas(FigureCanvas):
         self.setCursor(Qt.CursorShape.ClosedHandCursor)
         if isinstance(event, PickEvent):
             try:
-                self.indexpoint = event.ind[-1] # type: ignore
+                self.indexpoint = event.ind[-1] # type: ignore[attr-defined]
             except Exception: # pylint: disable=broad-except
-                self.indexpoint = event.ind # type: ignore
+                self.indexpoint = event.ind # type: ignore[attr-defined]
             self.mousepress = True
 
     def on_release(self, event:'Event') -> None:
@@ -570,7 +570,7 @@ class MplCanvas(FigureCanvas):
             self.mousepress = False
             self.indexpoint = None
             # show menu
-            menu.triggered.connect(self.event_popup_action) # type: ignore
+            menu.triggered.connect(self.event_popup_action)
             menu.popup(QCursor.pos())
 
     @pyqtSlot("QAction*")
@@ -592,8 +592,8 @@ class mplwidget(QWidget):
         QWidget.__init__(self, parent)
         if (parent is not None and
                 parent.parent() is not None and
-                parent.parent().parent() is not None): # type: ignore
-            self.app:Tonino = parent.parent().parent().app # type: ignore
+                parent.parent().parent() is not None): # type: ignore[union-attr]
+            self.app:Tonino = parent.parent().parent().app # type: ignore[union-attr]
             self.canvas:MplCanvas = MplCanvas(self.app)
             vbl:QVBoxLayout = QVBoxLayout()
             vbl.setContentsMargins(1,1,1,1)

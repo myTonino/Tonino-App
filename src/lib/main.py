@@ -37,12 +37,11 @@ import numpy as np
 import numpy.typing as npt
 from functools import reduce as freduce
 import numpy.polynomial.polynomial as poly
-#import scipy.stats # type: ignore
-from scipy.stats import sem as scipy_stats_sem, t as scipy_stats_t # type: ignore
+from scipy.stats import sem as scipy_stats_sem, t as scipy_stats_t
 
 import logging.config
 from yaml import safe_load as yaml_load
-from typing import Final, Any, TextIO, cast, TYPE_CHECKING
+from typing import Final, Any, TextIO, cast, override, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import serial.tools.list_ports_common  # @UnusedImport
@@ -59,19 +58,15 @@ except Exception: # pylint: disable=broad-except
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QDialog, QMessageBox, QFileDialog, QProgressDialog, QDialogButtonBox, QInputDialog, QWidget)
 from PyQt6.QtGui import (QAction, QIcon, QKeyEvent, QClipboard, QCloseEvent)
 from PyQt6.QtCore import (QObject, QProcess, QTimer, QSettings, QLocale, QTranslator, QDir, QFileInfo, QEvent, Qt, pyqtSignal, QItemSelection,
-                            QItemSelectionModel, pyqtSlot, qVersion, QVersionNumber)
+                            QItemSelectionModel, pyqtSlot)
 #from PyQt6 import sip # @Reimport @UnresolvedImport @UnusedImport
 
 from lib import __version__
 import lib.serialport
 import lib.scales
-from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, TinyCalibDialogUI2, DebugDialogUI, PreCalibDialogUI # type: ignore
-from uic import resources # type: ignore
+from uic import MainWindowUI, AboutDialogUI, PreferencesDialogUI, CalibDialogUI, TinyCalibDialogUI, TinyCalibDialogUI2, DebugDialogUI, PreCalibDialogUI
+from uic import resources
 
-# platform dependent imports:
-if sys.platform.startswith('darwin') and QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
-    # import darkdetect module to detect if macOS dark mode is active or not if Qt < 6.5.0, otherwise we related to QTs ColorScheme() mechanism
-    import darkdetect # type: ignore # type: ignore # @UnresolvedImport # pylint: disable=import-error
 
 _log: Final = logging.getLogger(__name__)
 
@@ -94,18 +89,12 @@ class Tonino(QApplication):
         self.aw:ApplicationWindow | None = None
 
         self.darkmode:bool = False # holds current darkmode state
-        self.style_hints: 'QStyleHints|None' = None # holds the styleHints instance on Qt 6.5 and higher
-        if QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
-            if sys.platform.startswith('darwin'):
-                # remember darkmode using darkdetect on macOS Legacy with older Qt versions
-                self.darkmode = darkdetect.isDark() # type: ignore # "isDark" is not a known member of module "darkdetect" # pylint: disable=c-extension-no-member
-            # otherwise we do not have any mean to detect the systems palette
-        else:
-            # we use the Qt 6.5 ColorScheme mechanism to detect dark mode
-            self.style_hints = self.styleHints()
-            if self.style_hints is not None:
-                self.darkmode = self.style_hints.colorScheme() == Qt.ColorScheme.Dark
-                self.style_hints.colorSchemeChanged.connect(self.colorSchemeChanged)
+        self.style_hints: QStyleHints|None = None # holds the styleHints instance on Qt 6.5 and higher
+        # we use the Qt 6.5 ColorScheme mechanism to detect dark mode
+        self.style_hints = self.styleHints()
+        if self.style_hints is not None:
+            self.darkmode = self.style_hints.colorScheme() == Qt.ColorScheme.Dark
+            self.style_hints.colorSchemeChanged.connect(self.colorSchemeChanged) # ty:ignore[possibly-missing-attribute]
 
         # constants
         self.tonino_model:int = 1 # 0: Classic Tonino (@115200 baud); 1: Tiny Tonino (@57600 baud)
@@ -278,7 +267,7 @@ class Tonino(QApplication):
                 target_high_rb:float = self.std_calib_target_high
                 calib_low_rb:float = calib_low[0]/calib_low[1]
                 calib_high_rb:float = calib_high[0]/calib_high[1]
-                c:list[float] = poly.polyfit([calib_low_rb,calib_high_rb],[target_low_rb,target_high_rb],1) # type: ignore[no-untyped-call]
+                c = poly.polyfit([calib_low_rb,calib_high_rb],[target_low_rb,target_high_rb],1)
                 # transfer result to connected Tonino
                 self.setCal(self.toninoPort,[c[1],c[0]])
                 if self.aw is not None:
@@ -327,7 +316,7 @@ class Tonino(QApplication):
     # returns True if version v1 is greater than v2 and False otherwise and if the arguments are malformed
     @staticmethod
     def versionGT(v1:list[int], v2:list[int]) -> bool:
-        if v1 is not None and v2 is not None and len(v1) == len(v2) == 3:
+        if len(v1) == len(v2) == 3:
             for i in range(3):
                 if v1[i] > v2[i]:
                     return True
@@ -337,15 +326,16 @@ class Tonino(QApplication):
         return False
 
     # load Tonino configuration on double click a *.toni file in the Finder while Tonino.app is already running
-    def event(self, event:QEvent|None) -> bool:
-        if event is not None and event.type() == QEvent.Type.FileOpen:
+    @override
+    def event(self, a0:QEvent|None) -> bool:
+        if a0 is not None and a0.type() == QEvent.Type.FileOpen:
             try:
-                if self.aw is not None and hasattr(event, 'file'):
-                    self.aw.loadFile(str(event.file())) # pyright: ignore # Cannot access member "file" for type "QEvent"
+                if self.aw is not None and hasattr(a0, 'file'):
+                    self.aw.loadFile(str(a0.file())) # pyright: ignore # ty:ignore[call-non-callable] # Cannot access member "file" for type "QEvent"
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
             return True
-        return super().event(event)
+        return super().event(a0)
 
     @staticmethod
     def strippedName(fullfilename:str) -> str:
@@ -387,7 +377,7 @@ class Tonino(QApplication):
             if self.aw is not None and settings.contains('lastLoadedFile'):
                 lastLoadedFile:str | None = settings.value('lastLoadedFile')
                 if lastLoadedFile is not None:
-                    QTimer.singleShot(10, lambda:self.aw.loadFile(lastLoadedFile, silent=True)) # type: ignore
+                    QTimer.singleShot(10, lambda:self.aw.loadFile(lastLoadedFile, silent=True)) # type: ignore[union-attr]
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
             if self.aw:
@@ -494,7 +484,7 @@ class Tonino(QApplication):
         _log.debug('args: %s',ags)
 
         process:QProcess = QProcess(self)
-        process.finished.connect(self.uploadFirmwareDone) # type: ignore
+        process.finished.connect(self.uploadFirmwareDone)
         process.start(avrdude,ags)
         if self.aw is not None:
             self.aw.showprogress.emit()
@@ -767,11 +757,10 @@ class Tonino(QApplication):
 
 class ToninoDialog(QDialog):
 
-    __slots__ = [ 'key' ]
-
-    def keyPressEvent(self, event:QKeyEvent|None) -> None:
-        if event is not None:
-            key:int = int(event.key())
+    @override
+    def keyPressEvent(self, a0:QKeyEvent|None) -> None:
+        if a0 is not None:
+            key:int = int(a0.key())
             if key == 16777216: #ESCAPE
                 self.close()
 
@@ -782,7 +771,7 @@ class PreferencesDialog(ToninoDialog):
     def __init__(self, parent:QWidget, application:Tonino) -> None:
         super().__init__(parent)
         self.app:Tonino = application
-        self.ui:PreferencesDialogUI.Ui_Preferences = PreferencesDialogUI.Ui_Preferences()
+        self.ui:PreferencesDialogUI.Ui_Preferences = PreferencesDialogUI.Ui_Preferences() # type:ignore[no-any-unimported] # ty:ignore[unused-ignore-comment]
         self.ui.setupUi(self)
 
         # translations
@@ -886,6 +875,7 @@ class PreferencesDialog(ToninoDialog):
         if self.displayBrightness is not None and self.app.toninoPort and self.displayBrightness != v:
             self.app.setDisplayBrightness(self.app.toninoPort, v)
 
+    @override
     @pyqtSlot()
     def accept(self) -> None:
         if self.app.toninoPort:
@@ -896,7 +886,7 @@ class PreferencesDialog(ToninoDialog):
                 # from firmwareVersion 2.2.0 and newer the Agtron default scale setting is supported (v2.1.8 is the last released firmware without this feature)
                 try:
                     f = not self.ui.radioButtonAgtron.isChecked()
-                    if self.app.toninoPort and not (self.defaultScale is not None and self.defaultScale == f):
+                    if self.defaultScale != f:
                         msgBox = QMessageBox(self)
                         msgBox.setText(QApplication.translate('Dialog','You need to recalibrate your Tonino after changing the default scale. Continue?',None))
                         msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -942,12 +932,14 @@ class PreferencesDialog(ToninoDialog):
                 _log.exception(e)
         self.done(0)
 
+    @override
     @pyqtSlot()
     def reject(self) -> None:
         if self.app.toninoPort and self.displayBrightness is not None:
             self.app.setDisplayBrightness(self.app.toninoPort, self.displayBrightness)
         self.done(0)
 
+    @override
     def close(self) -> bool:
         self.reject()
         return True
@@ -960,7 +952,7 @@ class CalibDialog(ToninoDialog):
         super().__init__(parent)
         self.setModal(True)
         self.app:Tonino = application
-        self.ui:CalibDialogUI.Ui_Dialog | TinyCalibDialogUI2.Ui_Dialog | TinyCalibDialogUI.Ui_Dialog
+        self.ui:CalibDialogUI.Ui_Dialog | TinyCalibDialogUI2.Ui_Dialog | TinyCalibDialogUI.Ui_Dialog  # type:ignore[no-any-unimported] # ty:ignore[unused-ignore-comment]
         if app.tonino_model == 0: # Classic Tonino
             self.ui = CalibDialogUI.Ui_Dialog()
         # Tiny Tonino
@@ -976,7 +968,7 @@ class CalibDialog(ToninoDialog):
         self.ui.pushButtonScan.setText(QApplication.translate('Dialog', 'Scan'))
 
         # disable elements
-        ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        ok_button: QPushButton|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
         if ok_button is not None:
             ok_button.setEnabled(False)
             ok_button.repaint()
@@ -1026,20 +1018,23 @@ class CalibDialog(ToninoDialog):
                         self.ui.calibHighLabel.repaint()
                     # if both, low and high readings are set, enable the OK button
                     if calib_low is not None and calib_high is not None:
-                        ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+                        ok_button: QPushButton|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
                         if ok_button is not None:
                             ok_button.setEnabled(True)
                             ok_button.repaint() # on some Qt/PyQt 5.x versions the button is not automatically repainted!
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
 
+    @override
     def accept(self) -> None:
         self.app.updateCalib()
         self.done(0)
 
+    @override
     def reject(self) -> None:
         self.done(0)
 
+    @override
     def close(self) -> bool:
         self.reject()
         return True
@@ -1054,7 +1049,7 @@ class DebugDialog(ToninoDialog):
         super().__init__(parent)
         self.setModal(True)
         self.app:Tonino = application
-        self.ui:DebugDialogUI.Ui_Dialog = DebugDialogUI.Ui_Dialog()
+        self.ui:DebugDialogUI.Ui_Dialog = DebugDialogUI.Ui_Dialog() # type:ignore[no-any-unimported] # ty:ignore[unused-ignore-comment]
         self.ui.setupUi(self)
         # translations
         self.setWindowTitle(QApplication.translate('Dialog', 'Debug'))
@@ -1064,7 +1059,7 @@ class DebugDialog(ToninoDialog):
         # prepare log
         #self.ui.logOutput.setReadOnly(True)
         # disable elements
-        ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        ok_button: QPushButton|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
         if ok_button is not None:
             ok_button.setEnabled(False)
             ok_button.repaint()
@@ -1093,7 +1088,7 @@ class DebugDialog(ToninoDialog):
             self.app.processEvents()
             self.insertRequestResponse('GETCALINIT')
             self.app.processEvents()
-            ok_button: 'QPushButton|None' = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+            ok_button: QPushButton|None = self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
             if ok_button is not None:
                 ok_button.setEnabled(True)
                 ok_button.repaint()
@@ -1124,12 +1119,15 @@ class DebugDialog(ToninoDialog):
             self.ui.logOutput.appendPlainText('  ' + str(e))
             self.ui.logOutput.repaint()
 
+    @override
     def accept(self) -> None:
         self.done(0)
 
+    @override
     def reject(self) -> None:
         self.done(0)
 
+    @override
     def close(self) -> bool:
         self.reject()
         return True
@@ -1144,7 +1142,7 @@ class PreCalibDialog(ToninoDialog):
         super().__init__(parent)
         self.setModal(True)
         self.app:Tonino = application
-        self.ui:PreCalibDialogUI.Ui_Dialog = PreCalibDialogUI.Ui_Dialog()
+        self.ui:PreCalibDialogUI.Ui_Dialog = PreCalibDialogUI.Ui_Dialog() # type:ignore[no-any-unimported] # ty:ignore[unused-ignore-comment]
         self.ui.setupUi(self)
         # translations
         self.setWindowTitle(QApplication.translate('Dialog', 'PreCalibration'))
@@ -1253,9 +1251,7 @@ class PreCalibDialog(ToninoDialog):
             if self.app.toninoPort:
                 self.ui.logOutput.appendPlainText('<PreCal>')
                 _log.info('polyfit(%s.%s,%s)',self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree)
-                c:npt.NDArray[np.float64]
-                stats:list[float]
-                c,stats = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True) # type: ignore[no-untyped-call]
+                c, stats = poly.polyfit(self.sources,self.app.pre_cal_targets,self.app.pre_cal_degree,full=True)
                 try:
                     yv:npt.NDArray[np.float64] = np.array(self.app.pre_cal_targets)
                     r2:npt.NDArray[np.float64] = 1 - stats[0] / (yv.size * yv.var())
@@ -1316,12 +1312,15 @@ class PreCalibDialog(ToninoDialog):
             self.ui.logOutput.appendPlainText('  ' + str(e))
             self.ui.logOutput.repaint()
 
+    @override
     def accept(self) -> None:
         self.done(0)
 
+    @override
     def reject(self) -> None:
         self.done(0)
 
+    @override
     def close(self) -> bool:
         self.reject()
         return True
@@ -1343,7 +1342,7 @@ class ApplicationWindow(QMainWindow):
     def __init__(self, application:Tonino) -> None:
         super().__init__()
         self.app:Tonino = application
-        self.ui:MainWindowUI.Ui_MainWindow = MainWindowUI.Ui_MainWindow()
+        self.ui:MainWindowUI.Ui_MainWindow = MainWindowUI.Ui_MainWindow() # type:ignore[no-any-unimported] # ty:ignore[unused-ignore-comment]
         self.ui.setupUi(self)
         self.app.aw = self
 
@@ -1393,7 +1392,7 @@ class ApplicationWindow(QMainWindow):
 
         # reinitialize QAbstractTable model to ensure the tables parent is initialized to the main window
         self.app.scales = lib.scales.Scales(self.app,self)
-        self.app.scales.modelReset.connect(self.modelReset) # type: ignore
+        self.app.scales.modelReset.connect(self.modelReset)
 
         # constants
         self.toninoFileExtension:Final[str] = 'toni'
@@ -1429,11 +1428,11 @@ class ApplicationWindow(QMainWindow):
         for _ in range(self.app.maxRecentFiles):
             fileAct:QAction = QAction(self)
             fileAct.setVisible(False)
-            fileAct.triggered.connect(self.openRecent)  # type: ignore
+            fileAct.triggered.connect(self.openRecent)
             self.recentFileActs.append(fileAct)
             recentAct:QAction = QAction(self)
             recentAct.setVisible(False)
-            recentAct.triggered.connect(self.applyRecent)  # type: ignore
+            recentAct.triggered.connect(self.applyRecent)
             self.recentApplyActs.append(recentAct)
         self.app.loadSettings()
 
@@ -1510,23 +1509,7 @@ class ApplicationWindow(QMainWindow):
 
         self.updateLCDS()
 
-        if sys.platform.startswith('darwin') and QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0):
-            # only on macOS we install the eventFilter to catch the signal on switching between light and dark modes
-            self.installEventFilter(self)
-
         _log.info('initalized')
-
-    def eventFilter(self, obj, event):
-        # pylint: disable=c-extension-no-member
-        try:
-            if event.type() == QEvent.Type.ApplicationPaletteChange and self.app is not None and sys.platform.startswith('darwin') and QVersionNumber.fromString(qVersion())[0] < QVersionNumber(6,5,0) and darkdetect.isDark() != self.app.darkmode: # type: ignore # "isDark" is not a known member of module "darkdetect"
-                    # called if the palette changed (switch between dark and light mode on macOS Legacy builds)
-                self.app.darkmode = darkdetect.isDark() # not self.app.darkmode # type: ignore
-                self.ui.widget.canvas.redraw(force=True)
-                self.app.scales.refresh()
-        except Exception: # pylint: disable=broad-except
-            pass
-        return super().eventFilter(obj, event)
 
     @pyqtSlot()
     def modelReset(self) -> None:
@@ -1573,7 +1556,7 @@ class ApplicationWindow(QMainWindow):
     @pyqtSlot()
     def showProgress(self) -> None:
         self.progress = QProgressDialog(QApplication.translate('Message','Updating firmware...',None), '', 0, 20, self)
-        self.progress.setCancelButton(None) # type: ignore # here mypy expects a QPushButton, but the API allows a None to remove the Cancel button completely
+        self.progress.setCancelButton(None) # here mypy expects a QPushButton, but the API allows a None to remove the Cancel button completely
         self.progress.setWindowModality(Qt.WindowModality.WindowModal)
         self.progress.setAutoClose(False)
         self.progress.show()
@@ -1581,14 +1564,11 @@ class ApplicationWindow(QMainWindow):
         # the endProgress() might have set self.progress to None already and then the access crashes the app!
         try:
             for i in range(25):
-                if self.progress:
-                    self.progress.setValue(i)
+                self.progress.setValue(i)
                 time.sleep(1)
-            if self.progress is not None:
-                self.progress.setRange(0,0)
-                self.progress.setValue(0)
-            if self.progress is not None:
-                self.progress.show()
+            self.progress.setRange(0,0)
+            self.progress.setValue(0)
+            self.progress.show()
         except Exception as e: # pylint: disable=broad-except
             _log.exception(e)
 
@@ -1604,9 +1584,10 @@ class ApplicationWindow(QMainWindow):
 # Keyboard Handling
 #
 
-    def keyPressEvent(self, event: QKeyEvent|None) -> None:
-        if event is not None:
-            key:int = int(event.key())
+    @override
+    def keyPressEvent(self, a0: QKeyEvent|None) -> None:
+        if a0 is not None:
+            key:int = int(a0.key())
             if key == 16777219: # backspace
                 self.deleteCoordinates()
 
@@ -1665,7 +1646,7 @@ class ApplicationWindow(QMainWindow):
             self.updateWindowTitle()
             # update recent file menu
             try:
-                self.app.recentFiles = list(filter((filename).__ne__, self.app.recentFiles))
+                self.app.recentFiles = list(filter((filename).__ne__, self.app.recentFiles)) # pyrefly:ignore[no-matching-overload]
             except Exception as e: # pylint: disable=broad-except
                 _log.exception(e)
             self.app.recentFiles.insert(0, filename)
@@ -1882,7 +1863,7 @@ class ApplicationWindow(QMainWindow):
             _log.exception(e)
 
     def updateAVG(self, values:list[float]) -> None:
-        if values is not None and len(values) > 0:
+        if len(values) > 0:
             avg:float = np.sum(np.array(values),dtype=np.float64) / len(values)
             if 0 <= avg < 1000:
                 self.ui.LCDavg.display(f'{avg:.1f}')
@@ -1953,7 +1934,7 @@ class ApplicationWindow(QMainWindow):
     def showAbout(self,_:bool=False) -> None:
         _log.debug('showAbout')
         Dialog = QDialog(self)
-        ui:AboutDialogUI.Ui_Dialog = AboutDialogUI.Ui_Dialog()
+        ui:AboutDialogUI.Ui_Dialog = AboutDialogUI.Ui_Dialog()  # type:ignore[no-any-unimported] # ty:ignore[unused-ignore-comment]
         ui.setupUi(Dialog)
         version:str = QApplication.translate('Dialog', 'Version', None) + ' ' + __version__
         if self.app.included_firmware_version or self.app.included_tinyTonino_firmware_version:
@@ -1966,37 +1947,37 @@ class ApplicationWindow(QMainWindow):
                 version += self.version2str(self.app.included_tinyTonino_firmware_version,prefix='')
             version += ')'
         ui.versionLabel.setText(version)
-        ui.copyrightLabel.setText(QApplication.translate('Dialog', 'Copyright © 2023 Marko Luther, Paul Holleis'))
+        ui.copyrightLabel.setText(QApplication.translate('Dialog', 'Copyright © 2026 Marko Luther, Paul Holleis'))
         ui.pushButton.setText(QApplication.translate('Dialog', 'OK'))
         ui.pushButton.clicked.connect(Dialog.accept)
         Dialog.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        Dialog.customContextMenuRequested.connect(lambda _: self.toggleDebug(ui)) # type: ignore
+        Dialog.customContextMenuRequested.connect(lambda _: self.toggleDebug(ui))
         if self.debug == 1:
-            ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino*", None)}</b>')
+            ui.nameLabel.setText(f'<b>{QApplication.translate('Dialog', 'Tonino*', None)}</b>')
         elif self.debug == 2:
-            ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino**", None)}</b>')
+            ui.nameLabel.setText(f'<b>{QApplication.translate('Dialog', 'Tonino**', None)}</b>')
         else:
-            ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino", None)}</b>')
+            ui.nameLabel.setText(f'<b>{QApplication.translate('Dialog', 'Tonino', None)}</b>')
         if self.app.toninoSerial is not None:
-            ui.serialLabel.setText(f'{QApplication.translate("Dialog", "Serial:", None)} {self.app.toninoSerial}')
+            ui.serialLabel.setText(f'{QApplication.translate('Dialog', 'Serial:', None)} {self.app.toninoSerial}')
         else:
             ui.serialLabel.setText('')
         Dialog.show()
 
-    def toggleDebug(self, ui:AboutDialogUI.Ui_Dialog) -> None:
+    def toggleDebug(self, ui:AboutDialogUI.Ui_Dialog) -> None: # type:ignore[no-any-unimported] # ty:ignore[unused-ignore-comment]
         modifiers:Qt.KeyboardModifier = QApplication.keyboardModifiers()
         if modifiers in (Qt.KeyboardModifier.MetaModifier,Qt.KeyboardModifier.AltModifier):
             self.toggleDebugLogging()
         else:
             self.debug = (self.debug + 1) % 3
             if self.debug == 1:
-                ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino*", None)}</b>')
+                ui.nameLabel.setText(f'<b>{QApplication.translate('Dialog', 'Tonino*', None)}</b>')
                 _log.info('debug: Tonino*')
             elif self.debug == 2:
-                ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino**", None)}</b>')
+                ui.nameLabel.setText(f'<b>{QApplication.translate('Dialog', 'Tonino**', None)}</b>')
                 _log.info('debug: Tonino**')
             else:
-                ui.nameLabel.setText(f'<b>{QApplication.translate("Dialog", "Tonino", None)}</b>')
+                ui.nameLabel.setText(f'<b>{QApplication.translate('Dialog', 'Tonino', None)}</b>')
                 _log.info('debug: Tonino')
 
     def toggleDebugLogging(self) -> None:
@@ -2162,14 +2143,13 @@ class ApplicationWindow(QMainWindow):
     # checks regular for connect or disconnect of a Tonino device
     # on first call, the self.ports list is initialized, all other calls compare the list of ports with that one
     def deviceCheck(self) -> None:
-        newports_obj:list['serial.tools.list_ports_common.ListPortInfo'] = self.app.ser.getSerialPorts()
+        newports_obj:list[serial.tools.list_ports_common.ListPortInfo] = self.app.ser.getSerialPorts()
         newports:list[str] = []
         for p in newports_obj:
-            if p is not None:
-                try:
-                    newports.append(p.device)
-                except Exception: # pylint: disable=broad-except
-                    pass
+            try:
+                newports.append(p.device)
+            except Exception: # pylint: disable=broad-except
+                pass
         res:tuple[str, list[int] | None, str | None] | None = None
         model:int | None
         if self.ports is None:
@@ -2195,7 +2175,7 @@ class ApplicationWindow(QMainWindow):
             if self.debug == 2 and new_ports:
                 self.app.toninoPort = new_ports[0]
                 # find the port_obj to extract the Tonino type by PID (tinyToninoPID == 24597)
-                port_obj:'serial.tools.list_ports_common.ListPortInfo | None' = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
+                port_obj:serial.tools.list_ports_common.ListPortInfo | None = next((x for x in newports_obj if x.device == self.app.toninoPort), None)
                 # Tonino model needs to be set to choose the install the correct firmware version
                 model = 0
                 if port_obj is not None and port_obj.pid == 24597:
@@ -2254,23 +2234,25 @@ class ApplicationWindow(QMainWindow):
             self.app.currentFileDirty = False
         return True
 
+    @override
     @pyqtSlot(bool)
     def close(self,_:bool=False) -> bool:
         self.closeEvent(None)
         return True
 
-    def closeEvent(self, event:QCloseEvent | None) -> None:
+    @override
+    def closeEvent(self, a0:QCloseEvent | None) -> None:
         if self.closing or self.verifyDirty():
             if not self.closing:
                 self.app.saveSettings()
                 self.app.ser.closePort()
             self.closing = True
-            if event is not None:
-                event.accept()
+            if a0 is not None:
+                a0.accept()
             else:
                 QApplication.exit()
-        elif event is not None:
-            event.ignore()
+        elif a0 is not None:
+            a0.ignore()
         else:
             QApplication.exit()
 
@@ -2327,8 +2309,8 @@ _log.info(
 
 lang:str
 if platform.system() == 'Darwin':
-    import objc  # type: ignore # @UnusedImport # noqa: F401 # pylint: disable=unused-import
-    from Cocoa import NSUserDefaults  # type: ignore # @UnresolvedImport # pylint: disable=no-name-in-module
+    import objc  # type: ignore[import-untyped] # @UnusedImport # noqa: F401 # pylint: disable=unused-import # ty:ignore[unused-ignore-comment]
+    from Cocoa import NSUserDefaults  # type: ignore[import-untyped] # @UnresolvedImport # pylint: disable=no-name-in-module
     defs = NSUserDefaults.standardUserDefaults()
     langs = defs.objectForKey_('AppleLanguages')
     if langs.objectAtIndex_(0)[:3] in {'zh_', 'pt_'}:
@@ -2340,10 +2322,10 @@ else:
 
 # load localization
 translator:QTranslator = QTranslator(app)
-if translator.load('tonino_' + lang + '.qm',resources.getTranslationsPath()):
+if translator.load(f'tonino_{lang}.qm', resources.getTranslationsPath()):
     app.installTranslator(translator)
 translator = QTranslator(app)
-if translator.load('qtbase_' + lang + '.qm',resources.getSystemTranslationsPath()):
+if translator.load(f'qtbase_{lang}.qm', resources.getSystemTranslationsPath()):
     app.installTranslator(translator)
 
 aw = ApplicationWindow(app)

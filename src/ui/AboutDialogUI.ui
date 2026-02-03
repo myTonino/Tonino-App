@@ -70,7 +70,6 @@
          <property name="font">
           <font>
            <pointsize>20</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -117,7 +116,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string notr="true">Copyright © 2023 Marko Luther, Paul Holleis</string>
+          <string notr="true">Copyright © 2026 Marko Luther, Paul Holleis</string>
          </property>
         </widget>
        </item>

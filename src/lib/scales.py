@@ -29,7 +29,7 @@ from PyQt6.QtGui import (QBrush, QColor, QDoubleValidator)
 from PyQt6.QtWidgets import (QStyledItemDelegate,QLineEdit, QWidget, QStyleOptionViewItem)
 import numpy as np
 import numpy.polynomial.polynomial as poly
-import numpy.typing as npt
+#import numpy.typing as npt
 import locale
 import random
 import math
@@ -38,10 +38,11 @@ from ast import literal_eval
 from lib import __version__
 
 import logging
-from typing import Final, Any, NamedTuple, TypedDict, TYPE_CHECKING
+from typing import Final, Any, NamedTuple, TypedDict, override, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from lib.main import Tonino # pylint: disable=unused-import
+    import numpy.typing as npt # pylint: disable=unused-import
 
 _log: Final = logging.getLogger(__name__)
 
@@ -100,15 +101,15 @@ class Scales(QAbstractTableModel):
     # compute the coefficients of the given scale and apply to the current coordinates
     def applyScale(self, scale:Scale) -> None:
         # extract coordinates
-        coordinates: list[list[float | str]] = scale['coordinates'] if 'coordinates' in scale else []
+        coordinates: list[list[float | str]] = scale.get('coordinates', [])
         # extract degree
-        polyfit_degree:int = scale['degree'] if 'degree' in scale else 1
+        polyfit_degree:int = scale.get('degree', 1)
         # compute polyfit
         if len(coordinates) > polyfit_degree:
             xv:npt.NDArray[np.float64] = np.array([e[0] for e in coordinates])
             yv:npt.NDArray[np.float64] = np.array([e[1] for e in coordinates])
             coefficients:list[float]
-            coefficients = poly.polyfit(xv,yv,polyfit_degree,full=False) # type:ignore[no-untyped-call]
+            coefficients = poly.polyfit(xv,yv,polyfit_degree,full=False).tolist()
             coefficients.reverse()
             # apply polyfit
             self.beginResetModel()
@@ -228,9 +229,7 @@ class Scales(QAbstractTableModel):
             _log.debug('computePolyfit: %s',self.polyfit_degree)
             xv:npt.NDArray[np.float64] = np.array([c.x for c in self.coordinates])
             yv:npt.NDArray[np.float64] = np.array([c.y for c in self.coordinates])
-            c:npt.NDArray[np.float64]
-            stats:list[float]
-            c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True) # type: ignore[no-untyped-call]
+            c, stats = poly.polyfit(xv,yv,self.polyfit_degree,full=True)
             try:
                 r2:npt.NDArray[np.float64] = 1 - stats[0] / (yv.size * yv.var())
                 if r2.size>0:
@@ -244,8 +243,7 @@ class Scales(QAbstractTableModel):
             if _log.isEnabledFor(logging.DEBUG):
                 _log.debug('polyfit(%s)=%s',self.polyfit_degree,self.coefficients)
                 # compute the inverse mapping
-                ci:npt.NDArray[np.float64]
-                ci = poly.polyfit(yv,xv,self.polyfit_degree,full=False) # type: ignore[no-untyped-call]
+                ci = poly.polyfit(yv,xv,self.polyfit_degree,full=False)
                 _log.debug('inverse_polyfit(%s)=%s',self.polyfit_degree,list(reversed(list(ci))))
         else:
             self.coefficients = None
@@ -314,10 +312,14 @@ class Scales(QAbstractTableModel):
 # QAbstractTableModel interface
 #
 
-    def rowCount(self, _parent:QModelIndex = QModelIndex()) -> int: # noqa: B008
+    @override
+    def rowCount(self, parent:QModelIndex = QModelIndex()) -> int: # noqa: B008
+        del parent
         return len(self.coordinates)
 
-    def columnCount(self, _parent:QModelIndex = QModelIndex()) -> int: # noqa: B008
+    @override
+    def columnCount(self, parent:QModelIndex = QModelIndex()) -> int: # noqa: B008
+        del parent
         if self.app.aw is not None:
             return len(self.app.aw.tableheaders)
         return 0
@@ -343,6 +345,7 @@ class Scales(QAbstractTableModel):
                 sm.select(selection,QItemSelectionModel.SelectionFlag.Select)
                 self.app.contentModified()
 
+    @override
     def data(self, index:QModelIndex, role:int = Qt.ItemDataRole.DisplayRole) -> str | QBrush | int | None:
         if not index.isValid():
             return None
@@ -370,12 +373,14 @@ class Scales(QAbstractTableModel):
         return None
 #            return super().data(index, role)
 
-    def setData(self, index:QModelIndex, value:Any, _role:int=Qt.ItemDataRole.EditRole) -> bool:
+    @override
+    def setData(self, index:QModelIndex, value:Any, role:int=Qt.ItemDataRole.EditRole) -> bool:
+        del role
         if value and value != '' and index.isValid() and 0 <= index.row() < len(self.coordinates) and index.column() >= 0 and index.column() < 2:
             if index.column() == 0:
                 try:
                     self.setCoordinateY(index.row(), float(value))
-                    self.dataChanged.emit(index, index, []) # type: ignore
+                    self.dataChanged.emit(index, index, [])
                     # trigger the redraw of the matplotlib graph canvas
                     self.computePolyfit()
                     self.app.contentModified()
@@ -384,7 +389,7 @@ class Scales(QAbstractTableModel):
             elif index.column() == 1:
                 self.setCoordinateName(index.row(),value)
                 #self.emit(SIGNAL("dataChanged(QModelIndex,QModelIndex)"),index, index)
-                self.dataChanged.emit(index, index, []) # type: ignore
+                self.dataChanged.emit(index, index, [])
                 # trigger the redraw of the matplotlib graph canvas
                 if self.app.aw is not None:
                     self.app.aw.ui.widget.canvas.redraw()
@@ -392,21 +397,25 @@ class Scales(QAbstractTableModel):
             return True
         return False
 
-    @staticmethod
-    def setHeaderData(_section:int, _orientation:Qt.Orientation, _value:Any, _role:int=Qt.ItemDataRole.EditRole) -> bool:
+    @override
+    def setHeaderData(self, section:int, orientation:Qt.Orientation, value:Any, role:int=Qt.ItemDataRole.EditRole) -> bool: # pylint: disable=no-self-use
+        del self, section, orientation, value, role
         return True
 
-    def headerData(self, col:int, orientation:Qt.Orientation, role:int=Qt.ItemDataRole.DisplayRole) -> str | None:
+    @override
+    def headerData(self, section:int, orientation:Qt.Orientation, role:int=Qt.ItemDataRole.DisplayRole) -> str | None:
         if self.app.aw is not None and orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
-            return self.app.aw.tableheaders[col]
+            return self.app.aw.tableheaders[section]
         return None
 
-    @staticmethod
-    def flags( _index:QModelIndex) -> Qt.ItemFlag:
+    @override
+    def flags(self, index:QModelIndex) -> Qt.ItemFlag:  # pylint: disable=no-self-use
+        del self, index
         return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsSelectable
 
-    def sort(self, col:int, order:Qt.SortOrder = Qt.SortOrder.AscendingOrder) -> None:
-        self.sortCoordinates(col+1, order)
+    @override
+    def sort(self, column:int, order:Qt.SortOrder = Qt.SortOrder.AscendingOrder) -> None:
+        self.sortCoordinates(column+1, order)
 
 
 #
@@ -418,15 +427,16 @@ class ValidatedItemDelegate(QStyledItemDelegate):
     def __init__(self, parent:QObject | None=None) -> None:
         QStyledItemDelegate.__init__(self, parent)
 
-    def createEditor(self, widget:QWidget|None, option:QStyleOptionViewItem, index:QModelIndex) -> QWidget|None:
+    @override
+    def createEditor(self, parent:QWidget|None, option:QStyleOptionViewItem, index:QModelIndex) -> QWidget|None:
         if not index.isValid():
             return QWidget()
         if index.column() == 0: #only on the cells in the first column
-            editor = QLineEdit(widget)
+            editor = QLineEdit(parent)
             # accept only numbers from 0-200
             validator = QDoubleValidator(0., 200., 2, editor)
             validator.setLocale(QLocale.c())
             validator.setNotation(QDoubleValidator.Notation.StandardNotation)
             editor.setValidator(validator)
             return editor
-        return super().createEditor(widget, option, index)
+        return super().createEditor(parent, option, index)

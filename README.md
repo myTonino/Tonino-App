@@ -23,14 +23,15 @@ Tonino Resources
 Version History
 ---------------
 
-- v1.0.28 Universal macOS binary
+- v1.0.29 Updated icon
+- v1.0.28 Universal macOS binary<br>(last version supporting macOS 10.11 El Capitan
 - v1.0.27 Fixes regression in v1.0.26 preventing loading of some scales
 - v1.0.26 Fixes regression in v1.0.25 preventing a proper connection to Tonino Classics
 - v1.0.25 Adds Windows dark mode support
 - v1.0.24 Adds Agtron default scale support
 - v1.0.23 Adds support for M1 Macs and logging
 - v1.0.22 Adds PRECAL support<br>(last version supporting macOS 10.13 and Windows 8)</br>
-- v1.0.21 Bug fixes<br>(last version supporting macoS 10.9, Windows XP/7 and 32bit OS versions)</br>
+- v1.0.21 Bug fixes<br>(last version supporting macoOS 10.9, Windows XP/7 and 32bit OS versions)</br>
 - v1.0.20 Bug fixes
 - v1.0.19 Adds Raspbian build
 - v1.0.18 Updated calibration recognition
